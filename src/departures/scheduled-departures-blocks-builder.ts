@@ -6,13 +6,7 @@ import type {
 } from "./gtfs-scheduled-movements-index.js";
 import { ScheduledDeparturesBlock } from "./scheduled-departures-block.js";
 import type { PlainDateRange } from "../data/plain-date-range.js";
-
-// TODO: Move to config folder.
-export type TimezoneData = {
-  readonly timezone: string;
-  readonly minimumViableOffsetSeconds: number;
-  readonly maximumViableOffsetSeconds: number;
-};
+import type { TimezoneData } from "../config/timezone-data.js";
 
 export class ScheduledDeparturesBlocksBuilder {
   /** If given, all movements are guaranteed to occur at/after this time. */

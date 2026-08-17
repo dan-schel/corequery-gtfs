@@ -1,5 +1,5 @@
+import type { TimezoneData } from "../config/timezone-data.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
-import type { TimezoneData } from "../departures/scheduled-departures-blocks-builder.js";
 import { ZipperDeparturesIterator } from "../departures/zipper-departures-iterator.js";
 import type { GtfsRealtimeData } from "./gtfs-realtime-data.js";
 import type { GtfsScheduleData } from "./gtfs-schedule-data.js";

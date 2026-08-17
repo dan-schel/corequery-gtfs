@@ -3,10 +3,10 @@
   "version": "0.1.1",
   "type": "module",
   "files": [
-    "dist/src"
+    "dist"
   ],
-  "exports": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "vitest --run",

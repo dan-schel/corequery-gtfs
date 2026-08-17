@@ -2,9 +2,9 @@ import { assertNever, itsOk } from "@dan-schel/js-utils";
 import {
   DeparturesIterator,
   type DeparturesIteratorResult,
-  type DeparturesSearchDirection,
 } from "./departures-iterator.js";
 import type { DeparturesBlock } from "./departures-block.js";
+import type { DeparturesSearchDirection } from "../corequery-types.js";
 
 export abstract class DeparturesBlockIterator<
   BlockType extends DeparturesBlock,

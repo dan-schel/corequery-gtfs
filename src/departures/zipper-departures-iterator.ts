@@ -2,13 +2,13 @@ import { assertNever, nonNull } from "@dan-schel/js-utils";
 import {
   DeparturesIterator,
   DeparturesIteratorResult,
-  type DeparturesSearchDirection,
 } from "./departures-iterator.js";
 import { ScheduledDeparturesIterator } from "./scheduled-departures-iterator.js";
 import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-iterator.js";
 import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import type { TimezoneData } from "./scheduled-departures-blocks-builder.js";
+import type { TimezoneData } from "../config/timezone-data.js";
+import type { DeparturesSearchDirection } from "../corequery-types.js";
 
 export class ZipperDeparturesIterator extends DeparturesIterator {
   private _direction: DeparturesSearchDirection;

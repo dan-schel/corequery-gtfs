@@ -3,7 +3,6 @@ import type { LineGtfsIdMapping } from "../data/ids/line-gtfs-id-mapping.js";
 import type { StopGtfsIdMapping } from "../data/ids/stop-gtfs-id-mapping.js";
 import type { BonusLinesMapping } from "../data/route/bonus-lines-mapping.js";
 import type { LineRoutesMapping } from "../data/route/line-routes-mapping.js";
-import type { TimezoneData } from "../departures/scheduled-departures-blocks-builder.js";
 import type { RealtimeDataJson } from "../data/raw/realtime-data-json.js";
 import {
   GtfsRealtimeDataParser,
@@ -14,6 +13,7 @@ import {
   type GtfsScheduleParsingError,
 } from "./schedule/gtfs-schedule-parser.js";
 import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
+import type { TimezoneData } from "../config/timezone-data.js";
 
 export class GtfsFeedParser {
   private readonly _scheduleParser: GtfsScheduleParser;
