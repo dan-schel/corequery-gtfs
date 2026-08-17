@@ -6,3 +6,4 @@ export * from "./gtfs-scheduled-trip.js";
 export * from "./gtfs-scheduled-trip-movements.js";
 export * from "./gtfs-updated-trip.js";
 export * from "./gtfs-updated-trip-movements.js";
+export * from "./utils.js";
