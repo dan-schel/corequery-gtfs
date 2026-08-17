@@ -1,4 +1,4 @@
-import type { Color } from "corequery";
+import type { Color } from "../corequery-types.js";
 
 export type LineRoutesMappingConfig = Record<number, readonly RouteConfig[]>;
 

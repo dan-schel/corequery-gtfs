@@ -14,7 +14,7 @@ import type {
   StopTimesCsvRow,
   TransfersCsvRow,
   TripsCsvRow,
-} from "../../../../../../src/gtfs/corequery-gtfs/data/raw/schedule-csvs.js";
+} from "../../../../src/data/raw/schedule-csvs.js";
 
 export const stopsCsvSchema: z.ZodType<StopsCsvRow> = z
   .object({

@@ -1,7 +1,7 @@
 import { expect } from "vitest";
-import type { GtfsSystem } from "../../../../../src/gtfs/corequery-gtfs/gtfs-system.js";
-import type { GtfsScheduleParsingError } from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-schedule-parser.js";
-import type { GtfsRealtimeDataParsingError } from "../../../../../src/gtfs/corequery-gtfs/parser/realtime/gtfs-realtime-data-parser.js";
+import type { GtfsScheduleParsingError } from "../../../src/parser/schedule/gtfs-schedule-parser.js";
+import type { GtfsRealtimeDataParsingError } from "../../../src/parser/realtime/gtfs-realtime-data-parser.js";
+import type { GtfsSystem } from "../../../src/gtfs-system.js";
 
 type ParsingError = GtfsScheduleParsingError | GtfsRealtimeDataParsingError;
 

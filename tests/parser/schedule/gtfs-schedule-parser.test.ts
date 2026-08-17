@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { GtfsScheduleParser } from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-schedule-parser.js";
-import { GtfsStopTime } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import { BonusLinesMapping } from "../../../../../src/gtfs/corequery-gtfs/data/route/bonus-lines-mapping.js";
-import { LineRoutesMapping } from "../../../../../src/gtfs/corequery-gtfs/data/route/line-routes-mapping.js";
-import { LineGtfsIdMapping } from "../../../../../src/gtfs/corequery-gtfs/data/ids/line-gtfs-id-mapping.js";
-import { StopGtfsIdMapping } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-mapping.js";
-import { StopGtfsIdCollection } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-collection.js";
-import { LineGtfsIdCollection } from "../../../../../src/gtfs/corequery-gtfs/data/ids/line-gtfs-id-collection.js";
+import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
+import { LineGtfsIdCollection } from "../../../src/data/ids/line-gtfs-id-collection.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
+import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
+import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
+import { GtfsScheduleParser } from "../../../src/parser/schedule/gtfs-schedule-parser.js";
 
 describe("GtfsScheduleParser", () => {
   const LINE_ID = 1;

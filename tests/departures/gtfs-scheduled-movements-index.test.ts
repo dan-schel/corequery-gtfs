@@ -1,10 +1,10 @@
 import { it, describe, expect } from "vitest";
-import { GtfsStopTime } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import { GtfsScheduledTrip } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsCalendar } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-calendar.js";
-import { GtfsScheduledMovementsIndex } from "../../../../src/gtfs/corequery-gtfs/departures/gtfs-scheduled-movements-index.js";
-import { GtfsScheduleData } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-schedule-data.js";
-import { PlainDateRange } from "../../../../src/gtfs/corequery-gtfs/data/plain-date-range.js";
+import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
+import { GtfsScheduleData } from "../../src/data/gtfs-schedule-data.js";
+import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
+import { PlainDateRange } from "../../src/data/plain-date-range.js";
+import { GtfsScheduledMovementsIndex } from "../../src/departures/gtfs-scheduled-movements-index.js";
 
 describe("GtfsScheduledMovementsIndex", () => {
   describe("#getMovementsForStop", () => {

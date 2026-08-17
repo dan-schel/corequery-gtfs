@@ -1,22 +1,22 @@
+import { itsOk, arraysMatch } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
+import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { LineGtfsIdCollection } from "../../../src/data/ids/line-gtfs-id-collection.js";
+import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
+import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
+import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
+import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
+import { MultipleStopSequencesError } from "../../../src/parser/schedule/gtfs-stop-time-normaliser.js";
 import {
-  DuplicateTripIdError,
+  type GtfsTripParsingError,
   GtfsTripParser,
+  DuplicateTripIdError,
   StopTimeReferencesNonExistentTripError,
   TripReferencesNonExistentCalendarError,
   TripReferencesUnmappedRouteIdError,
-  type GtfsTripParsingError,
-} from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-trip-parser.js";
-import { MultipleStopSequencesError } from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-stop-time-normaliser.js";
-import { GtfsStopTime } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import { BonusLinesMapping } from "../../../../../src/gtfs/corequery-gtfs/data/route/bonus-lines-mapping.js";
-import { GtfsCalendar } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-calendar.js";
-import { LineRoutesMapping } from "../../../../../src/gtfs/corequery-gtfs/data/route/line-routes-mapping.js";
-import { LineGtfsIdMapping } from "../../../../../src/gtfs/corequery-gtfs/data/ids/line-gtfs-id-mapping.js";
-import { LineGtfsIdCollection } from "../../../../../src/gtfs/corequery-gtfs/data/ids/line-gtfs-id-collection.js";
-import { StopGtfsIdMapping } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-mapping.js";
-import { StopGtfsIdCollection } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-collection.js";
-import { arraysMatch, itsOk } from "@dan-schel/js-utils";
+} from "../../../src/parser/schedule/gtfs-trip-parser.js";
 
 describe("GtfsTripParser", () => {
   const LINE_ID = 1;

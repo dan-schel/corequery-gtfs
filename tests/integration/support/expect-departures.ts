@@ -1,14 +1,14 @@
-import { expect } from "vitest";
-import type {
-  DeparturesIteratorResult,
-  DeparturesSearchDirection,
-} from "../../../../../src/gtfs/corequery-gtfs/departures/departures-iterator.js";
-import type { GtfsSystem } from "../../../../../src/gtfs/corequery-gtfs/gtfs-system.js";
-import type { StopNameMapping } from "./create-stop-name-mapping.js";
-import { GtfsScheduledTrip } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsUpdatedTrip } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-updated-trip.js";
 import { assertNever } from "@dan-schel/js-utils";
-import type { GtfsTripServicingMovement } from "../../../../../src/gtfs/corequery-gtfs/data/utils.js";
+import { expect } from "vitest";
+import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsUpdatedTrip } from "../../../src/data/gtfs-updated-trip.js";
+import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
+import type {
+  DeparturesSearchDirection,
+  DeparturesIteratorResult,
+} from "../../../src/departures/departures-iterator.js";
+import type { GtfsSystem } from "../../../src/gtfs-system.js";
+import type { StopNameMapping } from "./create-stop-name-mapping.js";
 
 export function expectDeparturesToMatchSnapshot({
   system,

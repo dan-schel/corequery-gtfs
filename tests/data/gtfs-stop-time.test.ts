@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GtfsStopTime } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 
 describe("GtfsStopTime", () => {
   describe("#secondOfDay", () => {

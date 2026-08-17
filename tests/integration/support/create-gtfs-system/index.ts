@@ -1,4 +1,3 @@
-import { GtfsSystem } from "../../../../../../src/gtfs/corequery-gtfs/gtfs-system.js";
 import path from "path";
 import fsp from "fs/promises";
 import fs from "fs";
@@ -6,7 +5,6 @@ import csvParser from "csv-parser";
 import { configJsonSchema } from "./parse-config-json.js";
 import { realtimeJsonSchema } from "./parse-realtime-json.js";
 import type z from "zod";
-import type { GtfsFeedCsv } from "../../../../../../src/gtfs/corequery-gtfs/data/raw/schedule-csvs.js";
 import {
   calendarCsvSchema,
   calendarDatesCsvSchema,
@@ -16,6 +14,8 @@ import {
   transfersCsvSchema,
   tripsCsvSchema,
 } from "./parse-schedule-csvs.js";
+import type { GtfsFeedCsv } from "../../../../src/data/raw/schedule-csvs.js";
+import { GtfsSystem } from "../../../../src/gtfs-system.js";
 
 export async function createGtfsSystemForIntegrationTest(dirname: string) {
   const configJsonPath = path.join(dirname, "config.json");

@@ -1,4 +1,4 @@
-import type { Color } from "corequery";
+import type { Color } from "../corequery-types.js";
 import { GtfsCalendar } from "./gtfs-calendar.js";
 import { itsOk } from "@dan-schel/js-utils";
 import {

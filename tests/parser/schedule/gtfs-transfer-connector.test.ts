@@ -1,22 +1,20 @@
+import { itsOk } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
+import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
+import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import {
-  GtfsTransferConnector,
-  TransferCrossesCalendarsError,
-  TransferIsNotInSeatTransferError,
-  TransferIsNotSameStopAndPositionError,
-  TransferRequiresTimeTravelError,
   type GtfsTransferConnectionError,
-} from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-transfer-connector.js";
-import {
+  GtfsTransferConnector,
+  TransferIsNotInSeatTransferError,
+  TransferReferencesNonExistentTrip,
   TransferIsNotFromTerminusError,
   TransferIsNotToOriginError,
-  TransferReferencesNonExistentTrip,
   TransferReferencesTripAlreadyConnectedError,
-} from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-transfer-connector.js";
-import { itsOk } from "@dan-schel/js-utils";
-import { GtfsScheduledTrip } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsCalendar } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-calendar.js";
-import { GtfsStopTime } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
+  TransferIsNotSameStopAndPositionError,
+  TransferCrossesCalendarsError,
+  TransferRequiresTimeTravelError,
+} from "../../../src/parser/schedule/gtfs-transfer-connector.js";
 
 describe("GtfsTransferConnector", () => {
   const TRIP_A = makeTripA("1", "2");

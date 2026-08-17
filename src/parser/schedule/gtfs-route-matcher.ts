@@ -1,4 +1,4 @@
-import type { Color } from "corequery";
+import type { Color } from "../../corequery-types.js";
 import type {
   StopTimesCsv,
   StopTimesCsvRow,

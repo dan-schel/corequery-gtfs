@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BoundedInstantRange } from "../../../../src/gtfs/corequery-gtfs/data/bounded-instant-range.js";
+import { BoundedInstantRange } from "../../src/data/bounded-instant-range.js";
 
 describe("BoundedInstantRange", () => {
   describe("constructor", () => {

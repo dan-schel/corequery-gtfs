@@ -1,12 +1,12 @@
 import { it, describe, expect } from "vitest";
+import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import {
-  DeparturesIterator,
   DeparturesIteratorResult,
+  DeparturesIterator,
   type DeparturesSearchDirection,
-} from "../../../../src/gtfs/corequery-gtfs/departures/departures-iterator.js";
-import { MultifeedDeparturesIterator } from "../../../../src/gtfs/corequery-gtfs/departures/multifeed-departures-iterator.js";
-import { GtfsScheduledTrip } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsStopTime } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
+} from "../../src/departures/departures-iterator.js";
+import { MultifeedDeparturesIterator } from "../../src/departures/multifeed-departures-iterator.js";
 
 describe("MultifeedDeparturesIterator", () => {
   it("returns departures in order of instant, and tags them with their feed ID", () => {

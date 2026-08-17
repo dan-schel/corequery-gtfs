@@ -1,17 +1,17 @@
-import { it, describe, expect } from "vitest";
-import { GtfsCalendar } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-calendar.js";
-import { GtfsScheduledTrip } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsStopTime } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import {
-  ScheduledDeparturesBlocksBuilder,
-  type TimezoneData,
-} from "../../../../src/gtfs/corequery-gtfs/departures/scheduled-departures-blocks-builder.js";
-import { GtfsScheduledMovementsIndex } from "../../../../src/gtfs/corequery-gtfs/departures/gtfs-scheduled-movements-index.js";
-import { GtfsScheduleData } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-schedule-data.js";
 import { itsOk } from "@dan-schel/js-utils";
-import { GtfsRealtimeData } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-realtime-data.js";
-import { ScheduledDeparturesIterator } from "../../../../src/gtfs/corequery-gtfs/departures/scheduled-departures-iterator.js";
-import { PlainDateRange } from "../../../../src/gtfs/corequery-gtfs/data/plain-date-range.js";
+import { it, describe, expect } from "vitest";
+import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
+import { GtfsRealtimeData } from "../../src/data/gtfs-realtime-data.js";
+import { GtfsScheduleData } from "../../src/data/gtfs-schedule-data.js";
+import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
+import { PlainDateRange } from "../../src/data/plain-date-range.js";
+import { GtfsScheduledMovementsIndex } from "../../src/departures/gtfs-scheduled-movements-index.js";
+import {
+  type TimezoneData,
+  ScheduledDeparturesBlocksBuilder,
+} from "../../src/departures/scheduled-departures-blocks-builder.js";
+import { ScheduledDeparturesIterator } from "../../src/departures/scheduled-departures-iterator.js";
 
 export const MELBOURNE_TIMEZONE_DATA: TimezoneData = {
   timezone: "Australia/Melbourne",

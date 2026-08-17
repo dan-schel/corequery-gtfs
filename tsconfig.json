@@ -13,9 +13,9 @@
     "noImplicitOverride": true,
     "module": "NodeNext",
     "outDir": "dist",
-    "rootDir": "src",
     "sourceMap": true,
     "declaration": true,
-    "lib": ["es2025", "ESNext.Temporal"]
+    "lib": ["es2025", "ESNext.Temporal"],
+    "types": ["node"]
   }
 }

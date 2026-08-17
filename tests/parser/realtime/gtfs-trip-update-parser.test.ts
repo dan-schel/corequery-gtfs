@@ -1,25 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { StopGtfsIdCollection } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-collection.js";
-import { StopGtfsIdMapping } from "../../../../../src/gtfs/corequery-gtfs/data/ids/stop-gtfs-id-mapping.js";
+import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
+import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
+import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
 import {
-  GtfsTripUpdateParser,
-  MultipleStopTimeUpdateEntriesForSameMovementIndexError,
-  NecessaryFieldNotInStopTimeUpdateEntryError,
-  NeitherArrivalNorDepartureGivenError,
-  NeitherTimeNorDelayGivenError,
-  NoStopTimeUpdateFieldGivenError,
-  StopTimeUpdateEntryChangesStopError,
-  StopTimeUpdateEntryReferencesUnmappedStopIdError,
-  StopTimeUpdateEntryReferencesNonExistentStopSequenceError,
-  TimeAndDelayDisagreeWithEachOtherError,
-  UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
-  UnsupportedTripUpdateScheduleRelationshipError,
   type GtfsTripUpdateParsingError,
+  GtfsTripUpdateParser,
+  UnsupportedTripUpdateScheduleRelationshipError,
+  NoStopTimeUpdateFieldGivenError,
+  UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
+  NecessaryFieldNotInStopTimeUpdateEntryError,
+  StopTimeUpdateEntryReferencesNonExistentStopSequenceError,
+  MultipleStopTimeUpdateEntriesForSameMovementIndexError,
+  StopTimeUpdateEntryReferencesUnmappedStopIdError,
+  StopTimeUpdateEntryChangesStopError,
+  NeitherTimeNorDelayGivenError,
+  TimeAndDelayDisagreeWithEachOtherError,
+  NeitherArrivalNorDepartureGivenError,
   StopTimeUpdateEntryChangesPlatformError,
-} from "../../../../../src/gtfs/corequery-gtfs/parser/realtime/gtfs-trip-update-parser.js";
-import { GtfsStopTime } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import { GtfsScheduledTrip } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
-import { GtfsScheduleData } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-schedule-data.js";
+} from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 
 const TIMEZONE = "Australia/Melbourne";
 

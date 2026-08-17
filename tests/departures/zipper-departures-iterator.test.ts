@@ -1,12 +1,12 @@
 import { it, describe, expect } from "vitest";
+import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import {
-  DeparturesIterator,
   DeparturesIteratorResult,
+  DeparturesIterator,
   type DeparturesSearchDirection,
-} from "../../../../src/gtfs/corequery-gtfs/departures/departures-iterator.js";
-import { ZipperDeparturesIterator } from "../../../../src/gtfs/corequery-gtfs/departures/zipper-departures-iterator.js";
-import { GtfsStopTime } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import { GtfsScheduledTrip } from "../../../../src/gtfs/corequery-gtfs/data/gtfs-scheduled-trip.js";
+} from "../../src/departures/departures-iterator.js";
+import { ZipperDeparturesIterator } from "../../src/departures/zipper-departures-iterator.js";
 
 describe("ZipperDeparturesIterator", () => {
   it("returns departures in order of instant", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PlainDateRange } from "../../../../src/gtfs/corequery-gtfs/data/plain-date-range.js";
+import { PlainDateRange } from "../../src/data/plain-date-range.js";
 
 describe("PlainDateRange", () => {
   it("throws when start date is after end date", () => {

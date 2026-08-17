@@ -1,4 +1,4 @@
-import type { Color } from "corequery";
+import type { Color } from "../../corequery-types.js";
 import { RouteStop } from "./route-stop.js";
 import type { RouteConfig } from "../../config/routes.js";
 

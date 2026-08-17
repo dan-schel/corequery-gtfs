@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import type { StopTimesCsvRow } from "../../../src/data/raw/schedule-csvs.js";
 import {
+  type GtfsStopTimeNormalisationError,
   GtfsStopTimeNormaliser,
   InvalidStopSequenceError,
   MultipleStopSequencesError,
-  type GtfsStopTimeNormalisationError,
-} from "../../../../../src/gtfs/corequery-gtfs/parser/schedule/gtfs-stop-time-normaliser.js";
-import { GtfsStopTime } from "../../../../../src/gtfs/corequery-gtfs/data/gtfs-stop-time.js";
-import type { StopTimesCsvRow } from "../../../../../src/gtfs/corequery-gtfs/data/raw/schedule-csvs.js";
+} from "../../../src/parser/schedule/gtfs-stop-time-normaliser.js";
 
 function stopTime(overrides: Partial<StopTimesCsvRow> = {}): StopTimesCsvRow {
   return {
