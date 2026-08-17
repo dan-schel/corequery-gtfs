@@ -16,6 +16,6 @@
     "sourceMap": true,
     "declaration": true,
     "lib": ["es2025", "ESNext.Temporal"],
-    "types": ["node"]
+    "types": []
   }
 }

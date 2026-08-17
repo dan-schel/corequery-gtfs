@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
+  "prHourlyLimit": 10,
+  "prConcurrentLimit": 500,
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchCurrentVersion": ">=1.0.0",
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "all non-major updates"
+    },
+    {
+      "matchDepTypes": ["!devDependencies"],
+      "bumpVersion": "patch"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "rangeStrategy": "pin"
+    }
+  ]
+}

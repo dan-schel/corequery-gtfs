@@ -12,13 +12,13 @@ export type StopsCsvRow = {
   readonly parent_station: string;
   readonly platform_code?: string;
 };
-export type StopsCsv = readonly StopsCsvRow[];
+type StopsCsv = readonly StopsCsvRow[];
 
 export type RoutesCsvRow = {
   readonly route_id: string;
   readonly route_long_name: string;
 };
-export type RoutesCsv = readonly RoutesCsvRow[];
+type RoutesCsv = readonly RoutesCsvRow[];
 
 export type TripsCsvRow = {
   readonly route_id: string;
