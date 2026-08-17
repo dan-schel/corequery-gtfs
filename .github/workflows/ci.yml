@@ -1,0 +1,59 @@
+name: CI
+
+on: push
+
+jobs:
+  format:
+    name: Formatted correctly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+      - run: npm ci
+      - run: npm run format-check
+  lint:
+    name: No lint errors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+      - run: npm ci
+      - run: npm run lint
+  test:
+    name: Unit tests pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+      - run: npm ci
+      - run: npm run test-coverage
+      - uses: codecov/codecov-action@v6.0.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: dan-schel/corequery-gtfs
+  build:
+    name: Builds successfully
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+      - run: npm ci
+      - run: npm run build
+  bump:
+    name: Bumps version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+      - run: npm ci
+      - run: npm run bump-check

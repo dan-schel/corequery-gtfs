@@ -1,0 +1,6 @@
+{
+  // typescript-eslint wants all files it lints to be part of a TypeScript
+  // project, because it uses type information to lint some of its rules.
+  "include": ["**/*"],
+  "extends": "./tsconfig.json"
+}
