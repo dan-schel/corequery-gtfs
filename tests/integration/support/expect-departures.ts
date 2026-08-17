@@ -3,12 +3,10 @@ import { expect } from "vitest";
 import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
 import { GtfsUpdatedTrip } from "../../../src/data/gtfs-updated-trip.js";
 import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
-import type {
-  DeparturesSearchDirection,
-  DeparturesIteratorResult,
-} from "../../../src/departures/departures-iterator.js";
+import type { DeparturesIteratorResult } from "../../../src/departures/departures-iterator.js";
 import type { GtfsSystem } from "../../../src/gtfs-system.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
+import { DeparturesSearchDirection } from "../../../src/corequery-types.js";
 
 export function expectDeparturesToMatchSnapshot({
   system,

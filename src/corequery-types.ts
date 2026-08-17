@@ -9,3 +9,5 @@ export type Color =
   | "pink"
   | "purple"
   | "gray";
+
+export type DeparturesSearchDirection = "forwards" | "backwards";

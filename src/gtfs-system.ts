@@ -1,10 +1,9 @@
-import type { GtfsConfig } from "./config/index.js";
+import type { GtfsConfig, TimezoneData } from "./config/index.js";
 import type { GtfsFeed } from "./data/gtfs-feed.js";
 import { LineGtfsIdMapping } from "./data/ids/line-gtfs-id-mapping.js";
 import { StopGtfsIdMapping } from "./data/ids/stop-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "./data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "./data/route/line-routes-mapping.js";
-import type { TimezoneData } from "./departures/scheduled-departures-blocks-builder.js";
 import { GtfsFeedParser } from "./parser/gtfs-feed-parser.js";
 import type { GtfsRealtimeDataParsingError } from "./parser/realtime/gtfs-realtime-data-parser.js";
 import type { GtfsScheduleParsingError } from "./parser/schedule/gtfs-schedule-parser.js";

@@ -2,16 +2,14 @@ import { assertNever, removeIf } from "@dan-schel/js-utils";
 import {
   DeparturesIterator,
   type DeparturesIteratorResult,
-  type DeparturesSearchDirection,
 } from "./departures-iterator.js";
 import { BoundedInstantRange } from "../data/bounded-instant-range.js";
 import { ScheduledDeparturesBlockIterator } from "./scheduled-departures-block-iterator.js";
 import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import {
-  ScheduledDeparturesBlocksBuilder,
-  type TimezoneData,
-} from "./scheduled-departures-blocks-builder.js";
+import { ScheduledDeparturesBlocksBuilder } from "./scheduled-departures-blocks-builder.js";
+import type { TimezoneData } from "../config/timezone-data.js";
+import type { DeparturesSearchDirection } from "../corequery-types.js";
 
 const BLOCK_SCAN_HRS = 48;
 
