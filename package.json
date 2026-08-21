@@ -1,6 +1,6 @@
 {
   "name": "corequery-gtfs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "files": [
     "dist"
@@ -17,22 +17,22 @@
     "bump-check": "bump-check --ignore \"^renovate\\/\""
   },
   "dependencies": {
-    "temporal-polyfill": "1.0.1"
+    "temporal-polyfill": "1.0.4"
   },
   "devDependencies": {
     "@dan-schel/js-utils": "4.14.1",
     "@eslint/js": "10.0.1",
-    "@types/node": "25.8.0",
-    "@vitest/coverage-v8": "4.1.6",
+    "@types/node": "25.9.5",
+    "@vitest/coverage-v8": "4.1.11",
     "csv-parser": "3.2.1",
-    "eslint": "10.4.0",
+    "eslint": "10.9.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-prettier": "5.5.5",
-    "knip": "6.14.1",
-    "prettier": "3.8.3",
+    "eslint-plugin-prettier": "5.5.6",
+    "knip": "6.32.2",
+    "prettier": "3.9.6",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.59.3",
-    "vitest": "4.1.6",
+    "typescript-eslint": "8.67.0",
+    "vitest": "4.1.11",
     "zod": "4.4.3"
   },
   "author": "dan-schel",
