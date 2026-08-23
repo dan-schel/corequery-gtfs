@@ -16,6 +16,12 @@ export class GtfsRealtimeData {
     return this._updatedTrips;
   }
 
+  getTrip(gtfsTripId: string, serviceDay: Temporal.PlainDate) {
+    // Right now all realtime trips are updated trips. When we have added trips
+    // in the future, then this needs to be modified to return those too.
+    return this.getForScheduledTrip(gtfsTripId, serviceDay);
+  }
+
   getForScheduledTrip(
     gtfsTripId: string,
     serviceDay: Temporal.PlainDate,

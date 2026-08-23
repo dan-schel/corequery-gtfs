@@ -1,0 +1,58 @@
+import type { DeparturesIterator } from "../departures/departures-iterator.js";
+import type { ServiceConverter } from "./service-converter.js";
+
+export class ServiceConversionIterator<
+  CorequeryDepartureClass,
+  CorequeryServiceClass,
+  CorequeryTagsClass,
+  CorequeryServiceOriginatingMovementClass,
+  CorequeryServicePassingMovementClass,
+  CorequeryServiceRegularMovementClass,
+  CorequeryServiceTerminatingMovementClass,
+  CorequeryServiceConnectionClass,
+> {
+  private _convertedNextDeparture: CorequeryDepartureClass | null;
+
+  constructor(
+    private readonly _iterator: DeparturesIterator,
+    private readonly _converter: ServiceConverter<
+      CorequeryDepartureClass,
+      CorequeryServiceClass,
+      CorequeryTagsClass,
+      CorequeryServiceOriginatingMovementClass,
+      CorequeryServicePassingMovementClass,
+      CorequeryServiceRegularMovementClass,
+      CorequeryServiceTerminatingMovementClass,
+      CorequeryServiceConnectionClass
+    >,
+  ) {
+    this._convertedNextDeparture = null;
+  }
+
+  peek(): Promise<CorequeryDepartureClass | null> {
+    if (this._convertedNextDeparture != null) {
+      return Promise.resolve(this._convertedNextDeparture);
+    }
+
+    const value = this._iterator.peek();
+    if (value == null) {
+      return Promise.resolve(null);
+    }
+
+    const result = this._converter.convertDeparture(value);
+    this._convertedNextDeparture = result;
+    return Promise.resolve(result);
+  }
+
+  take(): Promise<CorequeryDepartureClass> {
+    if (this._convertedNextDeparture != null) {
+      const result = this._convertedNextDeparture;
+      this._convertedNextDeparture = null;
+      return Promise.resolve(result);
+    }
+
+    const value = this._iterator.take();
+    const result = this._converter.convertDeparture(value);
+    return Promise.resolve(result);
+  }
+}

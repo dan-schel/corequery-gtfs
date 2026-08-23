@@ -9,6 +9,7 @@ export class DeparturesIteratorResult {
     readonly serviceDay: Temporal.PlainDate,
     readonly instant: Temporal.Instant,
     readonly movement: GtfsTripServicingMovement,
+    readonly movementIndex: number,
   ) {}
 }
 

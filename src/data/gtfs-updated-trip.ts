@@ -65,6 +65,12 @@ export class GtfsUpdatedTrip {
     throw new Error();
   }
 
+  requireMovementIndex(movement: GtfsUpdatedTripMovement): number {
+    const index = this.movements.indexOf(movement);
+    if (index === -1) throw new Error("Movement not found in trip.");
+    return index;
+  }
+
   static unmodified(
     trip: GtfsScheduledTrip,
     serviceDay: Temporal.PlainDate,

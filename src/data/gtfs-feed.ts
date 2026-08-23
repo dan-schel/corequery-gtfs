@@ -3,6 +3,8 @@ import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-moveme
 import { ZipperDeparturesIterator } from "../departures/zipper-departures-iterator.js";
 import type { GtfsRealtimeData } from "./gtfs-realtime-data.js";
 import type { GtfsScheduleData } from "./gtfs-schedule-data.js";
+import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
+import type { GtfsUpdatedTrip } from "./gtfs-updated-trip.js";
 
 export class GtfsFeed {
   constructor(
@@ -41,13 +43,22 @@ export class GtfsFeed {
     );
   }
 
-  createCorequeryDepartureIterator(stopId: number) {
-    // TODO: Should be the corequery departure iterator (once the design of that
-    // is finalised).
-    //
-    // TODO: Maybe the MultifeedDeparturesIterator shouldn't operate on the GTFS
-    // level, but instead on CoreQuery departures? Why attach a subfeed ID, when
-    // we could just go straight to attaching the corequery data source ID?
+  getTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): GtfsScheduledTrip | GtfsUpdatedTrip | null {
+    const realtimeTrip = this.realtimeData.getTrip(gtfsTripId, serviceDay);
+    if (realtimeTrip != null) return realtimeTrip;
+
+    const scheduledTrip = this.scheduleData.getTrip(gtfsTripId);
+    if (scheduledTrip != null && scheduledTrip.calendar.occursOn(serviceDay)) {
+      return scheduledTrip;
+    }
+
+    return null;
+  }
+
+  createDepartureIterator(stopId: number) {
     return ZipperDeparturesIterator.forFeed(
       stopId,
       this.scheduledMovementsIndex,

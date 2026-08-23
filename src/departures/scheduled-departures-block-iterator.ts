@@ -23,6 +23,7 @@ export class ScheduledDeparturesBlockIterator extends DeparturesBlockIterator<
       this.block.serviceDay,
       entry.time.toInstant(this.block.serviceDay, this.block.timezone),
       entry.movement,
+      entry.movementIndex,
     );
   }
 

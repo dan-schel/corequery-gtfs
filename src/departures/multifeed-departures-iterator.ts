@@ -18,8 +18,9 @@ export class MultifeedDeparturesIteratorResult extends DeparturesIteratorResult 
     serviceDay: Temporal.PlainDate,
     instant: Temporal.Instant,
     movement: GtfsTripServicingMovement,
+    movementIndex: number,
   ) {
-    super(trip, serviceDay, instant, movement);
+    super(trip, serviceDay, instant, movement, movementIndex);
   }
 
   static from(
@@ -32,6 +33,7 @@ export class MultifeedDeparturesIteratorResult extends DeparturesIteratorResult 
       result.serviceDay,
       result.instant,
       result.movement,
+      result.movementIndex,
     );
   }
 }
