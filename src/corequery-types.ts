@@ -1,7 +1,7 @@
 // Because we don't want to depend on CoreQuery. (Just because I'm scared of
 // npm's peer dependency system and don't understand how it works!)
 
-export type ServiceSource<CorequeryServiceClass, CorequeryDepartureClass> = {
+export type ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> = {
   readonly sourceId: string;
 
   getService: (intrasourceId: string) => Promise<CorequeryServiceClass | null>;
