@@ -1,23 +1,6 @@
 // Because we don't want to depend on CoreQuery. (Just because I'm scared of
 // npm's peer dependency system and don't understand how it works!)
 
-export type Color =
-  | "red"
-  | "yellow"
-  | "green"
-  | "cyan"
-  | "blue"
-  | "pink"
-  | "purple"
-  | "gray";
-
-export type DeparturesIterationDirection = "forwards" | "backwards";
-
-export type DeparturesIterator<CorequeryDepartureClass> = {
-  peek: () => Promise<CorequeryDepartureClass | null>;
-  take: () => Promise<CorequeryDepartureClass>;
-};
-
 export type ServiceSource<CorequeryServiceClass, CorequeryDepartureClass> = {
   readonly sourceId: string;
 
@@ -28,6 +11,13 @@ export type ServiceSource<CorequeryServiceClass, CorequeryDepartureClass> = {
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
   ) => DeparturesIterator<CorequeryDepartureClass>;
+};
+
+export type DeparturesIterationDirection = "forwards" | "backwards";
+
+export type DeparturesIterator<CorequeryDepartureClass> = {
+  peek: () => Promise<CorequeryDepartureClass | null>;
+  take: () => Promise<CorequeryDepartureClass>;
 };
 
 export type DepartureFields<CorequeryServiceClass> = {
@@ -139,3 +129,13 @@ export type ServiceTerminatingMovementFields = {
   readonly arrivalTime: Temporal.Instant;
   readonly formerArrivalTime: Temporal.Instant | null;
 };
+
+export type Color =
+  | "red"
+  | "yellow"
+  | "green"
+  | "cyan"
+  | "blue"
+  | "pink"
+  | "purple"
+  | "gray";
