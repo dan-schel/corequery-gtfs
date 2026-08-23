@@ -1,4 +1,4 @@
-import type { DeparturesSearchDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../corequery-types.js";
 import type { GtfsScheduledTrip } from "../data/gtfs-scheduled-trip.js";
 import type { GtfsUpdatedTrip } from "../data/gtfs-updated-trip.js";
 import type { GtfsTripServicingMovement } from "../data/utils.js";
@@ -15,7 +15,7 @@ export class DeparturesIteratorResult {
 export abstract class DeparturesIterator {
   abstract set(
     instant: Temporal.Instant,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
   ): void;
 
   abstract peek(): DeparturesIteratorResult | null;

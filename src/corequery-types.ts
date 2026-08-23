@@ -10,4 +10,4 @@ export type Color =
   | "purple"
   | "gray";
 
-export type DeparturesSearchDirection = "forwards" | "backwards";
+export type DeparturesIterationDirection = "forwards" | "backwards";

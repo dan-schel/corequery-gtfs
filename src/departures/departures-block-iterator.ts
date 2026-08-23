@@ -4,14 +4,14 @@ import {
   type DeparturesIteratorResult,
 } from "./departures-iterator.js";
 import type { DeparturesBlock } from "./departures-block.js";
-import type { DeparturesSearchDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../corequery-types.js";
 
 export abstract class DeparturesBlockIterator<
   BlockType extends DeparturesBlock,
   EntryType,
 > extends DeparturesIterator {
   private _index: number;
-  private _direction: DeparturesSearchDirection;
+  private _direction: DeparturesIterationDirection;
   private _nextValue: DeparturesIteratorResult | null;
 
   constructor(
@@ -27,7 +27,7 @@ export abstract class DeparturesBlockIterator<
 
   override set(
     instant: Temporal.Instant,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
   ): void {
     this._direction = direction;
 
@@ -66,7 +66,7 @@ export abstract class DeparturesBlockIterator<
 
   private _setIndexAndSkipUntilValidEntry(
     newIndex: number,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
   ) {
     let index = newIndex;
     while (index >= 0 && index < this._entries.length) {
@@ -86,7 +86,7 @@ export abstract class DeparturesBlockIterator<
 
   private static _nextIndexValueFor(
     index: number,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
   ): number {
     if (direction === "forwards") {
       return index + 1;
