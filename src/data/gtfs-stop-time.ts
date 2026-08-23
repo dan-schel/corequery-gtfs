@@ -83,7 +83,7 @@ export class GtfsStopTime {
     return midnightUtc.add({ seconds: this.secondsSinceMidnight - offset });
   }
 
-  asString(): string {
+  toString(): string {
     const h = Math.floor(this.secondsSinceMidnight / 3600);
     const m = Math.floor((this.secondsSinceMidnight % 3600) / 60);
     const s = this.secondsSinceMidnight % 60;

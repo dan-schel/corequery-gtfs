@@ -154,8 +154,8 @@ describe("GtfsTripParser", () => {
     if (trip == null) throw new Error("Expected one trip.");
 
     expect(trip.movements.map((stop) => stop.stopId)).toEqual([1, 2]);
-    expect(trip.origination.departureTime.asString()).toEqual("00:00:00");
-    expect(trip.termination.arrivalTime.asString()).toEqual("00:10:00");
+    expect(trip.origination.departureTime.toString()).toEqual("00:00:00");
+    expect(trip.termination.arrivalTime.toString()).toEqual("00:10:00");
   });
 
   it("reports duplicate trip rows and keeps the first one", () => {
