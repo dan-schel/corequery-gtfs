@@ -13,8 +13,6 @@ export type ServiceSource<CorequeryServiceClass, CorequeryDepartureClass> = {
   ) => DeparturesIterator<CorequeryDepartureClass>;
 };
 
-export type DeparturesIterationDirection = "forwards" | "backwards";
-
 export type DeparturesIterator<CorequeryDepartureClass> = {
   peek: () => Promise<CorequeryDepartureClass | null>;
   take: () => Promise<CorequeryDepartureClass>;
@@ -115,6 +113,8 @@ export type ServiceConnectionFields = {
   readonly movementIndex: number;
   readonly otherServiceMovementIndex: number;
 };
+
+export type DeparturesIterationDirection = "forwards" | "backwards";
 
 export type Color =
   | "red"
