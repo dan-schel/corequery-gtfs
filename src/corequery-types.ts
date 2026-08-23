@@ -25,8 +25,6 @@ export type DepartureFields<CorequeryServiceClass> = {
   readonly movementIndex: number;
 };
 
-export type ServiceLiveDataType = "scheduled" | "updated" | "added";
-
 export type ServiceFields<
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
@@ -54,23 +52,6 @@ export type ServiceFields<
   readonly connections: readonly CorequeryServiceConnectionClass[];
 };
 
-export type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
-
-export type ServiceConnectionDirection =
-  | "from-other"
-  | "to-other"
-  | "bidirectional";
-
-export type ServiceConnectionFields = {
-  readonly type: ServiceConnectionType;
-  readonly direction: ServiceConnectionDirection;
-  readonly otherServiceSourceId: string;
-  readonly otherServiceIntrasourceId: string;
-
-  readonly movementIndex: number;
-  readonly otherServiceMovementIndex: number;
-};
-
 // This is probably the dumbest code you've ever seen, but you've got to admire
 // my commitment to the bit, surely.
 export type CorequeryServiceMovementClasses<
@@ -83,11 +64,6 @@ export type CorequeryServiceMovementClasses<
   | CorequeryServicePassingMovementClass
   | CorequeryServiceRegularMovementClass
   | CorequeryServiceTerminatingMovementClass;
-
-export type ServiceTimeType =
-  | "scheduled-time"
-  | "provided-live-time"
-  | "interpolated-live-time";
 
 export type ServiceOriginatingMovementFields = {
   readonly stopId: number;
@@ -130,6 +106,16 @@ export type ServiceTerminatingMovementFields = {
   readonly formerArrivalTime: Temporal.Instant | null;
 };
 
+export type ServiceConnectionFields = {
+  readonly type: ServiceConnectionType;
+  readonly direction: ServiceConnectionDirection;
+  readonly otherServiceSourceId: string;
+  readonly otherServiceIntrasourceId: string;
+
+  readonly movementIndex: number;
+  readonly otherServiceMovementIndex: number;
+};
+
 export type Color =
   | "red"
   | "yellow"
@@ -139,3 +125,17 @@ export type Color =
   | "pink"
   | "purple"
   | "gray";
+
+export type ServiceLiveDataType = "scheduled" | "updated" | "added";
+
+export type ServiceTimeType =
+  | "scheduled-time"
+  | "provided-live-time"
+  | "interpolated-live-time";
+
+export type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
+
+export type ServiceConnectionDirection =
+  | "from-other"
+  | "to-other"
+  | "bidirectional";
