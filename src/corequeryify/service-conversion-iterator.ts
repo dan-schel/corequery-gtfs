@@ -14,7 +14,10 @@ export class ServiceConversionIterator<
   private _convertedNextDeparture: CorequeryDepartureClass | null;
 
   constructor(
+    // TODO: There's two things called DeparturesIterator in this repo, which
+    // isn't ideal.
     private readonly _iterator: DeparturesIterator,
+
     private readonly _converter: ServiceConverter<
       CorequeryDepartureClass,
       CorequeryServiceClass,
@@ -25,6 +28,10 @@ export class ServiceConversionIterator<
       CorequeryServiceTerminatingMovementClass,
       CorequeryServiceConnectionClass
     >,
+
+    // TODO: The need to pass around timezone here (and everywhere), I think
+    // hints at that it should be a property of the DeparturesIteratorResult.
+    private readonly _timezone: string,
   ) {
     this._convertedNextDeparture = null;
   }
@@ -39,7 +46,7 @@ export class ServiceConversionIterator<
       return Promise.resolve(null);
     }
 
-    const result = this._converter.convertDeparture(value);
+    const result = this._converter.convertDeparture(value, this._timezone);
     this._convertedNextDeparture = result;
     return Promise.resolve(result);
   }
@@ -52,7 +59,7 @@ export class ServiceConversionIterator<
     }
 
     const value = this._iterator.take();
-    const result = this._converter.convertDeparture(value);
+    const result = this._converter.convertDeparture(value, this._timezone);
     return Promise.resolve(result);
   }
 }

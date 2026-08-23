@@ -6,7 +6,7 @@ import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
 import type { DeparturesIteratorResult } from "../../../src/departures/departures-iterator.js";
 import type { GtfsSystem } from "../../../src/gtfs-system.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
-import { DeparturesSearchDirection } from "../../../src/corequery-types.js";
+import { DeparturesIterationDirection } from "../../../src/corequery-types.js";
 
 export function expectDeparturesToMatchSnapshot({
   system,
@@ -21,14 +21,12 @@ export function expectDeparturesToMatchSnapshot({
   stopNameMapping: StopNameMapping;
   stopName: string;
   instant: string;
-  direction: DeparturesSearchDirection;
+  direction: DeparturesIterationDirection;
   maxResults: number;
   formatTimezone: string;
 }) {
   const stopId = stopNameMapping.requireId(stopName);
-  const iterator = system
-    .requireFeed()
-    .createCorequeryDepartureIterator(stopId);
+  const iterator = system.requireFeed().createDepartureIterator(stopId);
 
   iterator.set(Temporal.Instant.from(instant), direction);
 
@@ -49,9 +47,10 @@ export function expectDeparturesToMatchSnapshot({
 }
 
 function formatDeparture(
-  // In future this will be a corequery service, unless it's too annoying to
-  // have corequery-gtfs convert the services, and we decide to keep converting
-  // them as a trainquery-melbourne responsibility.
+  // TODO: These are meant to be integration tests, so now that we're converting
+  // departures into corequery services, we should use the values post
+  // conversion. (For the buildDeparture, buildService, etc. functions we'll
+  // just return the fields as-is, given that we don't have a class to make!)
   departure: DeparturesIteratorResult,
   stopNameMapping: StopNameMapping,
   formatTimezone: string,

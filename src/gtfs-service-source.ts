@@ -1,14 +1,18 @@
 import { assertNever } from "@dan-schel/js-utils";
 import type {
+  DepartureFields,
   DeparturesIterationDirection,
   DeparturesIterator,
+  ServiceConnectionFields,
+  ServiceFields,
+  ServiceOriginatingMovementFields,
+  ServicePassingMovementFields,
+  ServiceRegularMovementFields,
   ServiceSource,
+  ServiceTerminatingMovementFields,
 } from "./corequery-types.js";
 import { CorequeryIntrasourceId } from "./corequeryify/corequery-intrasource-id.js";
-import {
-  ServiceConverter,
-  type ServiceConverterFields,
-} from "./corequeryify/service-converter.js";
+import { ServiceConverter } from "./corequeryify/service-converter.js";
 import { GtfsScheduledTrip } from "./data/gtfs-scheduled-trip.js";
 import type { GtfsSystem } from "./gtfs-system.js";
 import { GtfsUpdatedTrip } from "./data/gtfs-updated-trip.js";
@@ -26,16 +30,44 @@ type GtfsServiceSourceFields<
 > = {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
-} & ServiceConverterFields<
-  CorequeryDepartureClass,
-  CorequeryServiceClass,
-  CorequeryTagsClass,
-  CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
-  CorequeryServiceRegularMovementClass,
-  CorequeryServiceTerminatingMovementClass,
-  CorequeryServiceConnectionClass
->;
+
+  buildDeparture: (
+    fields: DepartureFields<CorequeryServiceClass>,
+  ) => CorequeryDepartureClass;
+
+  buildService: (
+    fields: ServiceFields<
+      CorequeryTagsClass,
+      CorequeryServiceOriginatingMovementClass,
+      CorequeryServicePassingMovementClass,
+      CorequeryServiceRegularMovementClass,
+      CorequeryServiceTerminatingMovementClass,
+      CorequeryServiceConnectionClass
+    >,
+  ) => CorequeryServiceClass;
+
+  buildTags: (tags: Set<number>) => CorequeryTagsClass;
+
+  buildServiceOriginatingMovement: (
+    fields: ServiceOriginatingMovementFields,
+  ) => CorequeryServiceOriginatingMovementClass;
+
+  buildServicePassingMovement: (
+    fields: ServicePassingMovementFields,
+  ) => CorequeryServicePassingMovementClass;
+
+  buildServiceRegularMovement: (
+    fields: ServiceRegularMovementFields,
+  ) => CorequeryServiceRegularMovementClass;
+
+  buildServiceTerminatingMovement: (
+    fields: ServiceTerminatingMovementFields,
+  ) => CorequeryServiceTerminatingMovementClass;
+
+  buildServiceConnection: (
+    fields: ServiceConnectionFields,
+  ) => CorequeryServiceConnectionClass;
+};
 
 export class GtfsServiceSource<
   CorequeryDepartureClass,
@@ -86,6 +118,7 @@ export class GtfsServiceSource<
       CorequeryServiceTerminatingMovementClass,
       CorequeryServiceConnectionClass
     >({
+      sourceId: fields.sourceId,
       buildDeparture: fields.buildDeparture,
       buildService: fields.buildService,
       buildTags: fields.buildTags,
@@ -113,7 +146,11 @@ export class GtfsServiceSource<
     if (trip == null) return Promise.resolve(null);
 
     if (trip instanceof GtfsScheduledTrip) {
-      const result = this._converter.convertScheduledTrip(trip, id.serviceDay);
+      const result = this._converter.convertScheduledTrip(
+        trip,
+        id.serviceDay,
+        feed.timezoneData.timezone,
+      );
       return Promise.resolve(result);
     } else if (trip instanceof GtfsUpdatedTrip) {
       const result = this._converter.convertUpdatedTrip(trip);
@@ -128,9 +165,8 @@ export class GtfsServiceSource<
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
   ): DeparturesIterator<CorequeryDepartureClass> {
-    const iterator = this.gtfsSystem
-      .requireFeed()
-      .createDepartureIterator(stopId);
+    const feed = this.gtfsSystem.requireFeed();
+    const iterator = feed.createDepartureIterator(stopId);
     iterator.set(instant, direction);
 
     return new ServiceConversionIterator<
@@ -142,6 +178,6 @@ export class GtfsServiceSource<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServiceConnectionClass
-    >(iterator, this._converter);
+    >(iterator, this._converter, feed.timezoneData.timezone);
   }
 }

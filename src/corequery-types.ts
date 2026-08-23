@@ -50,9 +50,9 @@ export type ServiceFields<
   readonly connections: readonly CorequeryServiceConnectionClass[];
 };
 
-// This is probably the dumbest code you've ever seen, but you've got to admire
+// This is probably the dumbest code you've ever seen, but you've gotta admire
 // my commitment to the bit, surely.
-export type CorequeryServiceMovementClasses<
+type CorequeryServiceMovementClasses<
   CorequeryServiceOriginatingMovementClass,
   CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
@@ -126,16 +126,13 @@ export type Color =
   | "purple"
   | "gray";
 
-export type ServiceLiveDataType = "scheduled" | "updated" | "added";
+type ServiceLiveDataType = "scheduled" | "updated" | "added";
 
-export type ServiceTimeType =
+type ServiceTimeType =
   | "scheduled-time"
   | "provided-live-time"
   | "interpolated-live-time";
 
-export type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
+type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
 
-export type ServiceConnectionDirection =
-  | "from-other"
-  | "to-other"
-  | "bidirectional";
+type ServiceConnectionDirection = "from-other" | "to-other" | "bidirectional";
