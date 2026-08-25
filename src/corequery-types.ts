@@ -26,9 +26,9 @@ export type DepartureFields<CorequeryServiceClass> = {
 export type ServiceFields<
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > = {
   readonly sourceId: string;
@@ -41,9 +41,9 @@ export type ServiceFields<
   readonly liveDataType: ServiceLiveDataType;
   readonly movements: readonly CorequeryServiceMovementClasses<
     CorequeryServiceOriginatingMovementClass,
-    CorequeryServicePassingMovementClass,
     CorequeryServiceRegularMovementClass,
-    CorequeryServiceTerminatingMovementClass
+    CorequeryServiceTerminatingMovementClass,
+    CorequeryServicePassingMovementClass
   >[];
   readonly isCancelled: boolean;
 
@@ -54,14 +54,14 @@ export type ServiceFields<
 // my commitment to the bit, surely.
 type CorequeryServiceMovementClasses<
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
 > =
   | CorequeryServiceOriginatingMovementClass
-  | CorequeryServicePassingMovementClass
   | CorequeryServiceRegularMovementClass
-  | CorequeryServiceTerminatingMovementClass;
+  | CorequeryServiceTerminatingMovementClass
+  | CorequeryServicePassingMovementClass;
 
 export type ServiceOriginatingMovementFields = {
   readonly stopId: number;
@@ -71,10 +71,6 @@ export type ServiceOriginatingMovementFields = {
   readonly departureTimeType: ServiceTimeType;
   readonly departureTime: Temporal.Instant;
   readonly formerDepartureTime: Temporal.Instant | null;
-};
-
-export type ServicePassingMovementFields = {
-  readonly stopId: number;
 };
 
 export type ServiceRegularMovementFields = {
@@ -102,6 +98,10 @@ export type ServiceTerminatingMovementFields = {
   readonly arrivalTimeType: ServiceTimeType;
   readonly arrivalTime: Temporal.Instant;
   readonly formerArrivalTime: Temporal.Instant | null;
+};
+
+export type ServicePassingMovementFields = {
+  readonly stopId: number;
 };
 
 export type ServiceConnectionFields = {

@@ -23,9 +23,9 @@ type GtfsServiceSourceFields<
   CorequeryServiceClass,
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > = {
   readonly sourceId: string;
@@ -39,9 +39,9 @@ type GtfsServiceSourceFields<
     fields: ServiceFields<
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
@@ -52,10 +52,6 @@ type GtfsServiceSourceFields<
     fields: ServiceOriginatingMovementFields,
   ) => CorequeryServiceOriginatingMovementClass;
 
-  buildServicePassingMovement: (
-    fields: ServicePassingMovementFields,
-  ) => CorequeryServicePassingMovementClass;
-
   buildServiceRegularMovement: (
     fields: ServiceRegularMovementFields,
   ) => CorequeryServiceRegularMovementClass;
@@ -63,6 +59,10 @@ type GtfsServiceSourceFields<
   buildServiceTerminatingMovement: (
     fields: ServiceTerminatingMovementFields,
   ) => CorequeryServiceTerminatingMovementClass;
+
+  buildServicePassingMovement: (
+    fields: ServicePassingMovementFields,
+  ) => CorequeryServicePassingMovementClass;
 
   buildServiceConnection: (
     fields: ServiceConnectionFields,
@@ -74,9 +74,9 @@ export class GtfsServiceSource<
   CorequeryServiceClass,
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > {
   readonly sourceId: string;
@@ -87,9 +87,9 @@ export class GtfsServiceSource<
     CorequeryServiceClass,
     CorequeryTagsClass,
     CorequeryServiceOriginatingMovementClass,
-    CorequeryServicePassingMovementClass,
     CorequeryServiceRegularMovementClass,
     CorequeryServiceTerminatingMovementClass,
+    CorequeryServicePassingMovementClass,
     CorequeryServiceConnectionClass
   >;
 
@@ -99,9 +99,9 @@ export class GtfsServiceSource<
       CorequeryServiceClass,
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
   ) {
@@ -113,9 +113,9 @@ export class GtfsServiceSource<
       CorequeryServiceClass,
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >({
       sourceId: fields.sourceId,
@@ -123,13 +123,16 @@ export class GtfsServiceSource<
       buildService: fields.buildService,
       buildTags: fields.buildTags,
       buildServiceOriginatingMovement: fields.buildServiceOriginatingMovement,
-      buildServicePassingMovement: fields.buildServicePassingMovement,
       buildServiceRegularMovement: fields.buildServiceRegularMovement,
       buildServiceTerminatingMovement: fields.buildServiceTerminatingMovement,
+      buildServicePassingMovement: fields.buildServicePassingMovement,
       buildServiceConnection: fields.buildServiceConnection,
     });
   }
 
+  // This function mostly just exists to ensure this class satisfies the
+  // ServiceSource interface. Consumers are still expected to call it, even
+  // though behind the scenes it's a no-op.
   asCorequeryServiceSource(): ServiceSource<
     CorequeryDepartureClass,
     CorequeryServiceClass
@@ -174,9 +177,9 @@ export class GtfsServiceSource<
       CorequeryServiceClass,
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >(iterator, this._converter, feed.timezoneData.timezone);
   }

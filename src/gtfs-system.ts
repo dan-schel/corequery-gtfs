@@ -38,7 +38,10 @@ export class GtfsSystem {
   private _realtimeParsingErrors: GtfsRealtimeDataParsingError[];
 
   constructor(
+    // TODO: I don't think this is needed, since GtfsServiceSource currently
+    // handles ensuring the source ID is attached to the returned services.
     private readonly _corequeryDataSourceId: string,
+
     private readonly _lineGtfsIdMapping: LineGtfsIdMapping,
     private readonly _stopGtfsIdMapping: StopGtfsIdMapping,
     private readonly _lineRoutesMapping: LineRoutesMapping,

@@ -20,9 +20,9 @@ export type ServiceConverterFields<
   CorequeryServiceClass,
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > = {
   readonly sourceId: string;
@@ -35,9 +35,9 @@ export type ServiceConverterFields<
     fields: ServiceFields<
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
@@ -48,10 +48,6 @@ export type ServiceConverterFields<
     fields: ServiceOriginatingMovementFields,
   ) => CorequeryServiceOriginatingMovementClass;
 
-  buildServicePassingMovement: (
-    fields: ServicePassingMovementFields,
-  ) => CorequeryServicePassingMovementClass;
-
   buildServiceRegularMovement: (
     fields: ServiceRegularMovementFields,
   ) => CorequeryServiceRegularMovementClass;
@@ -59,6 +55,10 @@ export type ServiceConverterFields<
   buildServiceTerminatingMovement: (
     fields: ServiceTerminatingMovementFields,
   ) => CorequeryServiceTerminatingMovementClass;
+
+  buildServicePassingMovement: (
+    fields: ServicePassingMovementFields,
+  ) => CorequeryServicePassingMovementClass;
 
   buildServiceConnection: (
     fields: ServiceConnectionFields,
@@ -70,9 +70,9 @@ export class ServiceConverter<
   CorequeryServiceClass,
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > {
   private readonly _sourceId: string;
@@ -85,9 +85,9 @@ export class ServiceConverter<
     fields: ServiceFields<
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
@@ -98,10 +98,6 @@ export class ServiceConverter<
     fields: ServiceOriginatingMovementFields,
   ) => CorequeryServiceOriginatingMovementClass;
 
-  private readonly _buildServicePassingMovement: (
-    fields: ServicePassingMovementFields,
-  ) => CorequeryServicePassingMovementClass;
-
   private readonly _buildServiceRegularMovement: (
     fields: ServiceRegularMovementFields,
   ) => CorequeryServiceRegularMovementClass;
@@ -109,6 +105,10 @@ export class ServiceConverter<
   private readonly _buildServiceTerminatingMovement: (
     fields: ServiceTerminatingMovementFields,
   ) => CorequeryServiceTerminatingMovementClass;
+
+  private readonly _buildServicePassingMovement: (
+    fields: ServicePassingMovementFields,
+  ) => CorequeryServicePassingMovementClass;
 
   private readonly _buildServiceConnection: (
     fields: ServiceConnectionFields,
@@ -120,9 +120,9 @@ export class ServiceConverter<
       CorequeryServiceClass,
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
   ) {
@@ -133,10 +133,10 @@ export class ServiceConverter<
     this._buildTags = fields.buildTags;
     this._buildServiceOriginatingMovement =
       fields.buildServiceOriginatingMovement;
-    this._buildServicePassingMovement = fields.buildServicePassingMovement;
     this._buildServiceRegularMovement = fields.buildServiceRegularMovement;
     this._buildServiceTerminatingMovement =
       fields.buildServiceTerminatingMovement;
+    this._buildServicePassingMovement = fields.buildServicePassingMovement;
     this._buildServiceConnection = fields.buildServiceConnection;
   }
 
@@ -225,9 +225,9 @@ export class ServiceConverter<
     timezone: string,
   ):
     | CorequeryServiceOriginatingMovementClass
-    | CorequeryServicePassingMovementClass
     | CorequeryServiceRegularMovementClass
-    | CorequeryServiceTerminatingMovementClass {
+    | CorequeryServiceTerminatingMovementClass
+    | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
       return this._buildServiceOriginatingMovement({
         stopId: movement.stopId,
@@ -278,9 +278,9 @@ export class ServiceConverter<
     movement: GtfsUpdatedTripMovement,
   ):
     | CorequeryServiceOriginatingMovementClass
-    | CorequeryServicePassingMovementClass
     | CorequeryServiceRegularMovementClass
-    | CorequeryServiceTerminatingMovementClass {
+    | CorequeryServiceTerminatingMovementClass
+    | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
       return this._buildServiceOriginatingMovement({
         stopId: movement.stopId,
