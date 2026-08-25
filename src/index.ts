@@ -6,3 +6,4 @@ export * from "./departures/index.js";
 export * from "./parser/index.js";
 
 export * from "./gtfs-system.js";
+export * from "./gtfs-service-source.js";

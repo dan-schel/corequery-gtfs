@@ -9,6 +9,7 @@ export type GtfsScheduledMovementsIndexEntry = {
   readonly trip: GtfsScheduledTrip;
   readonly time: GtfsStopTime;
   readonly movement: GtfsScheduledTripServicingMovement;
+  readonly movementIndex: number;
 };
 
 export class GtfsScheduledMovementsIndex {
@@ -40,7 +41,8 @@ export class GtfsScheduledMovementsIndex {
     const calendarsByStop = new Map<number, Set<string>>();
 
     for (const trip of schedule.allTrips()) {
-      for (const movement of trip.movements) {
+      for (let i = 0; i < trip.movements.length; i++) {
+        const movement = trip.movements[i];
         if (!movement.isServicing) continue;
 
         const entry: GtfsScheduledMovementsIndexEntry = {
@@ -50,6 +52,7 @@ export class GtfsScheduledMovementsIndex {
           // The departure time, unless it's a terminating movement, in which
           // case it's the arrival time.
           time: movement.timeRelevantToDeparturesAlgorithm,
+          movementIndex: i,
         };
 
         if (!index.has(movement.stopId)) {

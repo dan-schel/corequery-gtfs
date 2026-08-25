@@ -32,6 +32,7 @@ export class RealtimeDeparturesBlockIterator extends DeparturesBlockIterator<
       entry.trip.serviceDay,
       entry.instant,
       entry.movement,
+      entry.movementIndex,
     );
   }
 

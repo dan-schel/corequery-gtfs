@@ -8,10 +8,10 @@ import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-ite
 import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
 import type { TimezoneData } from "../config/timezone-data.js";
-import type { DeparturesSearchDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../corequery-types.js";
 
 export class ZipperDeparturesIterator extends DeparturesIterator {
-  private _direction: DeparturesSearchDirection;
+  private _direction: DeparturesIterationDirection;
   private _nextIterator: DeparturesIterator | null;
 
   constructor(private readonly _iterators: DeparturesIterator[]) {
@@ -23,7 +23,7 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
 
   override set(
     instant: Temporal.Instant,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
   ): void {
     this._direction = direction;
 

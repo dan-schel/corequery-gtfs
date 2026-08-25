@@ -94,6 +94,12 @@ export class GtfsScheduledTrip {
     return this.nextTrip.finalTermination;
   }
 
+  requireMovementIndex(movement: GtfsScheduledTripMovement): number {
+    const index = this.movements.indexOf(movement);
+    if (index === -1) throw new Error("Movement not found in trip.");
+    return index;
+  }
+
   static simple({
     gtfsTripId,
     originStopId,

@@ -6,7 +6,7 @@ import type { GtfsScheduledTrip } from "../data/gtfs-scheduled-trip.js";
 import type { GtfsUpdatedTrip } from "../data/gtfs-updated-trip.js";
 import type { GtfsTripServicingMovement } from "../data/utils.js";
 import { ZipperDeparturesIterator } from "./zipper-departures-iterator.js";
-import type { DeparturesSearchDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../corequery-types.js";
 
 // TODO: [DS] Delete this. We're gonna combine feeds at the corequery departure
 // iterator level, not within the GTFS ecosystem.
@@ -18,8 +18,9 @@ export class MultifeedDeparturesIteratorResult extends DeparturesIteratorResult 
     serviceDay: Temporal.PlainDate,
     instant: Temporal.Instant,
     movement: GtfsTripServicingMovement,
+    movementIndex: number,
   ) {
-    super(trip, serviceDay, instant, movement);
+    super(trip, serviceDay, instant, movement, movementIndex);
   }
 
   static from(
@@ -32,6 +33,7 @@ export class MultifeedDeparturesIteratorResult extends DeparturesIteratorResult 
       result.serviceDay,
       result.instant,
       result.movement,
+      result.movementIndex,
     );
   }
 }
@@ -54,7 +56,10 @@ export class MultifeedDeparturesIterator {
     return new MultifeedDeparturesIterator(iterators);
   }
 
-  set(instant: Temporal.Instant, direction: DeparturesSearchDirection): void {
+  set(
+    instant: Temporal.Instant,
+    direction: DeparturesIterationDirection,
+  ): void {
     this._zipper.set(instant, direction);
   }
 

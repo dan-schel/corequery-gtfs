@@ -9,12 +9,12 @@ import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-ind
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
 import { ScheduledDeparturesBlocksBuilder } from "./scheduled-departures-blocks-builder.js";
 import type { TimezoneData } from "../config/timezone-data.js";
-import type { DeparturesSearchDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../corequery-types.js";
 
 const BLOCK_SCAN_HRS = 48;
 
 export class ScheduledDeparturesIterator extends DeparturesIterator {
-  private _direction: DeparturesSearchDirection;
+  private _direction: DeparturesIterationDirection;
   private _searchRange: SearchRange | null;
   private _iterators: ScheduledDeparturesBlockIterator[];
   private _nextIterator: ScheduledDeparturesBlockIterator | null;
@@ -58,7 +58,10 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     };
   }
 
-  set(instant: Temporal.Instant, direction: DeparturesSearchDirection): void {
+  set(
+    instant: Temporal.Instant,
+    direction: DeparturesIterationDirection,
+  ): void {
     this._direction = direction;
 
     this._searchRange = SearchRange.create(
@@ -192,7 +195,7 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
 class SearchRange {
   constructor(
     readonly range: BoundedInstantRange,
-    readonly direction: DeparturesSearchDirection,
+    readonly direction: DeparturesIterationDirection,
   ) {}
 
   get front(): Temporal.Instant {
@@ -222,7 +225,7 @@ class SearchRange {
 
   static create(
     instant: Temporal.Instant,
-    direction: DeparturesSearchDirection,
+    direction: DeparturesIterationDirection,
     durationHours: number,
   ) {
     const start = {

@@ -8,6 +8,7 @@ export type RealtimeDeparturesBlockEntry = {
   readonly trip: GtfsUpdatedTrip;
   readonly instant: Temporal.Instant;
   readonly movement: GtfsUpdatedTripServicingMovement;
+  readonly movementIndex: number;
 };
 
 export class RealtimeDeparturesBlock extends DeparturesBlock {
@@ -28,7 +29,8 @@ export class RealtimeDeparturesBlock extends DeparturesBlock {
   ): RealtimeDeparturesBlock | null {
     const movements: RealtimeDeparturesBlockEntry[] = [];
     for (const trip of realtimeData.allTrips()) {
-      for (const movement of trip.movements) {
+      for (let i = 0; i < trip.movements.length; i++) {
+        const movement = trip.movements[i];
         if (!movement.isServicing) continue;
         if (movement.stopId !== stopId) continue;
 
@@ -36,6 +38,7 @@ export class RealtimeDeparturesBlock extends DeparturesBlock {
           trip,
           instant: movement.timeRelevantToDeparturesAlgorithm,
           movement,
+          movementIndex: i,
         });
       }
     }
