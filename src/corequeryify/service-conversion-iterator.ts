@@ -6,9 +6,9 @@ export class ServiceConversionIterator<
   CorequeryServiceClass,
   CorequeryTagsClass,
   CorequeryServiceOriginatingMovementClass,
-  CorequeryServicePassingMovementClass,
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
+  CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
 > {
   private _convertedNextDeparture: CorequeryDepartureClass | null;
@@ -23,9 +23,9 @@ export class ServiceConversionIterator<
       CorequeryServiceClass,
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
-      CorequeryServicePassingMovementClass,
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
+      CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
 
