@@ -159,7 +159,7 @@ function movement({
     terminationTime: time.plus({ minutes: 5 }),
   }).with({ calendar });
 
-  return { trip, time, movement: trip.origination };
+  return { trip, time, movement: trip.origination, movementIndex: 0 };
 }
 
 function expectResults(

@@ -38,7 +38,6 @@ export class GtfsFeedParser {
   }
 
   parse(
-    corequeryDataSourceId: string,
     scheduleCsvs: GtfsFeedCsv,
     realtimeJson: RealtimeDataJson,
     lineGtfsIdMapping: LineGtfsIdMapping,
@@ -56,7 +55,6 @@ export class GtfsFeedParser {
     );
 
     return GtfsFeed.fromNewScheduleData(
-      corequeryDataSourceId,
       scheduleData,
       realtimeData,
       this._timezoneData,

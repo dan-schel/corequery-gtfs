@@ -39,7 +39,7 @@ export async function createGtfsSystemForIntegrationTest(dirname: string) {
     transfers: await read("transfers.txt", transfersCsvSchema),
   };
 
-  const system = GtfsSystem.build("test", config);
+  const system = GtfsSystem.build(config);
   system.onNewScheduleData(scheduleData, realtimeData);
   return system;
 }

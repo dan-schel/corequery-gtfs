@@ -5,6 +5,8 @@ export class GtfsScheduleData {
   private readonly _tripsById: Map<string, GtfsScheduledTrip>;
   private readonly _calendarsById: Map<string, GtfsCalendar>;
 
+  static readonly empty = GtfsScheduleData.fromTrips([]);
+
   constructor(
     private readonly _trips: readonly GtfsScheduledTrip[],
     calendars: readonly GtfsCalendar[],

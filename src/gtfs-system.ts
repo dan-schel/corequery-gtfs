@@ -38,10 +38,6 @@ export class GtfsSystem {
   private _realtimeParsingErrors: GtfsRealtimeDataParsingError[];
 
   constructor(
-    // TODO: I don't think this is needed, since GtfsServiceSource currently
-    // handles ensuring the source ID is attached to the returned services.
-    private readonly _corequeryDataSourceId: string,
-
     private readonly _lineGtfsIdMapping: LineGtfsIdMapping,
     private readonly _stopGtfsIdMapping: StopGtfsIdMapping,
     private readonly _lineRoutesMapping: LineRoutesMapping,
@@ -61,9 +57,8 @@ export class GtfsSystem {
     this._realtimeParsingErrors = [];
   }
 
-  static build(corequeryDataSourceId: string, config: GtfsConfig) {
+  static build(config: GtfsConfig) {
     return new GtfsSystem(
-      corequeryDataSourceId,
       LineGtfsIdMapping.build(config.lineGtfsIds),
       StopGtfsIdMapping.build(config.stopGtfsIds),
       LineRoutesMapping.build(config.lineRoutesMapping),
@@ -94,7 +89,6 @@ export class GtfsSystem {
     this._realtimeParsingErrors = [];
 
     const result = this._parser.parse(
-      this._corequeryDataSourceId,
       scheduleCsvs,
       realtimeJson,
       this._lineGtfsIdMapping,
@@ -116,6 +110,10 @@ export class GtfsSystem {
     );
 
     this._feed = result;
+  }
+
+  setFeed(feed: GtfsFeed) {
+    this._feed = feed;
   }
 
   private _onScheduledParsingError(error: GtfsScheduleParsingError) {
