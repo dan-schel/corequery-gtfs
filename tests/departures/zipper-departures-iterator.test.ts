@@ -4,9 +4,9 @@ import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import {
   DeparturesIteratorResult,
   DeparturesIterator,
-  type DeparturesSearchDirection,
 } from "../../src/departures/departures-iterator.js";
 import { ZipperDeparturesIterator } from "../../src/departures/zipper-departures-iterator.js";
+import type { DeparturesIterationDirection } from "../../src/corequery-types.js";
 
 describe("ZipperDeparturesIterator", () => {
   it("returns departures in order of instant", () => {
@@ -86,6 +86,7 @@ function departure({ instant, tripId }: { instant: string; tripId: string }) {
     serviceDay,
     instantObj,
     trip.origination,
+    0,
   );
 }
 
@@ -96,7 +97,7 @@ class DummyIterator extends DeparturesIterator {
 
   override set(
     _instant: Temporal.Instant,
-    _direction: DeparturesSearchDirection,
+    _direction: DeparturesIterationDirection,
   ): void {}
 
   override peek(): DeparturesIteratorResult | null {

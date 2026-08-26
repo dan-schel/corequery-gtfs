@@ -6,7 +6,7 @@ import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
 import type { DeparturesIteratorResult } from "../../../src/departures/departures-iterator.js";
 import type { GtfsSystem } from "../../../src/gtfs-system.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
-import { DeparturesIterationDirection } from "../../../src/corequery-types.js";
+import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
 
 export function expectDeparturesToMatchSnapshot({
   system,

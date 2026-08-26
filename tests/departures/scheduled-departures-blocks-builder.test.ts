@@ -282,8 +282,18 @@ function createMovements({
   const trip2 = createTrip({ tripId: "trip-2", originationTime: latestTime });
 
   return [
-    { trip: trip1, time: earliestTime, movement: trip1.origination },
-    { trip: trip2, time: latestTime, movement: trip2.origination },
+    {
+      trip: trip1,
+      time: earliestTime,
+      movement: trip1.origination,
+      movementIndex: 0,
+    },
+    {
+      trip: trip2,
+      time: latestTime,
+      movement: trip2.origination,
+      movementIndex: 0,
+    },
   ];
 }
 
