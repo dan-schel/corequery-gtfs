@@ -124,6 +124,10 @@ export type GtfsCalendarParsingError =
   | InvalidCalendarDateRangeError
   | MultipleExceptionsForSameDateError;
 
+// TODO: By extending error, any time one of these is instantiated it will
+// capture the stack trace. This is useless in these situations, so we could
+// speed up parsing (when errors occur) by not extending error (it doesn't need
+// to extend anything, really).
 export class DuplicateCalendarIdError extends Error {
   readonly type = "duplicate-calendar";
   constructor(readonly subsequentRowWithDuplicateId: CalendarCsvRow) {

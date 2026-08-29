@@ -78,7 +78,7 @@ export class GtfsServiceSource<
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
   CorequeryServiceConnectionClass,
-> {
+> implements ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
 
@@ -128,16 +128,6 @@ export class GtfsServiceSource<
       buildServicePassingMovement: fields.buildServicePassingMovement,
       buildServiceConnection: fields.buildServiceConnection,
     });
-  }
-
-  // This function mostly just exists to ensure this class satisfies the
-  // ServiceSource interface. Consumers are still expected to call it, even
-  // though behind the scenes it's a no-op.
-  asCorequeryServiceSource(): ServiceSource<
-    CorequeryDepartureClass,
-    CorequeryServiceClass
-  > {
-    return this;
   }
 
   getService(intrasourceId: string): Promise<CorequeryServiceClass | null> {

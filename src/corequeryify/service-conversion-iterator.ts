@@ -52,14 +52,19 @@ export class ServiceConversionIterator<
   }
 
   take(): Promise<CorequeryDepartureClass> {
-    if (this._convertedNextDeparture != null) {
-      const result = this._convertedNextDeparture;
-      this._convertedNextDeparture = null;
-      return Promise.resolve(result);
-    }
-
     const value = this._iterator.take();
-    const result = this._converter.convertDeparture(value, this._timezone);
-    return Promise.resolve(result);
+
+    // If we've already converted this departure (in a previous `peek`), then
+    // use the cached one. Otherwise, convert it now.
+    const convertedValue =
+      this._convertedNextDeparture != null
+        ? this._convertedNextDeparture
+        : this._converter.convertDeparture(value, this._timezone);
+
+    // And then clear it, because otherwise the next `peek` or `take` will rely
+    // on this cached value again, despite it now being stale.
+    this._convertedNextDeparture = null;
+
+    return Promise.resolve(convertedValue);
   }
 }
