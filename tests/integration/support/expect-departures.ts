@@ -3,13 +3,15 @@ import { expect } from "vitest";
 import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
 import { GtfsUpdatedTrip } from "../../../src/data/gtfs-updated-trip.js";
 import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
-import type { DeparturesIteratorResult } from "../../../src/departures/departures-iterator.js";
-import type { GtfsSystem } from "../../../src/gtfs-system.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
 import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
+import type {
+  IntegrationTestDeparture,
+  IntegrationTestServiceSource,
+} from "./setup/integration-test-corequery-types.js";
 
-export function expectDeparturesToMatchSnapshot({
-  system,
+export async function expectDeparturesToMatchSnapshot({
+  source,
   stopNameMapping,
   stopName,
   instant,
@@ -17,7 +19,7 @@ export function expectDeparturesToMatchSnapshot({
   maxResults,
   formatTimezone,
 }: {
-  system: GtfsSystem;
+  source: IntegrationTestServiceSource;
   stopNameMapping: StopNameMapping;
   stopName: string;
   instant: string;
@@ -26,17 +28,19 @@ export function expectDeparturesToMatchSnapshot({
   formatTimezone: string;
 }) {
   const stopId = stopNameMapping.requireId(stopName);
-  const iterator = system.requireFeed().createDepartureIterator(stopId);
-
-  iterator.set(Temporal.Instant.from(instant), direction);
+  const iterator = source.getDeparturesIterator(
+    stopId,
+    Temporal.Instant.from(instant),
+    direction,
+  );
 
   const results: string[] = [];
 
   for (let i = 0; i < maxResults; i++) {
-    const departure = iterator.peek();
+    const departure = await iterator.peek();
     if (departure == null) break;
 
-    iterator.take();
+    await iterator.take();
 
     results.push(formatDeparture(departure, stopNameMapping, formatTimezone));
   }
@@ -47,11 +51,7 @@ export function expectDeparturesToMatchSnapshot({
 }
 
 function formatDeparture(
-  // TODO: These are meant to be integration tests, so now that we're converting
-  // departures into corequery services, we should use the values post
-  // conversion. (For the buildDeparture, buildService, etc. functions we'll
-  // just return the fields as-is, given that we don't have a class to make!)
-  departure: DeparturesIteratorResult,
+  departure: IntegrationTestDeparture,
   stopNameMapping: StopNameMapping,
   formatTimezone: string,
 ): string {

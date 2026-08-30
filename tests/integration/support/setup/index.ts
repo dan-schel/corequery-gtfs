@@ -2,8 +2,8 @@ import path from "path";
 import fsp from "fs/promises";
 import fs from "fs";
 import csvParser from "csv-parser";
-import { configJsonSchema } from "./parse-config-json.js";
-import { realtimeJsonSchema } from "./parse-realtime-json.js";
+import { configJsonSchema } from "./config-json-schema.js";
+import { realtimeJsonSchema } from "./realtime-json-schema.js";
 import type z from "zod";
 import {
   calendarCsvSchema,
@@ -13,11 +13,13 @@ import {
   stopTimesCsvSchema,
   transfersCsvSchema,
   tripsCsvSchema,
-} from "./parse-schedule-csvs.js";
+} from "./schedule-csv-schemas.js";
 import type { GtfsFeedCsv } from "../../../../src/data/raw/schedule-csvs.js";
 import { GtfsSystem } from "../../../../src/gtfs-system.js";
+import { GtfsServiceSource } from "../../../../src/gtfs-service-source.js";
+import type { IntegrationTestServiceSource } from "./integration-test-corequery-types.js";
 
-export async function createGtfsSystemForIntegrationTest(dirname: string) {
+export async function setupIntegrationTest(dirname: string) {
   const configJsonPath = path.join(dirname, "config.json");
   const configJsonStr = await fsp.readFile(configJsonPath, "utf-8");
   const config = configJsonSchema.parse(JSON.parse(configJsonStr));
@@ -41,7 +43,21 @@ export async function createGtfsSystemForIntegrationTest(dirname: string) {
 
   const system = GtfsSystem.build(config);
   system.onNewScheduleData(scheduleData, realtimeData);
-  return system;
+
+  const source: IntegrationTestServiceSource = new GtfsServiceSource({
+    sourceId: "integration-test",
+    gtfsSystem: system,
+    buildDeparture: (fields) => fields,
+    buildService: (fields) => fields,
+    buildTags: (tags) => tags,
+    buildServiceOriginatingMovement: (fields) => fields,
+    buildServiceRegularMovement: (fields) => fields,
+    buildServiceTerminatingMovement: (fields) => fields,
+    buildServicePassingMovement: (fields) => fields,
+    buildServiceConnection: (fields) => fields,
+  });
+
+  return { source, system };
 }
 
 async function readCsv<T extends z.ZodType>(
