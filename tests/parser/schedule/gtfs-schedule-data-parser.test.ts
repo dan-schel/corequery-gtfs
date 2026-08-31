@@ -6,7 +6,7 @@ import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collect
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
-import { GtfsScheduleParser } from "../../../src/parser/schedule/gtfs-schedule-parser.js";
+import { GtfsScheduleDataParser } from "../../../src/parser/schedule/gtfs-schedule-data-parser.js";
 
 describe("GtfsScheduleParser", () => {
   const LINE_ID = 1;
@@ -77,7 +77,7 @@ describe("GtfsScheduleParser", () => {
   };
 
   it("builds a schedule from parsed calendars and trips", () => {
-    const parser = new GtfsScheduleParser(
+    const parser = new GtfsScheduleDataParser(
       LINE_ROUTES_MAPPING,
       BONUS_LINES_MAPPING,
       () => {},

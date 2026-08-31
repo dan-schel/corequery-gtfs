@@ -74,40 +74,32 @@ export type GtfsTripUpdateTripIdentificationError =
 // Naming "necessary" rather that "required" since "required" implies that it
 // breaks the GTFS-RT spec, but in reality it's just that we don't support other
 // methods of identifying the trip yet.
-export class NecessaryFieldNotInTripDescriptorError extends Error {
+export class NecessaryFieldNotInTripDescriptorError {
   readonly type = "necessary-field-not-in-trip-descriptor";
   constructor(
     readonly tripDescriptor: TripDescriptorJson,
     readonly field: "tripId" | "startDate",
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TripDescriptorReferencesNonExistentTripIdError extends Error {
+export class TripDescriptorReferencesNonExistentTripIdError {
   readonly type = "trip-descriptor-references-non-existent-trip-id";
-  constructor(readonly tripDescriptor: TripDescriptorJson) {
-    super();
-  }
+  constructor(readonly tripDescriptor: TripDescriptorJson) {}
 }
 
-export class TripDoesNotOccurOnStartDateError extends Error {
+export class TripDoesNotOccurOnStartDateError {
   readonly type = "trip-does-not-occur-on-start-date";
   constructor(
     readonly tripDescriptor: TripDescriptorJson,
     readonly trip: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError extends Error {
+export class TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError {
   readonly type =
     "trip-descriptor-start-time-does-not-match-trip-origin-stop-time";
   constructor(
     readonly tripDescriptor: TripDescriptorJson,
     readonly trip: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }

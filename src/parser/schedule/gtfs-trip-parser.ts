@@ -220,30 +220,22 @@ export type GtfsTripParsingError =
   | GtfsRouteMatchingError
   | GtfsTransferConnectionError;
 
-export class StopTimeReferencesNonExistentTripError extends Error {
+export class StopTimeReferencesNonExistentTripError {
   readonly type = "stop-time-references-non-existent-trip";
-  constructor(readonly stopTime: StopTimesCsvRow) {
-    super();
-  }
+  constructor(readonly stopTime: StopTimesCsvRow) {}
 }
 
-export class DuplicateTripIdError extends Error {
+export class DuplicateTripIdError {
   readonly type = "duplicate-trip-id";
-  constructor(readonly subsequentRowWithDuplicateId: TripsCsvRow) {
-    super();
-  }
+  constructor(readonly subsequentRowWithDuplicateId: TripsCsvRow) {}
 }
 
-export class TripReferencesNonExistentCalendarError extends Error {
+export class TripReferencesNonExistentCalendarError {
   readonly type = "trip-references-non-existent-calendar";
-  constructor(readonly trip: TripsCsvRow) {
-    super();
-  }
+  constructor(readonly trip: TripsCsvRow) {}
 }
 
-export class TripReferencesUnmappedRouteIdError extends Error {
+export class TripReferencesUnmappedRouteIdError {
   readonly type = "trip-references-unmapped-route-id";
-  constructor(readonly trip: TripsCsvRow) {
-    super();
-  }
+  constructor(readonly trip: TripsCsvRow) {}
 }

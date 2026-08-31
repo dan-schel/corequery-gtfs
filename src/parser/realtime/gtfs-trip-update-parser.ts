@@ -292,115 +292,95 @@ export type GtfsTripUpdateParsingError =
   | TimeAndDelayDisagreeWithEachOtherError
   | NeitherArrivalNorDepartureGivenError;
 
-export class UnsupportedTripUpdateScheduleRelationshipError extends Error {
+export class UnsupportedTripUpdateScheduleRelationshipError {
   readonly type = "unsupported-trip-update-schedule-relationship";
-  constructor(readonly tripUpdate: TripUpdateJson) {
-    super();
-  }
+  constructor(readonly tripUpdate: TripUpdateJson) {}
 }
 
-export class NoStopTimeUpdateFieldGivenError extends Error {
+export class NoStopTimeUpdateFieldGivenError {
   readonly type = "no-stop-time-update-field-given";
-  constructor(readonly tripUpdate: TripUpdateJson) {
-    super();
-  }
+  constructor(readonly tripUpdate: TripUpdateJson) {}
 }
 
-export class UnsupportedStopTimeUpdateEntryScheduleRelationshipError extends Error {
+export class UnsupportedStopTimeUpdateEntryScheduleRelationshipError {
   readonly type = "unsupported-stop-time-update-entry-schedule-relationship";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class NecessaryFieldNotInStopTimeUpdateEntryError extends Error {
+export class NecessaryFieldNotInStopTimeUpdateEntryError {
   readonly type = "necessary-field-not-in-stop-time-update-entry";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly field: "stopSequence" | "stopId",
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError extends Error {
+export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError {
   readonly type =
     "stop-time-update-entry-references-non-existent-stop-sequence";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly matchedTrip: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class MultipleStopTimeUpdateEntriesForSameMovementIndexError extends Error {
+export class MultipleStopTimeUpdateEntriesForSameMovementIndexError {
   readonly type = "multiple-stop-time-update-entries-for-same-movement-index";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly matchedTrip: GtfsScheduledTrip,
     readonly matchedMovementIndex: number,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class StopTimeUpdateEntryReferencesUnmappedStopIdError extends Error {
+export class StopTimeUpdateEntryReferencesUnmappedStopIdError {
   readonly type = "stop-time-update-entry-references-unmapped-stop-id";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-  ) {
-    super();
-  }
+  ) {}
 }
 
 // i.e. It doesn't just change the platform (which we're fine with), but the
 // entire stop.
-export class StopTimeUpdateEntryChangesStopError extends Error {
+export class StopTimeUpdateEntryChangesStopError {
   readonly type = "stop-time-update-entry-changes-stop";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly matchedTrip: GtfsScheduledTrip,
     readonly matchedMovementIndex: number,
-  ) {
-    super();
-  }
+  ) {}
 }
 
 // Just logging this to see if it ever happens. It's not really an error, and we
 // handle it well.
-export class StopTimeUpdateEntryChangesPlatformError extends Error {
+export class StopTimeUpdateEntryChangesPlatformError {
   readonly type = "stop-time-update-entry-changes-platform";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly matchedTrip: GtfsScheduledTrip,
     readonly matchedMovementIndex: number,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class NeitherTimeNorDelayGivenError extends Error {
+export class NeitherTimeNorDelayGivenError {
   readonly type = "neither-time-nor-delay-given";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
     readonly updatedTime: UpdatedTimeJson,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TimeAndDelayDisagreeWithEachOtherError extends Error {
+export class TimeAndDelayDisagreeWithEachOtherError {
   readonly type = "time-and-delay-disagree-with-each-other";
   constructor(
     readonly tripUpdate: TripUpdateJson,
@@ -408,17 +388,13 @@ export class TimeAndDelayDisagreeWithEachOtherError extends Error {
     readonly updatedTime: UpdatedTimeJson,
     readonly parsedFromTime: Temporal.Instant,
     readonly parsedFromDelay: Temporal.Instant,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class NeitherArrivalNorDepartureGivenError extends Error {
+export class NeitherArrivalNorDepartureGivenError {
   readonly type = "neither-arrival-nor-departure-given";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-  ) {
-    super();
-  }
+  ) {}
 }

@@ -9,14 +9,14 @@ import {
   type GtfsRealtimeDataParsingError,
 } from "./realtime/gtfs-realtime-data-parser.js";
 import {
-  GtfsScheduleParser,
+  GtfsScheduleDataParser,
   type GtfsScheduleParsingError,
-} from "./schedule/gtfs-schedule-parser.js";
+} from "./schedule/gtfs-schedule-data-parser.js";
 import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
 import type { TimezoneData } from "../config/timezone-data.js";
 
 export class GtfsFeedParser {
-  private readonly _scheduleParser: GtfsScheduleParser;
+  private readonly _scheduleParser: GtfsScheduleDataParser;
   private readonly _realtimeParser: GtfsRealtimeDataParser;
 
   constructor(
@@ -26,7 +26,7 @@ export class GtfsFeedParser {
     _onScheduleParsingError: (error: GtfsScheduleParsingError) => void,
     _onRealtimeParsingError: (error: GtfsRealtimeDataParsingError) => void,
   ) {
-    this._scheduleParser = new GtfsScheduleParser(
+    this._scheduleParser = new GtfsScheduleDataParser(
       lineRoutesMapping,
       bonusLinesMapping,
       _onScheduleParsingError,

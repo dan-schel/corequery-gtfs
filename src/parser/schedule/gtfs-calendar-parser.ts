@@ -124,34 +124,22 @@ export type GtfsCalendarParsingError =
   | InvalidCalendarDateRangeError
   | MultipleExceptionsForSameDateError;
 
-// TODO: By extending error, any time one of these is instantiated it will
-// capture the stack trace. This is useless in these situations, so we could
-// speed up parsing (when errors occur) by not extending error (it doesn't need
-// to extend anything, really).
-export class DuplicateCalendarIdError extends Error {
+export class DuplicateCalendarIdError {
   readonly type = "duplicate-calendar";
-  constructor(readonly subsequentRowWithDuplicateId: CalendarCsvRow) {
-    super();
-  }
+  constructor(readonly subsequentRowWithDuplicateId: CalendarCsvRow) {}
 }
 
-export class InvalidCalendarDateRangeError extends Error {
+export class InvalidCalendarDateRangeError {
   readonly type = "invalid-calendar-date-range";
-  constructor(readonly row: CalendarCsvRow) {
-    super();
-  }
+  constructor(readonly row: CalendarCsvRow) {}
 }
 
-export class UnexpectedCalendarDateExceptionTypeError extends Error {
+export class UnexpectedCalendarDateExceptionTypeError {
   readonly type = "unexpected-calendar-date-exception-type";
-  constructor(readonly row: CalendarDatesCsvRow) {
-    super();
-  }
+  constructor(readonly row: CalendarDatesCsvRow) {}
 }
 
-export class MultipleExceptionsForSameDateError extends Error {
+export class MultipleExceptionsForSameDateError {
   readonly type = "multiple-exceptions-for-same-date";
-  constructor(readonly subsequentRowForSameDate: CalendarDatesCsvRow) {
-    super();
-  }
+  constructor(readonly subsequentRowForSameDate: CalendarDatesCsvRow) {}
 }

@@ -128,20 +128,17 @@ export type GtfsStopTimeNormalisationError =
   | InvalidStopSequenceError
   | MultipleStopSequencesError;
 
-export class InvalidStopSequenceError extends Error {
+export class InvalidStopSequenceError {
   readonly type = "stop-sequence-duplicated";
-  constructor(readonly stopTimes: StopTimesCsv) {
-    super();
-  }
+  constructor(readonly stopTimes: StopTimesCsv) {}
+
   // The trip_id is accessible, e.g.:
   // get tripId() {
   //   return this.stopTimes[0]?.trip_id ?? null;
   // }
 }
 
-export class MultipleStopSequencesError extends Error {
+export class MultipleStopSequencesError {
   readonly type = "multiple-stop-sequences";
-  constructor(readonly stopTimes: StopTimesCsv) {
-    super();
-  }
+  constructor(readonly stopTimes: StopTimesCsv) {}
 }
