@@ -69,13 +69,13 @@ export class GtfsFeed {
     return null;
   }
 
-  createDepartureIterator(stopId: number, iterationLimitDays: number | null) {
+  createDepartureIterator(stopId: number, iterationLimitHours: number | null) {
     return ZipperDeparturesIterator.forFeed(
       stopId,
       this.scheduledMovementsIndex,
       this.realtimeData,
       this.timezoneData,
-      iterationLimitDays,
+      iterationLimitHours,
     );
   }
 }

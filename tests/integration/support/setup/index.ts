@@ -47,7 +47,7 @@ export async function setupIntegrationTest(dirname: string) {
   const source: IntegrationTestServiceSource = new GtfsServiceSource({
     sourceId: "integration-test",
     gtfsSystem: system,
-    departureIterationLimitDays: null,
+    departureIterationLimitHours: null,
 
     buildDeparture: (fields) => fields,
     buildService: (fields) => fields,

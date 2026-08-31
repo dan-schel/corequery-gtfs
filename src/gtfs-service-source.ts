@@ -31,7 +31,7 @@ type GtfsServiceSourceFields<
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
 
-  readonly departureIterationLimitDays: number | null;
+  readonly departureIterationLimitHours: number | null;
 
   buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
@@ -84,7 +84,7 @@ export class GtfsServiceSource<
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
 
-  readonly departureIterationLimitDays: number | null;
+  readonly departureIterationLimitHours: number | null;
 
   private readonly _converter: ServiceConverter<
     CorequeryDepartureClass,
@@ -112,7 +112,7 @@ export class GtfsServiceSource<
     this.sourceId = fields.sourceId;
     this.gtfsSystem = fields.gtfsSystem;
 
-    this.departureIterationLimitDays = fields.departureIterationLimitDays;
+    this.departureIterationLimitHours = fields.departureIterationLimitHours;
 
     this._converter = new ServiceConverter<
       CorequeryDepartureClass,
@@ -167,7 +167,7 @@ export class GtfsServiceSource<
     const feed = this.gtfsSystem.requireFeed();
     const iterator = feed.createDepartureIterator(
       stopId,
-      this.departureIterationLimitDays,
+      this.departureIterationLimitHours,
     );
     iterator.set(instant, direction);
 

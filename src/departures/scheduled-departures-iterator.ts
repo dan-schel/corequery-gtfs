@@ -48,7 +48,7 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
     realtimeData: GtfsRealtimeData,
     timezoneData: TimezoneData,
-    iterationLimitDays: number | null,
+    iterationLimitHours: number | null,
   ) {
     const blockBuilder = ScheduledDeparturesBlocksBuilder.tryBuild(
       stopId,
@@ -58,9 +58,9 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     if (blockBuilder == null) return null;
 
     const maximumNumberOfScans =
-      iterationLimitDays == null
+      iterationLimitHours == null
         ? null
-        : Math.ceil((iterationLimitDays * 24) / DEFAULT_BLOCK_SCAN_HOURS);
+        : Math.ceil(iterationLimitHours / DEFAULT_BLOCK_SCAN_HOURS);
 
     return new ScheduledDeparturesIterator(blockBuilder, realtimeData, {
       blockScanHours: DEFAULT_BLOCK_SCAN_HOURS,

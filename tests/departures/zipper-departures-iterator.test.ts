@@ -77,7 +77,7 @@ describe("ZipperDeparturesIterator", () => {
         departure({ instant: "2026-01-04T17:02:00Z", tripId: "D" }),
       ]),
     ];
-    const zipperIterator = new ZipperDeparturesIterator(iterators, 2);
+    const zipperIterator = new ZipperDeparturesIterator(iterators, 48);
 
     zipperIterator.set(
       Temporal.Instant.from("2026-01-01T17:00:00Z"),
@@ -105,7 +105,7 @@ describe("ZipperDeparturesIterator", () => {
         departure({ instant: "2026-01-01T17:01:00Z", tripId: "C" }),
       ]),
     ];
-    const zipperIterator = new ZipperDeparturesIterator(iterators, 2);
+    const zipperIterator = new ZipperDeparturesIterator(iterators, 48);
 
     zipperIterator.set(
       Temporal.Instant.from("2026-01-04T17:00:00Z"),

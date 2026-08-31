@@ -17,7 +17,7 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
 
   constructor(
     private readonly _iterators: DeparturesIterator[],
-    private readonly _iterationLimitDays: number | null,
+    private readonly _iterationLimitHours: number | null,
   ) {
     super();
 
@@ -93,15 +93,12 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
   }
 
   private _determineCutoff(instant: Temporal.Instant): Temporal.Instant | null {
-    if (this._iterationLimitDays == null) return null;
+    if (this._iterationLimitHours == null) return null;
 
     if (this._direction === "forwards") {
-      // Note: Can't add `days` to an Instant (Error: Cannot use large units),
-      // but adding hours is fine. I'm guessing it's because days can be
-      // ambiguous lengths, depending on your timezone.
-      return instant.add({ hours: this._iterationLimitDays * 24 });
+      return instant.add({ hours: this._iterationLimitHours });
     } else if (this._direction === "backwards") {
-      return instant.subtract({ hours: this._iterationLimitDays * 24 });
+      return instant.subtract({ hours: this._iterationLimitHours });
     } else {
       assertNever(this._direction);
     }
@@ -112,14 +109,14 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
     realtimeData: GtfsRealtimeData,
     timezoneData: TimezoneData,
-    iterationLimitDays: number | null,
+    iterationLimitHours: number | null,
   ) {
     const scheduled = ScheduledDeparturesIterator.tryBuild(
       stopId,
       scheduledMovementsIndex,
       realtimeData,
       timezoneData,
-      iterationLimitDays,
+      iterationLimitHours,
     );
 
     const realtime = RealtimeDeparturesBlockIterator.tryBuild(
@@ -128,6 +125,6 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     );
 
     const iterators = [scheduled, realtime].filter(nonNull);
-    return new ZipperDeparturesIterator(iterators, iterationLimitDays);
+    return new ZipperDeparturesIterator(iterators, iterationLimitHours);
   }
 }
