@@ -240,33 +240,25 @@ export type GtfsRouteMatchingError =
   | UnexpectedPickupTypeError
   | UnexpectedDropOffTypeError;
 
-export class NoMatchingRouteError extends Error {
+export class NoMatchingRouteError {
   readonly type = "no-matching-route";
   constructor(
     readonly stopTimes: StopTimesCsv,
     readonly resolvedStopIds: readonly number[],
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class StopTimeReferencesUnmappedStopIdError extends Error {
+export class StopTimeReferencesUnmappedStopIdError {
   readonly type = "stop-time-references-unmapped-stop-id";
-  constructor(readonly stopTime: StopTimesCsvRow) {
-    super();
-  }
+  constructor(readonly stopTime: StopTimesCsvRow) {}
 }
 
-export class UnexpectedPickupTypeError extends Error {
+export class UnexpectedPickupTypeError {
   readonly type = "unexpected-pickup-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {
-    super();
-  }
+  constructor(readonly stopTime: StopTimesCsvRow) {}
 }
 
-export class UnexpectedDropOffTypeError extends Error {
+export class UnexpectedDropOffTypeError {
   readonly type = "unexpected-drop-off-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {
-    super();
-  }
+  constructor(readonly stopTime: StopTimesCsvRow) {}
 }

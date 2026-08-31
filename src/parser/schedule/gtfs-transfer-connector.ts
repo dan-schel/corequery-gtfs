@@ -127,70 +127,54 @@ export type GtfsTransferConnectionError =
   | TransferCrossesCalendarsError
   | TransferRequiresTimeTravelError;
 
-export class TransferReferencesNonExistentTrip extends Error {
+export class TransferReferencesNonExistentTrip {
   readonly type = "transfer-references-non-existent-trip";
   constructor(
     readonly transfer: TransfersCsvRow,
     readonly field: "from_trip_id" | "to_trip_id",
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TransferIsNotFromTerminusError extends Error {
+export class TransferIsNotFromTerminusError {
   readonly type = "transfer-is-not-from-terminus";
   constructor(
     readonly transfer: TransfersCsvRow,
     readonly fromTrip: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TransferIsNotToOriginError extends Error {
+export class TransferIsNotToOriginError {
   readonly type = "transfer-is-not-to-origin";
   constructor(
     readonly transfer: TransfersCsvRow,
     readonly toTrip: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TransferReferencesTripAlreadyConnectedError extends Error {
+export class TransferReferencesTripAlreadyConnectedError {
   readonly type = "transfer-references-trip-already-connected";
   constructor(
     readonly transfer: TransfersCsvRow,
     readonly tripWithExistingConnection: GtfsScheduledTrip,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class TransferIsNotInSeatTransferError extends Error {
+export class TransferIsNotInSeatTransferError {
   readonly type = "transfer-is-not-in-seat-transfer";
-  constructor(readonly transfer: TransfersCsvRow) {
-    super();
-  }
+  constructor(readonly transfer: TransfersCsvRow) {}
 }
 
-export class TransferIsNotSameStopAndPositionError extends Error {
+export class TransferIsNotSameStopAndPositionError {
   readonly type = "transfer-is-not-same-stop-and-position";
-  constructor(readonly transfer: TransfersCsvRow) {
-    super();
-  }
+  constructor(readonly transfer: TransfersCsvRow) {}
 }
 
-export class TransferCrossesCalendarsError extends Error {
+export class TransferCrossesCalendarsError {
   readonly type = "transfer-crosses-calendars";
-  constructor(readonly transfer: TransfersCsvRow) {
-    super();
-  }
+  constructor(readonly transfer: TransfersCsvRow) {}
 }
 
-export class TransferRequiresTimeTravelError extends Error {
+export class TransferRequiresTimeTravelError {
   readonly type = "transfer-requires-time-travel";
-  constructor(readonly transfer: TransfersCsvRow) {
-    super();
-  }
+  constructor(readonly transfer: TransfersCsvRow) {}
 }
