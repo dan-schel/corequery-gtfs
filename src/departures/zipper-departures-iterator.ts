@@ -4,21 +4,26 @@ import {
   DeparturesIteratorResult,
 } from "./departures-iterator.js";
 import { ScheduledDeparturesIterator } from "./scheduled-departures-iterator.js";
-import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-iterator.js";
 import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
 import type { TimezoneData } from "../config/timezone-data.js";
 import type { DeparturesIterationDirection } from "../corequery-types.js";
+import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-iterator.js";
 
 export class ZipperDeparturesIterator extends DeparturesIterator {
   private _direction: DeparturesIterationDirection;
   private _nextIterator: DeparturesIterator | null;
+  private _cutoff: Temporal.Instant | null;
 
-  constructor(private readonly _iterators: DeparturesIterator[]) {
+  constructor(
+    private readonly _iterators: DeparturesIterator[],
+    private readonly _iterationLimitDays: number | null,
+  ) {
     super();
 
     this._direction = "forwards";
     this._nextIterator = null;
+    this._cutoff = null;
   }
 
   override set(
@@ -26,12 +31,13 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     direction: DeparturesIterationDirection,
   ): void {
     this._direction = direction;
+    this._cutoff = this._determineCutoff(instant);
 
     for (const iterator of this._iterators) {
       iterator.set(instant, direction);
     }
 
-    this._nextIterator = this._determineBestIterator();
+    this._nextIterator = this._determineNextIterator();
   }
 
   override peek(): DeparturesIteratorResult | null {
@@ -48,12 +54,14 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
 
     const value = iterator.take();
 
-    this._nextIterator = this._determineBestIterator();
+    this._nextIterator = this._determineNextIterator();
 
     return value;
   }
 
-  private _determineBestIterator() {
+  private _determineNextIterator() {
+    const cutoff = this._cutoff;
+
     let best: DeparturesIteratorResult | null = null;
     let bestIterator: DeparturesIterator | null = null;
 
@@ -61,7 +69,12 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
       const nextValue = iterator.peek();
       if (nextValue == null) continue;
 
-      if (best == null || this._isBetter(best.instant, nextValue.instant)) {
+      const nextInstant = nextValue.instant;
+      const better = best == null || this._isCloser(best.instant, nextInstant);
+      const afterCutoff = cutoff != null && this._isCloser(cutoff, nextInstant);
+
+      // TODO: Test the afterCutoff logic.
+      if (better && !afterCutoff) {
         best = nextValue;
         bestIterator = iterator;
       }
@@ -70,7 +83,7 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     return bestIterator;
   }
 
-  private _isBetter(
+  private _isCloser(
     currentBest: Temporal.Instant,
     candidate: Temporal.Instant,
   ): boolean {
@@ -83,17 +96,31 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     }
   }
 
+  private _determineCutoff(instant: Temporal.Instant): Temporal.Instant | null {
+    if (this._iterationLimitDays == null) return null;
+
+    if (this._direction === "forwards") {
+      return instant.add({ days: this._iterationLimitDays });
+    } else if (this._direction === "backwards") {
+      return instant.subtract({ days: this._iterationLimitDays });
+    } else {
+      assertNever(this._direction);
+    }
+  }
+
   static forFeed(
     stopId: number,
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
     realtimeData: GtfsRealtimeData,
     timezoneData: TimezoneData,
+    iterationLimitDays: number | null,
   ) {
     const scheduled = ScheduledDeparturesIterator.tryBuild(
       stopId,
       scheduledMovementsIndex,
       realtimeData,
       timezoneData,
+      iterationLimitDays,
     );
 
     const realtime = RealtimeDeparturesBlockIterator.tryBuild(
@@ -102,6 +129,6 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     );
 
     const iterators = [scheduled, realtime].filter(nonNull);
-    return new ZipperDeparturesIterator(iterators);
+    return new ZipperDeparturesIterator(iterators, iterationLimitDays);
   }
 }

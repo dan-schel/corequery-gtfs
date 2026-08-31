@@ -10,15 +10,17 @@ import type { DeparturesIterationDirection } from "../../src/corequery-types.js"
 
 describe("ZipperDeparturesIterator", () => {
   it("returns departures in order of instant", () => {
-    const iterator1 = new DummyIterator([
-      departure({ instant: "2026-01-01T00:00:00Z", tripId: "A" }),
-      departure({ instant: "2026-01-01T00:04:00Z", tripId: "B" }),
-    ]);
-    const iterator2 = new DummyIterator([
-      departure({ instant: "2026-01-01T00:01:00Z", tripId: "C" }),
-      departure({ instant: "2026-01-01T00:02:00Z", tripId: "D" }),
-    ]);
-    const zipperIterator = new ZipperDeparturesIterator([iterator1, iterator2]);
+    const iterators = [
+      new DummyIterator([
+        departure({ instant: "2026-01-01T00:00:00Z", tripId: "A" }),
+        departure({ instant: "2026-01-01T00:04:00Z", tripId: "B" }),
+      ]),
+      new DummyIterator([
+        departure({ instant: "2026-01-01T00:01:00Z", tripId: "C" }),
+        departure({ instant: "2026-01-01T00:02:00Z", tripId: "D" }),
+      ]),
+    ];
+    const zipperIterator = new ZipperDeparturesIterator(iterators, null);
 
     zipperIterator.set(
       Temporal.Instant.from("2026-01-01T00:00:00Z"),
@@ -39,7 +41,7 @@ describe("ZipperDeparturesIterator", () => {
   });
 
   it("works correctly if no feeds given", () => {
-    const zipperIterator = new ZipperDeparturesIterator([]);
+    const zipperIterator = new ZipperDeparturesIterator([], null);
 
     zipperIterator.set(
       Temporal.Instant.from("2026-01-01T00:00:00Z"),
@@ -51,10 +53,9 @@ describe("ZipperDeparturesIterator", () => {
   });
 
   it("works correctly if all iterators are empty", () => {
-    const iterator1 = new DummyIterator([]);
-    const iterator2 = new DummyIterator([]);
+    const iterators = [new DummyIterator([]), new DummyIterator([])];
 
-    const zipperIterator = new ZipperDeparturesIterator([iterator1, iterator2]);
+    const zipperIterator = new ZipperDeparturesIterator(iterators, null);
 
     zipperIterator.set(
       Temporal.Instant.from("2026-01-01T00:00:00Z"),

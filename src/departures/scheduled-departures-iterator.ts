@@ -11,7 +11,12 @@ import { ScheduledDeparturesBlocksBuilder } from "./scheduled-departures-blocks-
 import type { TimezoneData } from "../config/timezone-data.js";
 import type { DeparturesIterationDirection } from "../corequery-types.js";
 
-const BLOCK_SCAN_HRS = 48;
+const DEFAULT_BLOCK_SCAN_HOURS = 48;
+
+type ScheduledDeparturesIteratorOptions = {
+  readonly blockScanHours: number;
+  readonly maximumNumberOfScans: number | null;
+};
 
 export class ScheduledDeparturesIterator extends DeparturesIterator {
   private _direction: DeparturesIterationDirection;
@@ -25,6 +30,7 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
   constructor(
     private readonly _blockBuilder: ScheduledDeparturesBlocksBuilder,
     private readonly _realtimeData: GtfsRealtimeData,
+    private readonly _options: ScheduledDeparturesIteratorOptions,
   ) {
     super();
 
@@ -42,16 +48,24 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
     realtimeData: GtfsRealtimeData,
     timezoneData: TimezoneData,
+    iterationLimitDays: number | null,
   ) {
     const blockBuilder = ScheduledDeparturesBlocksBuilder.tryBuild(
       stopId,
       scheduledMovementsIndex,
       timezoneData,
     );
-
     if (blockBuilder == null) return null;
 
-    return new ScheduledDeparturesIterator(blockBuilder, realtimeData);
+    const maximumNumberOfScans =
+      iterationLimitDays == null
+        ? null
+        : Math.ceil((iterationLimitDays * 24) / DEFAULT_BLOCK_SCAN_HOURS);
+
+    return new ScheduledDeparturesIterator(blockBuilder, realtimeData, {
+      blockScanHours: DEFAULT_BLOCK_SCAN_HOURS,
+      maximumNumberOfScans: maximumNumberOfScans,
+    });
   }
 
   getStats() {
@@ -73,7 +87,7 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     this._searchRange = SearchRange.create(
       instant,
       direction,
-      BLOCK_SCAN_HRS,
+      this._options.blockScanHours,
     ).optimize(this._blockBuilder);
 
     this._iterators = [];
@@ -104,25 +118,35 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     let bestIterator = this._getBestOfCurrentIterators();
     let bestValue = bestIterator?.peek() ?? null;
 
-    // TODO: Allow the maximum number of iterations to be configurable. Even
-    // though I've gone to great effort to make an algorithm which gives
-    // theoretically correct results and stops once all calendars are exhausted,
-    // reality can be messy, and there could be giant gaps between services
-    // matching certain criteria (e.g. terminating in an unusual location), and
-    // we probably don't want to make it super easy to DDOS the server by making
-    // it perform searches which require it to search through several months of
-    // blocks. Maybe instead of a max number of iterations, we could do a max
-    // number of days from the start time or something (effectively the same
-    // thing, but without relying on the value of BLOCK_SCAN_HRS).
+    // Limit the maximum number of searches, otherwise if there are more blocks
+    // available, but they're super far off in the future, and next time peek()
+    // is called once we've made it to that huge gap is gonna be really slow.
+    //
+    // While it's great that in theory this algorithm works to infinity, and is
+    // fairly efficient in most cases, in reality, trainquery-melbourne (or any
+    // other consumer) won't want to tradeoff the possibility of a single tricky
+    // request taking down the server for exact correctness.
+    //
+    // There's probably further optimisations I could make in this algorithm to
+    // allow this limit to be raised (to the point where it'll never matter in
+    // practice), but I doubt we'll ever want to remove it entirely.
+    const maxScans = this._options.maximumNumberOfScans;
+    let scansPerformed = 0;
+
+    // TODO: Test the maxScans limit.
     while (
       (bestValue == null || !this._searchRange.includes(bestValue.instant)) &&
-      this._areMoreBlocksAvailable()
+      this._areMoreBlocksAvailable() &&
+      (maxScans == null || scansPerformed < maxScans)
     ) {
-      this._searchRange = this._searchRange.getNextWithDuration(BLOCK_SCAN_HRS);
+      this._searchRange = this._searchRange.getNextWithDuration(
+        this._options.blockScanHours,
+      );
       this._updateIteratorsForSearchRange();
 
       bestIterator = this._getBestOfCurrentIterators();
       bestValue = bestIterator?.peek() ?? null;
+      scansPerformed++;
     }
 
     this._nextIterator = bestIterator;

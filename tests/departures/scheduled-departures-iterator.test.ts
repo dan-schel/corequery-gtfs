@@ -18,7 +18,8 @@ export const MELBOURNE_TIMEZONE_DATA: TimezoneData = {
 };
 
 describe("ScheduledDeparturesIterator", () => {
-  const EMPTY_RT_DATA = GtfsRealtimeData.empty;
+  const NO_RT_DATA = GtfsRealtimeData.empty;
+  const OPTS = { blockScanHours: 48, maximumNumberOfScans: null };
 
   it("iterates through departures in order", () => {
     const builder = blockBuilder([
@@ -26,7 +27,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "05:00:00" }),
       trip({ tripId: "trip-3", departureTime: "06:00:00" }),
     ]);
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T05:30:00+10:00");
     iterator.set(startTime, "forwards");
@@ -46,7 +47,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "24:30:00" }),
       trip({ tripId: "trip-3", departureTime: "29:00:00" }),
     ]);
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T05:30:00+10:00");
     iterator.set(startTime, "forwards");
@@ -67,7 +68,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "05:00:00" }),
       trip({ tripId: "trip-3", departureTime: "06:00:00" }),
     ]);
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T03:30:00+10:00");
     iterator.set(startTime, "forwards");
@@ -98,7 +99,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-3", departureTime: "06:00:00", calendar: cal3 }),
     ]);
 
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T03:30:00+10:00");
     iterator.set(startTime, "forwards");
@@ -131,7 +132,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "05:00:00", calendar: cal2 }),
     ]);
 
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T03:30:00+10:00");
     iterator.set(startTime, "forwards");
@@ -164,7 +165,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "05:00:00" }),
       trip({ tripId: "trip-3", departureTime: "06:00:00" }),
     ]);
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T05:30:00+10:00");
     iterator.set(startTime, "backwards");
@@ -184,7 +185,7 @@ describe("ScheduledDeparturesIterator", () => {
       trip({ tripId: "trip-2", departureTime: "05:00:00" }),
       trip({ tripId: "trip-3", departureTime: "06:00:00" }),
     ]);
-    const iterator = new ScheduledDeparturesIterator(builder, EMPTY_RT_DATA);
+    const iterator = new ScheduledDeparturesIterator(builder, NO_RT_DATA, OPTS);
 
     const startTime = Temporal.Instant.from("2026-08-13T05:00:00+10:00");
     iterator.set(startTime, "forwards");
