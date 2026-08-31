@@ -19,8 +19,8 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
   private _iterators: ScheduledDeparturesBlockIterator[];
   private _nextIterator: ScheduledDeparturesBlockIterator | null;
 
-  private _blockSearchesRan = 0;
-  private _subiteratorsCreated = 0;
+  private _blockSearchesRan: number;
+  private _subiteratorsCreated: number;
 
   constructor(
     private readonly _blockBuilder: ScheduledDeparturesBlocksBuilder,
@@ -32,6 +32,9 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     this._searchRange = null;
     this._iterators = [];
     this._nextIterator = null;
+
+    this._blockSearchesRan = 0;
+    this._subiteratorsCreated = 0;
   }
 
   static tryBuild(
@@ -62,6 +65,9 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
   ): void {
+    this._blockSearchesRan = 0;
+    this._subiteratorsCreated = 0;
+
     this._direction = direction;
 
     this._searchRange = SearchRange.create(
