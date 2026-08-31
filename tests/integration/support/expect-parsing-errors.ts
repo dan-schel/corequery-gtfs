@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import type { GtfsScheduleParsingError } from "../../../src/parser/schedule/gtfs-schedule-parser.js";
+import type { GtfsScheduleParsingError } from "../../../src/parser/schedule/gtfs-schedule-data-parser.js";
 import type { GtfsRealtimeDataParsingError } from "../../../src/parser/realtime/gtfs-realtime-data-parser.js";
 import type { GtfsSystem } from "../../../src/gtfs-system.js";
 

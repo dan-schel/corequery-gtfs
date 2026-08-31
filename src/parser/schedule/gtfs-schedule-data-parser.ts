@@ -13,8 +13,7 @@ import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js"
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { GtfsFeedCsv } from "../../data/raw/schedule-csvs.js";
 
-// TODO: Rename GtfsScheduleDataParser.
-export class GtfsScheduleParser {
+export class GtfsScheduleDataParser {
   private readonly _calendarParser: GtfsCalendarParser;
   private readonly _tripParser: GtfsTripParser;
 
