@@ -31,22 +31,22 @@ export type IntegrationTestService = ServiceFields<
   IntegrationTestServiceConnection
 >;
 
-export type IntegrationTestTags = Set<number>;
+type IntegrationTestTags = Set<number>;
 
-export type IntegrationTestServiceOriginatingMovement = {
+type IntegrationTestServiceOriginatingMovement = {
   type: "originating";
 } & ServiceOriginatingMovementFields;
 
-export type IntegrationTestServiceRegularMovement = {
+type IntegrationTestServiceRegularMovement = {
   type: "regular";
 } & ServiceRegularMovementFields;
 
-export type IntegrationTestServiceTerminatingMovement = {
+type IntegrationTestServiceTerminatingMovement = {
   type: "terminating";
 } & ServiceTerminatingMovementFields;
 
-export type IntegrationTestServicePassingMovement = {
+type IntegrationTestServicePassingMovement = {
   type: "passing";
 } & ServicePassingMovementFields;
 
-export type IntegrationTestServiceConnection = ServiceConnectionFields;
+type IntegrationTestServiceConnection = ServiceConnectionFields;
