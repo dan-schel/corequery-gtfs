@@ -65,6 +65,33 @@ describe("ZipperDeparturesIterator", () => {
     expect(zipperIterator.peek()).toBeNull();
     expect(() => zipperIterator.take()).toThrow();
   });
+
+  it("doesn't return anything beyond the iteration limit", () => {
+    const iterators = [
+      new DummyIterator([
+        departure({ instant: "2026-01-03T17:00:00Z", tripId: "A" }),
+        departure({ instant: "2026-01-03T17:04:00Z", tripId: "B" }),
+      ]),
+      new DummyIterator([
+        departure({ instant: "2026-01-01T17:01:00Z", tripId: "C" }),
+        departure({ instant: "2026-01-04T17:02:00Z", tripId: "D" }),
+      ]),
+    ];
+    const zipperIterator = new ZipperDeparturesIterator(iterators, 2);
+
+    zipperIterator.set(
+      Temporal.Instant.from("2026-01-01T17:00:00Z"),
+      "forwards",
+    );
+    const result1 = zipperIterator.take();
+    const result2 = zipperIterator.take();
+
+    expect(zipperIterator.peek()).toBeNull();
+    expect(() => zipperIterator.take()).toThrow();
+
+    expect(result1.trip.gtfsTripId).toEqual("C");
+    expect(result2.trip.gtfsTripId).toEqual("A");
+  });
 });
 
 function departure({ instant, tripId }: { instant: string; tripId: string }) {

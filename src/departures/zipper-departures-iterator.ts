@@ -100,9 +100,12 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     if (this._iterationLimitDays == null) return null;
 
     if (this._direction === "forwards") {
-      return instant.add({ days: this._iterationLimitDays });
+      // Note: Can't add `days` to an Instant (Error: Cannot use large units),
+      // but adding hours is fine. I'm guessing it's because days can be
+      // ambiguous lengths, depending on your timezone.
+      return instant.add({ hours: this._iterationLimitDays * 24 });
     } else if (this._direction === "backwards") {
-      return instant.subtract({ days: this._iterationLimitDays });
+      return instant.subtract({ hours: this._iterationLimitDays * 24 });
     } else {
       assertNever(this._direction);
     }
