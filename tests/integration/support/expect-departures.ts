@@ -172,7 +172,7 @@ function formatTable(rows: string[][]) {
   );
 
   const formattedRows = rows.map((row) =>
-    row.map((text, i) => text.padEnd(itsOk(columnWidths[i]), " ")).join(" | "),
+    row.map((text, i) => text.padEnd(itsOk(columnWidths[i]), " ")).join("   "),
   );
 
   return formattedRows.join("\n");

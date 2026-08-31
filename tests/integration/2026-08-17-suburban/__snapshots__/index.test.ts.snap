@@ -2,16 +2,16 @@
 
 exports[`2026-08-17-suburban > Flinders Street, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:26 pm    Upfield                                              On time
-17/8/26, 12:26 pm    Belgrave                                             On time
-17/8/26, 12:29 pm    Mernda                                               On time
-17/8/26, 12:30 pm    Williamstown                                         On time
-17/8/26, 12:33 pm    Glen Waverley                                        On time
-17/8/26, 12:34 pm    Frankston                                            On time
-17/8/26, 12:35 pm    Lilydale                                             On time
-17/8/26, 12:35 pm    Werribee                                             On time
-17/8/26, 12:36 pm    Sandringham                                          On time
-17/8/26, 12:36 pm    Craigieburn                                          On time
+17/8/26, 12:26 pm   Upfield         On time
+17/8/26, 12:26 pm   Belgrave        On time
+17/8/26, 12:29 pm   Mernda          On time
+17/8/26, 12:30 pm   Williamstown    On time
+17/8/26, 12:33 pm   Glen Waverley   On time
+17/8/26, 12:34 pm   Frankston       On time
+17/8/26, 12:35 pm   Lilydale        On time
+17/8/26, 12:35 pm   Werribee        On time
+17/8/26, 12:36 pm   Sandringham     On time
+17/8/26, 12:36 pm   Craigieburn     On time
 "
 `;
 

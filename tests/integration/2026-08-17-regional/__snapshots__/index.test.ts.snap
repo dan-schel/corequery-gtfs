@@ -2,16 +2,16 @@
 
 exports[`2026-08-17-regional > Flinders Street, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:32 pm    Traralgon                                            On time
-17/8/26, 12:52 pm    Southern Cross                                       No realtime data at this stop
-17/8/26, 1:12 pm     Bairnsdale                                           On time
-17/8/26, 1:32 pm     Southern Cross                                       No realtime data at this stop
-17/8/26, 1:52 pm     Traralgon                                            No realtime data
-17/8/26, 2:12 pm     Southern Cross                                       No realtime data at this stop
-17/8/26, 2:32 pm     Traralgon                                            No realtime data
-17/8/26, 2:52 pm     Southern Cross                                       No realtime data
-17/8/26, 3:12 pm     Traralgon                                            No realtime data
-17/8/26, 3:32 pm     Southern Cross                                       No realtime data at this stop
+17/8/26, 12:32 pm   Traralgon        On time                      
+17/8/26, 12:52 pm   Southern Cross   No realtime data at this stop
+17/8/26, 1:12 pm    Bairnsdale       On time                      
+17/8/26, 1:32 pm    Southern Cross   No realtime data at this stop
+17/8/26, 1:52 pm    Traralgon        No realtime data             
+17/8/26, 2:12 pm    Southern Cross   No realtime data at this stop
+17/8/26, 2:32 pm    Traralgon        No realtime data             
+17/8/26, 2:52 pm    Southern Cross   No realtime data             
+17/8/26, 3:12 pm    Traralgon        No realtime data             
+17/8/26, 3:32 pm    Southern Cross   No realtime data at this stop
 "
 `;
 
