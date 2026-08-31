@@ -22,6 +22,7 @@ describe("2026-08-17-regional", async () => {
         direction: "forwards",
         maxResults: 10,
         formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
       });
     });
   });

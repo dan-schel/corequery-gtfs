@@ -50,10 +50,22 @@ export async function setupIntegrationTest(dirname: string) {
     buildDeparture: (fields) => fields,
     buildService: (fields) => fields,
     buildTags: (tags) => tags,
-    buildServiceOriginatingMovement: (fields) => fields,
-    buildServiceRegularMovement: (fields) => fields,
-    buildServiceTerminatingMovement: (fields) => fields,
-    buildServicePassingMovement: (fields) => fields,
+    buildServiceOriginatingMovement: (fields) => ({
+      type: "originating",
+      ...fields,
+    }),
+    buildServiceRegularMovement: (fields) => ({
+      type: "regular",
+      ...fields,
+    }),
+    buildServiceTerminatingMovement: (fields) => ({
+      type: "terminating",
+      ...fields,
+    }),
+    buildServicePassingMovement: (fields) => ({
+      type: "passing",
+      ...fields,
+    }),
     buildServiceConnection: (fields) => fields,
   });
 

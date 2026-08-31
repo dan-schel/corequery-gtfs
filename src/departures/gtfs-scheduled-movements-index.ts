@@ -46,7 +46,7 @@ export class GtfsScheduledMovementsIndex {
 
     for (const trip of schedule.allTrips()) {
       for (let i = 0; i < trip.movements.length; i++) {
-        const movement = trip.movements[i];
+        const movement = itsOk(trip.movements[i]);
         if (!movement.isServicing) continue;
 
         const entry: GtfsScheduledMovementsIndexEntry = {
