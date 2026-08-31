@@ -161,9 +161,9 @@ describe("ScheduledDeparturesIterator", () => {
 
   it("stops after the configured maxScans limit", () => {
     const DAY_2026_08_13 = Temporal.PlainDate.from("2026-08-13");
-    const DAY_2026_12_13 = Temporal.PlainDate.from("2026-12-13");
+    const DAY_2026_08_16 = Temporal.PlainDate.from("2026-08-16");
     const cal1 = GtfsCalendar.singleDay("cal-1", DAY_2026_08_13);
-    const cal2 = GtfsCalendar.singleDay("cal-2", DAY_2026_12_13);
+    const cal2 = GtfsCalendar.singleDay("cal-2", DAY_2026_08_16);
 
     const builder = blockBuilder([
       trip({ tripId: "trip-1", departureTime: "04:00:00", calendar: cal1 }),
@@ -190,7 +190,7 @@ describe("ScheduledDeparturesIterator", () => {
     expect(iterator2Result.trip.gtfsTripId).toEqual("trip-2");
     expect(iterator2.peek()).toBeNull();
 
-    expect(iterator1.getStats().blockSearchesRan).toBe(2);
+    expect(iterator1.getStats().blockSearchesRan).toBe(1);
     expect(iterator2.getStats().blockSearchesRan).toBe(2);
   });
 

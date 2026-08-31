@@ -131,12 +131,11 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     // allow this limit to be raised (to the point where it'll never matter in
     // practice), but I doubt we'll ever want to remove it entirely.
     const maxScans = this._options.maximumNumberOfScans;
-    let scansPerformed = 0;
 
     while (
       (bestValue == null || !this._searchRange.includes(bestValue.instant)) &&
       this._areMoreBlocksAvailable() &&
-      (maxScans == null || scansPerformed < maxScans)
+      (maxScans == null || this._blockSearchesRan < maxScans)
     ) {
       this._searchRange = this._searchRange.getNextWithDuration(
         this._options.blockScanHours,
@@ -145,7 +144,6 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
 
       bestIterator = this._getBestOfCurrentIterators();
       bestValue = bestIterator?.peek() ?? null;
-      scansPerformed++;
     }
 
     this._nextIterator = bestIterator;
