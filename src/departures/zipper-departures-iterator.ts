@@ -70,10 +70,9 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
       if (nextValue == null) continue;
 
       const nextInstant = nextValue.instant;
-      const better = best == null || this._isCloser(best.instant, nextInstant);
+      const better = best == null || this._isCloser(nextInstant, best.instant);
       const afterCutoff = cutoff != null && this._isCloser(cutoff, nextInstant);
 
-      // TODO: Test the afterCutoff logic.
       if (better && !afterCutoff) {
         best = nextValue;
         bestIterator = iterator;
@@ -83,14 +82,11 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     return bestIterator;
   }
 
-  private _isCloser(
-    currentBest: Temporal.Instant,
-    candidate: Temporal.Instant,
-  ): boolean {
+  private _isCloser(a: Temporal.Instant, b: Temporal.Instant): boolean {
     if (this._direction === "forwards") {
-      return Temporal.Instant.compare(candidate, currentBest) < 0;
+      return Temporal.Instant.compare(a, b) < 0;
     } else if (this._direction === "backwards") {
-      return Temporal.Instant.compare(candidate, currentBest) > 0;
+      return Temporal.Instant.compare(a, b) > 0;
     } else {
       assertNever(this._direction);
     }
