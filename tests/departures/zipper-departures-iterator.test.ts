@@ -93,15 +93,16 @@ describe("ZipperDeparturesIterator", () => {
     expect(result2.trip.gtfsTripId).toEqual("A");
   });
 
-  it("doesn't return anything beyond the iteration limit in backwards mode", () => {
+  it("works correctly in backwards mode", () => {
     const iterators = [
+      // Zipper iterators expect their subiterators to know how to go backwards.
       new DummyIterator([
-        departure({ instant: "2026-01-03T17:00:00Z", tripId: "A" }),
         departure({ instant: "2026-01-03T17:04:00Z", tripId: "B" }),
+        departure({ instant: "2026-01-03T17:00:00Z", tripId: "A" }),
       ]),
       new DummyIterator([
+        departure({ instant: "2026-01-04T15:00:00Z", tripId: "D" }),
         departure({ instant: "2026-01-01T17:01:00Z", tripId: "C" }),
-        departure({ instant: "2026-01-04T17:02:00Z", tripId: "D" }),
       ]),
     ];
     const zipperIterator = new ZipperDeparturesIterator(iterators, 2);
@@ -112,12 +113,14 @@ describe("ZipperDeparturesIterator", () => {
     );
     const result1 = zipperIterator.take();
     const result2 = zipperIterator.take();
+    const result3 = zipperIterator.take();
 
     expect(zipperIterator.peek()).toBeNull();
     expect(() => zipperIterator.take()).toThrow();
 
-    expect(result1.trip.gtfsTripId).toEqual("B");
-    expect(result2.trip.gtfsTripId).toEqual("A");
+    expect(result1.trip.gtfsTripId).toEqual("D");
+    expect(result2.trip.gtfsTripId).toEqual("B");
+    expect(result3.trip.gtfsTripId).toEqual("A");
   });
 });
 
