@@ -26,4 +26,34 @@ describe("2026-08-17-suburban", async () => {
       });
     });
   });
+
+  describe("Clayton, 2026-08-17T12:25:00+10:00, forwards", () => {
+    it("gives correct departures", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2026-08-17T12:25:00+10:00",
+        direction: "forwards",
+        maxResults: 10,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Melbourne Central, 2026-08-17T12:25:00+10:00, forwards", () => {
+    it("gives correct departures", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Melbourne Central",
+        instant: "2026-08-17T12:25:00+10:00",
+        direction: "forwards",
+        maxResults: 10,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
 });
