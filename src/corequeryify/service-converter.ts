@@ -196,7 +196,7 @@ export class ServiceConverter<
       // wants. (Probably remove the `nextTrip` and `previousTrip` properties
       // from trips, and just store transfers in an array in the feed, or in the
       // scheduled/realtime data?)
-      connections: [], // TODO: Not implemented!
+      connections: this._convertScheduledTripConnections(trip, serviceDay),
     });
   }
 
@@ -215,7 +215,12 @@ export class ServiceConverter<
       movements: trip.movements.map((m) => this._convertUpdatedTripMovement(m)),
       isCancelled: trip.isCancelled,
 
-      connections: [], // TODO: Not implemented!
+      // TODO: See the comment on this above. We can't assume the connection
+      // given in the schedule is still running!
+      connections: this._convertScheduledTripConnections(
+        trip.scheduledTrip,
+        trip.serviceDay,
+      ),
     });
   }
 
@@ -367,5 +372,48 @@ export class ServiceConverter<
     } else {
       assertNever(movement);
     }
+  }
+
+  // TODO: This implementation was only ever designed to be temporary, and
+  // should be discarded entirely.
+  private _convertScheduledTripConnections(
+    trip: GtfsScheduledTrip,
+    serviceDay: Temporal.PlainDate,
+  ) {
+    const result = [];
+
+    if (trip.previousTrip != null) {
+      result.push(
+        this._buildServiceConnection({
+          type: "entire-vehicle-forms-service",
+          direction: "from-other",
+          otherServiceSourceId: this._sourceId,
+          otherServiceIntrasourceId: new CorequeryIntrasourceId(
+            trip.previousTrip.gtfsTripId,
+            serviceDay,
+          ).toString(),
+          movementIndex: 0,
+          otherServiceMovementIndex: trip.previousTrip.movements.length - 1,
+        }),
+      );
+    }
+
+    if (trip.nextTrip != null) {
+      result.push(
+        this._buildServiceConnection({
+          type: "entire-vehicle-forms-service",
+          direction: "to-other",
+          otherServiceSourceId: this._sourceId,
+          otherServiceIntrasourceId: new CorequeryIntrasourceId(
+            trip.nextTrip.gtfsTripId,
+            serviceDay,
+          ).toString(),
+          movementIndex: trip.movements.length - 1,
+          otherServiceMovementIndex: 0,
+        }),
+      );
+    }
+
+    return result;
   }
 }

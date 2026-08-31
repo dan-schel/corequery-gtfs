@@ -30,7 +30,7 @@ export class RealtimeDeparturesBlock extends DeparturesBlock {
     const movements: RealtimeDeparturesBlockEntry[] = [];
     for (const trip of realtimeData.allTrips()) {
       for (let i = 0; i < trip.movements.length; i++) {
-        const movement = trip.movements[i];
+        const movement = itsOk(trip.movements[i]);
         if (!movement.isServicing) continue;
         if (movement.stopId !== stopId) continue;
 

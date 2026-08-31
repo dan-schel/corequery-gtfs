@@ -1,117 +1,179 @@
-import { assertNever } from "@dan-schel/js-utils";
 import { expect } from "vitest";
-import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
-import { GtfsUpdatedTrip } from "../../../src/data/gtfs-updated-trip.js";
-import type { GtfsTripServicingMovement } from "../../../src/data/utils.js";
-import type { DeparturesIteratorResult } from "../../../src/departures/departures-iterator.js";
-import type { GtfsSystem } from "../../../src/gtfs-system.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
 import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
+import type {
+  IntegrationTestDeparture,
+  IntegrationTestService,
+  IntegrationTestServiceSource,
+} from "./setup/integration-test-corequery-types.js";
+import { assertNever, itsOk } from "@dan-schel/js-utils";
 
-export function expectDeparturesToMatchSnapshot({
-  system,
+export async function expectDeparturesToMatchSnapshot({
+  source,
   stopNameMapping,
   stopName,
   instant,
   direction,
   maxResults,
   formatTimezone,
+  maxConnectionsToFollow,
 }: {
-  system: GtfsSystem;
+  source: IntegrationTestServiceSource;
   stopNameMapping: StopNameMapping;
   stopName: string;
   instant: string;
   direction: DeparturesIterationDirection;
   maxResults: number;
   formatTimezone: string;
+  maxConnectionsToFollow: number;
 }) {
   const stopId = stopNameMapping.requireId(stopName);
-  const iterator = system.requireFeed().createDepartureIterator(stopId);
+  const iterator = source.getDeparturesIterator(
+    stopId,
+    Temporal.Instant.from(instant),
+    direction,
+  );
 
-  iterator.set(Temporal.Instant.from(instant), direction);
-
-  const results: string[] = [];
+  const results: string[][] = [];
 
   for (let i = 0; i < maxResults; i++) {
-    const departure = iterator.peek();
+    const departure = await iterator.peek();
     if (departure == null) break;
 
-    iterator.take();
+    await iterator.take();
 
-    results.push(formatDeparture(departure, stopNameMapping, formatTimezone));
+    results.push(
+      await formatDeparture(
+        departure,
+        source,
+        stopNameMapping,
+        formatTimezone,
+        maxConnectionsToFollow,
+      ),
+    );
   }
 
-  const snapshot = `\n${results.join("\n")}\n`;
+  const snapshot = `\n${formatTable(results)}\n`;
 
   expect(snapshot).toMatchSnapshot();
 }
 
-function formatDeparture(
-  // TODO: These are meant to be integration tests, so now that we're converting
-  // departures into corequery services, we should use the values post
-  // conversion. (For the buildDeparture, buildService, etc. functions we'll
-  // just return the fields as-is, given that we don't have a class to make!)
-  departure: DeparturesIteratorResult,
+async function formatDeparture(
+  departure: IntegrationTestDeparture,
+  source: IntegrationTestServiceSource,
   stopNameMapping: StopNameMapping,
   formatTimezone: string,
-): string {
-  function getScheduledTripInfo(trip: GtfsScheduledTrip | GtfsUpdatedTrip) {
-    if (trip instanceof GtfsScheduledTrip) {
-      return trip;
-    } else if (trip instanceof GtfsUpdatedTrip) {
-      return trip.scheduledTrip;
-    } else {
-      assertNever(trip);
-    }
-  }
+  maxConnectionsToFollow: number,
+) {
+  const { timeType, time, formerTime } = getTimePair(departure);
 
-  function formatDelay(movement: GtfsTripServicingMovement) {
-    if ("realtimeTimeRelevantToDeparturesAlgorithm" in movement) {
-      const realtimeTime = movement.realtimeTimeRelevantToDeparturesAlgorithm;
-      if (realtimeTime == null) return `No realtime data at this stop`;
-      const scheduledTime = movement.scheduledTimeRelevantToDeparturesAlgorithm;
-      const minsDelayed = realtimeTime.since(scheduledTime).total("minutes");
+  const timeStr = time.toLocaleString("en-AU", {
+    timeStyle: "short",
+    dateStyle: "short",
+    timeZone: formatTimezone,
+  });
 
-      if (minsDelayed === 0) return `On time`;
-
-      return `${minsDelayed} mins late`;
-    } else {
-      return `No realtime data`;
-    }
-  }
-
-  function getScheduledTime(movement: GtfsTripServicingMovement) {
-    if ("scheduledTimeRelevantToDeparturesAlgorithm" in movement) {
-      return movement.scheduledTimeRelevantToDeparturesAlgorithm;
-    } else {
-      return movement.timeRelevantToDeparturesAlgorithm.toInstant(
-        departure.serviceDay,
-        formatTimezone,
-      );
-    }
-  }
-
-  const scheduledTrip = getScheduledTripInfo(departure.trip);
-  const delayStr = formatDelay(departure.movement);
-  const scheduledTime = getScheduledTime(departure.movement).toLocaleString(
-    "en-AU",
-    {
-      timeStyle: "short",
-      dateStyle: "short",
-      timeZone: formatTimezone,
-    },
-  );
-  const terminus = stopNameMapping.requireName(
-    scheduledTrip.termination.stopId,
-  );
-  const finalTerminus = stopNameMapping.requireName(
-    scheduledTrip.finalTermination.stopId,
+  const destination = await getDestination(
+    departure,
+    source,
+    stopNameMapping,
+    maxConnectionsToFollow,
   );
 
-  const terminusStr =
-    finalTerminus === terminus
-      ? terminus
-      : `${finalTerminus} (via ${terminus})`;
+  const delayMins =
+    formerTime == null
+      ? 0
+      : Math.floor(time.since(formerTime).total("minutes"));
 
-  return `${scheduledTime.padEnd(18)}   ${terminusStr.padEnd(50, " ")}   ${delayStr}`;
+  const suffix = timeType === "interpolated-live-time" ? " (*)" : "";
+
+  const realtimeStr =
+    departure.service.liveDataType === "scheduled"
+      ? "No realtime data"
+      : formerTime == null
+        ? "No realtime data at this stop"
+        : delayMins === 0
+          ? "On time"
+          : delayMins > 0
+            ? `${delayMins} mins delayed${suffix}`
+            : `${-delayMins} mins early${suffix}`;
+
+  return [timeStr, destination, realtimeStr];
+}
+
+function getTimePair(departure: IntegrationTestDeparture) {
+  const movement = itsOk(departure.service.movements[departure.movementIndex]);
+  if (movement.type === "passing") throw new Error();
+
+  if ("departureTime" in movement) {
+    return {
+      timeType: movement.departureTimeType,
+      time: movement.departureTime,
+      formerTime: movement.formerDepartureTime,
+    };
+  } else if ("arrivalTime" in movement) {
+    return {
+      timeType: movement.arrivalTimeType,
+      time: movement.arrivalTime,
+      formerTime: movement.formerArrivalTime,
+    };
+  } else {
+    assertNever(movement);
+  }
+}
+
+async function getDestination(
+  departure: IntegrationTestDeparture,
+  source: IntegrationTestServiceSource,
+  stopNameMapping: StopNameMapping,
+  maxConnectionsToFollow: number,
+) {
+  function getTerminusStopName(service: IntegrationTestService) {
+    const finalMovement = itsOk(
+      service.movements[service.movements.length - 1],
+    );
+    return stopNameMapping.requireName(finalMovement.stopId);
+  }
+
+  async function getNextService(service: IntegrationTestService) {
+    const connection = service.connections.find(
+      (c) =>
+        c.type === "entire-vehicle-forms-service" &&
+        c.direction !== "from-other",
+    );
+    if (connection == null) return null;
+
+    return await source.getService(connection.otherServiceIntrasourceId);
+  }
+
+  let output = getTerminusStopName(departure.service);
+  let service = await getNextService(departure.service);
+  let connectionsFollowed = 1;
+
+  while (service != null && connectionsFollowed <= maxConnectionsToFollow) {
+    output += ` -> ${getTerminusStopName(service)}`;
+
+    service = await getNextService(service);
+    connectionsFollowed++;
+  }
+
+  if (service != null) {
+    output += " -> ...";
+  }
+
+  return output;
+}
+
+function formatTable(rows: string[][]) {
+  if (rows.length === 0) return "<empty>";
+
+  const columnWidths = itsOk(rows[0]).map((_, colIndex) =>
+    Math.max(...rows.map((row) => itsOk(row[colIndex]).length)),
+  );
+
+  const formattedRows = rows.map((row) =>
+    row.map((text, i) => text.padEnd(itsOk(columnWidths[i]), " ")).join("   "),
+  );
+
+  return formattedRows.join("\n");
 }
