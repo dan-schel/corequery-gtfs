@@ -159,6 +159,41 @@ describe("ScheduledDeparturesIterator", () => {
     expect(iterator.getStats().subiteratorsCreated).toBeLessThan(190);
   });
 
+  it("stops after the configured maxScans limit", () => {
+    const DAY_2026_08_13 = Temporal.PlainDate.from("2026-08-13");
+    const DAY_2026_12_13 = Temporal.PlainDate.from("2026-12-13");
+    const cal1 = GtfsCalendar.singleDay("cal-1", DAY_2026_08_13);
+    const cal2 = GtfsCalendar.singleDay("cal-2", DAY_2026_12_13);
+
+    const builder = blockBuilder([
+      trip({ tripId: "trip-1", departureTime: "04:00:00", calendar: cal1 }),
+      trip({ tripId: "trip-2", departureTime: "05:00:00", calendar: cal2 }),
+    ]);
+
+    const iterator1 = new ScheduledDeparturesIterator(builder, NO_RT_DATA, {
+      blockScanHours: 48,
+      maximumNumberOfScans: 1,
+    });
+
+    const iterator2 = new ScheduledDeparturesIterator(builder, NO_RT_DATA, {
+      blockScanHours: 48,
+      maximumNumberOfScans: 5,
+    });
+
+    const startTime = Temporal.Instant.from("2026-08-13T05:00:00+10:00");
+    iterator1.set(startTime, "forwards");
+    iterator2.set(startTime, "forwards");
+
+    expect(iterator1.peek()).toBeNull();
+
+    const iterator2Result = iterator2.take();
+    expect(iterator2Result.trip.gtfsTripId).toEqual("trip-2");
+    expect(iterator2.peek()).toBeNull();
+
+    expect(iterator1.getStats().blockSearchesRan).toBe(2);
+    expect(iterator2.getStats().blockSearchesRan).toBe(2);
+  });
+
   it("works in reverse", () => {
     const builder = blockBuilder([
       trip({ tripId: "trip-1", departureTime: "04:00:00" }),

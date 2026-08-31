@@ -133,7 +133,6 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     const maxScans = this._options.maximumNumberOfScans;
     let scansPerformed = 0;
 
-    // TODO: Test the maxScans limit.
     while (
       (bestValue == null || !this._searchRange.includes(bestValue.instant)) &&
       this._areMoreBlocksAvailable() &&
