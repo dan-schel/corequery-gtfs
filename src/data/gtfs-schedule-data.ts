@@ -59,7 +59,6 @@ export class GtfsScheduleData {
     return calendar;
   }
 
-  // TODO: Weird. It should be a normal with().
   withIgnoredTripIds(newIgnoredTripIds: readonly string[]): GtfsScheduleData {
     return new GtfsScheduleData(
       this._trips,
