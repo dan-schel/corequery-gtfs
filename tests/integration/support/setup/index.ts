@@ -8,8 +8,6 @@ import type z from "zod";
 import {
   calendarCsvSchema,
   calendarDatesCsvSchema,
-  routesCsvSchema,
-  stopsCsvSchema,
   stopTimesCsvSchema,
   transfersCsvSchema,
   tripsCsvSchema,
@@ -32,8 +30,6 @@ export async function setupIntegrationTest(dirname: string) {
     return await readCsv(path.join(dirname, "gtfs", csvFileName), schema);
   }
   const scheduleData: GtfsFeedCsv = {
-    stops: await read("stops.txt", stopsCsvSchema),
-    routes: await read("routes.txt", routesCsvSchema),
     trips: await read("trips.txt", tripsCsvSchema),
     stopTimes: await read("stop_times.txt", stopTimesCsvSchema),
     calendar: await read("calendar.txt", calendarCsvSchema),

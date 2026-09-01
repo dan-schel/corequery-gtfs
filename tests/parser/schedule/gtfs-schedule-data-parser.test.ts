@@ -87,8 +87,6 @@ describe("GtfsScheduleParser", () => {
       {
         calendar: [CALENDAR],
         calendarDates: [],
-        routes: [],
-        stops: [],
         trips: [TRIP],
         stopTimes: [STOP_TIME_1, STOP_TIME_2],
         transfers: [],
