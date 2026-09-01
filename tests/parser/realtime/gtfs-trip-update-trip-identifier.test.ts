@@ -21,7 +21,7 @@ const TRIP = GtfsScheduledTrip.simple({
   terminationTime: GtfsStopTime.parse("00:02:00"),
 });
 
-const SCHEDULE = new GtfsScheduleData([TRIP], [TRIP.calendar]);
+const SCHEDULE = GtfsScheduleData.fromTrips([TRIP]);
 
 const TRIP_DESCRIPTOR = {
   tripId: TRIP.gtfsTripId,
@@ -105,10 +105,7 @@ describe("GtfsTripUpdateTripIdentifier", () => {
         [],
       ),
     });
-    const schedule = new GtfsScheduleData(
-      [tripOutsideDate],
-      [tripOutsideDate.calendar],
-    );
+    const schedule = GtfsScheduleData.fromTrips([tripOutsideDate]);
 
     const tripDescriptor = {
       ...TRIP_DESCRIPTOR,
@@ -137,10 +134,7 @@ describe("GtfsTripUpdateTripIdentifier", () => {
         }),
       ],
     });
-    const schedule = new GtfsScheduleData(
-      [overnightTrip],
-      [overnightTrip.calendar],
-    );
+    const schedule = GtfsScheduleData.fromTrips([overnightTrip]);
 
     const tripDescriptor = {
       ...TRIP_DESCRIPTOR,
@@ -172,5 +166,17 @@ describe("GtfsTripUpdateTripIdentifier", () => {
     expect(errors[0]).toBeInstanceOf(
       TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError,
     );
+  });
+
+  it("doesn't report trip IDs that do not exist in the schedule if they were ignored intentionally when parsing the schedule", () => {
+    const errors: GtfsTripUpdateTripIdentificationError[] = [];
+    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+
+    const tripDescriptor = { ...TRIP_DESCRIPTOR, tripId: "missing-trip" };
+    const schedule = SCHEDULE.withIgnoredTripIds(["missing-trip"]);
+    const result = identifier.identify(tripDescriptor, schedule);
+
+    expect(result).toBeNull();
+    expect(errors).toEqual([]);
   });
 });

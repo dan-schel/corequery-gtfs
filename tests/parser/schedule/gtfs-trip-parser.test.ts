@@ -85,7 +85,7 @@ describe("GtfsTripParser", () => {
     const tripsCsv = [TRIP_ROW];
     const stopTimesCsv = [STOP_TIME_1, STOP_TIME_2];
 
-    const trips = parser.parse(
+    const { parsedTrips, ignoredTripIds } = parser.parse(
       tripsCsv,
       stopTimesCsv,
       [],
@@ -95,9 +95,10 @@ describe("GtfsTripParser", () => {
     );
 
     expect(errors).toEqual([]);
-    expect(trips).toHaveLength(1);
+    expect(parsedTrips).toHaveLength(1);
+    expect(ignoredTripIds).toEqual([]);
 
-    const trip = trips[0];
+    const trip = parsedTrips[0];
     if (trip == null) throw new Error();
 
     expect(trip.gtfsTripId).toBe("trip-1");
@@ -144,7 +145,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(MultipleStopSequencesError);
@@ -176,7 +177,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(DuplicateTripIdError);
@@ -205,7 +206,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(StopTimeReferencesNonExistentTripError);
@@ -230,7 +231,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TripReferencesNonExistentCalendarError);
@@ -255,7 +256,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TripReferencesUnmappedRouteIdError);
@@ -310,7 +311,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toEqual([]);
     expect(trips).toHaveLength(1);
@@ -367,7 +368,7 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toEqual([]);
     expect(trips).toHaveLength(1);
@@ -424,12 +425,51 @@ describe("GtfsTripParser", () => {
       [CALENDAR_EVERYDAY],
       LINE_GTFS_ID_MAPPING,
       STOP_GTFS_ID_MAPPING,
-    );
+    ).parsedTrips;
 
     expect(errors).toEqual([]);
     expect(trips).toHaveLength(1);
     const trip = itsOk(trips[0]);
     expect(trip.lineIds).toStrictEqual([LINE_ID]);
     expect(trip.serviceTags).toStrictEqual([7]);
+  });
+
+  it("outputs ignored trip IDs for any replacement bus lines", () => {
+    const lineGtfsIdMapping = new LineGtfsIdMapping(
+      new Map([
+        [
+          LINE_ID,
+          new LineGtfsIdCollection(
+            LINE_ID,
+            LINE_GTFS_ID,
+            [],
+            ["line-1-replacement-bus"],
+          ),
+        ],
+      ]),
+    );
+
+    const errors: GtfsTripParsingError[] = [];
+    const parser = new GtfsTripParser(
+      LINE_ROUTES_MAPPING,
+      BONUS_LINES_MAPPING,
+      (e) => errors.push(e),
+    );
+
+    const tripsCsv = [{ ...TRIP_ROW, route_id: "line-1-replacement-bus" }];
+    const stopTimesCsv = [STOP_TIME_1, STOP_TIME_2];
+
+    const { parsedTrips, ignoredTripIds } = parser.parse(
+      tripsCsv,
+      stopTimesCsv,
+      [],
+      [CALENDAR_EVERYDAY],
+      lineGtfsIdMapping,
+      STOP_GTFS_ID_MAPPING,
+    );
+
+    expect(errors).toEqual([]);
+    expect(parsedTrips).toEqual([]);
+    expect(ignoredTripIds).toHaveLength(1);
   });
 });

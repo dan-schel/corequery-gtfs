@@ -53,11 +53,12 @@ export class GtfsTripParser {
     calendars: readonly GtfsCalendar[],
     lineGtfsIdMapping: LineGtfsIdMapping,
     stopGtfsIdMapping: StopGtfsIdMapping,
-  ): readonly GtfsScheduledTrip[] {
+  ) {
     const calendarMap = this._buildCalendarMap(calendars);
     const rowsByTrip = this._organiseStopTimesIntoTrips(trips, stopTimes);
 
     const unconnectedTrips: GtfsScheduledTrip[] = [];
+    const ignoredTripIds: string[] = [];
 
     for (const { trip, stopTimes } of rowsByTrip) {
       const calendar = calendarMap.get(trip.service_id);
@@ -72,7 +73,10 @@ export class GtfsTripParser {
         continue;
       }
 
-      if (lineIdMatch.type === "replacement-bus") continue;
+      if (lineIdMatch.type === "replacement-bus") {
+        ignoredTripIds.push(trip.trip_id);
+        continue;
+      }
 
       const normalizedStopTimes = this._stopTimeNormaliser.normalise(stopTimes);
       // Stop time normaliser reports its own errors.
@@ -110,7 +114,10 @@ export class GtfsTripParser {
       );
     }
 
-    return this._transferConnector.connect(unconnectedTrips, transfers);
+    const parsedTrips: readonly GtfsScheduledTrip[] =
+      this._transferConnector.connect(unconnectedTrips, transfers);
+
+    return { parsedTrips, ignoredTripIds };
   }
 
   private _organiseStopTimesIntoTrips(

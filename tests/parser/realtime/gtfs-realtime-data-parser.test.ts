@@ -21,7 +21,7 @@ const TRIP = GtfsScheduledTrip.simple({
   terminationTime: GtfsStopTime.parse("00:02:00"),
 });
 
-const SCHEDULE = new GtfsScheduleData([TRIP], [TRIP.calendar]);
+const SCHEDULE = GtfsScheduleData.fromTrips([TRIP]);
 
 const TRIP_DESCRIPTOR = {
   tripId: TRIP.gtfsTripId,
