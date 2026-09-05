@@ -125,6 +125,7 @@ export class GtfsServiceSource<
       CorequeryServiceConnectionClass
     >({
       sourceId: fields.sourceId,
+      gtfsSystem: fields.gtfsSystem,
       buildDeparture: fields.buildDeparture,
       buildService: fields.buildService,
       buildTags: fields.buildTags,

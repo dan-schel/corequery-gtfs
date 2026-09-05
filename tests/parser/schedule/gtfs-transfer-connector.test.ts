@@ -1,11 +1,10 @@
-import { itsOk } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
 import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
 import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import {
-  type GtfsTransferConnectionError,
-  GtfsTransferConnector,
+  type GtfsTransferParsingError,
+  GtfsTransferParser,
   TransferIsNotInSeatTransferError,
   TransferReferencesNonExistentTrip,
   TransferIsNotFromTerminusError,
@@ -14,9 +13,9 @@ import {
   TransferIsNotSameStopAndPositionError,
   TransferCrossesCalendarsError,
   TransferRequiresTimeTravelError,
-} from "../../../src/parser/schedule/gtfs-transfer-connector.js";
+} from "../../../src/parser/schedule/gtfs-transfer-parser.js";
 
-describe("GtfsTransferConnector", () => {
+describe("GtfsTransferParser", () => {
   const TRIP_A = makeTripA("1", "2");
   const TRIP_B = makeTripB("2", "3");
   const TRANSFER = {
@@ -30,115 +29,103 @@ describe("GtfsTransferConnector", () => {
   const TRIPS = [TRIP_A, TRIP_B];
 
   it("connects trips using in-seat transfers", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
-    const result = connector.connect(TRIPS, [TRANSFER]);
+    const result = parser.parse(TRIPS, [TRANSFER]);
 
-    expect(result).toHaveLength(2);
-    expect(result[0]?.nextTrip?.gtfsTripId).toBe(TRIP_B.gtfsTripId);
-    expect(result[1]?.previousTrip?.gtfsTripId).toBe(TRIP_A.gtfsTripId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      type: "entire-vehicle-forms-service",
+      fromTripId: TRIP_A.gtfsTripId,
+      toTripId: TRIP_B.gtfsTripId,
+    });
     expect(errors).toEqual([]);
   });
 
   it("reports non in-seat transfers and leaves the trips disconnected", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const transfersCsv = [{ ...TRANSFER, transfer_type: 0 }];
-    const result = connector.connect(TRIPS, transfersCsv);
+    const result = parser.parse(TRIPS, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferIsNotInSeatTransferError);
   });
 
   it("reports transfers that reference a missing 'from' trip", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const transfersCsv = [{ ...TRANSFER, from_trip_id: "missing" }];
-    const result = connector.connect(TRIPS, transfersCsv);
+    const result = parser.parse(TRIPS, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferReferencesNonExistentTrip);
   });
 
   it("reports transfers that reference a missing 'to' trip", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const transfersCsv = [{ ...TRANSFER, to_trip_id: "missing" }];
-    const result = connector.connect(TRIPS, transfersCsv);
+    const result = parser.parse(TRIPS, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferReferencesNonExistentTrip);
   });
 
   it("reports transfers that do not start from the 'from' trip terminus", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const trips = [makeTripA("1", "2"), makeTripB("1", "3")];
     const transfersCsv = [{ ...TRANSFER, from_stop_id: "1", to_stop_id: "1" }];
-    const result = connector.connect(trips, transfersCsv);
+    const result = parser.parse(trips, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferIsNotFromTerminusError);
   });
 
   it("reports transfers that do not end at the 'to' trip origin", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const trips = [makeTripA("1", "2"), makeTripB("3", "2")];
     const transfersCsv = [{ ...TRANSFER, to_stop_id: "2", from_stop_id: "2" }];
-    const result = connector.connect(trips, transfersCsv);
+    const result = parser.parse(trips, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferIsNotToOriginError);
   });
 
   it("reports transfers involving trips that are already connected", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
-    const inputTrips = [
-      makeTripA("1", "2").with({
-        nextTrip: makeTrip({
-          gtfsTripId: "trip-c",
-          originGtfsStopId: "2",
-          terminusGtfsStopId: "3",
-          originDepartureTime: GtfsStopTime.parse("09:00:00"),
-          terminusArrivalTime: GtfsStopTime.parse("10:00:00"),
-        }),
-      }),
-      makeTripB("2", "3"),
-    ];
-    const transfersCsv = [TRANSFER];
+    const tripC = makeTripB("2", "4").with({ gtfsTripId: "trip-c" });
+    const tripCTransfer = { ...TRANSFER, to_trip_id: tripC.gtfsTripId };
 
-    const result = connector.connect(inputTrips, transfersCsv);
+    const inputTrips = [makeTripA("1", "2"), makeTripB("2", "3"), tripC];
+    const transfersCsv = [tripCTransfer, TRANSFER];
 
-    expect(result).toHaveLength(2);
+    const result = parser.parse(inputTrips, transfersCsv);
 
-    // First come, first serve I guess. Trip A & C remain connected, but Trip B is left unconnected.
-    expect(result[0]?.nextTrip?.gtfsTripId).toBe("trip-c");
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(1);
 
+    // First come, first serve seems reasonable. Trip A & C get connected, but
+    // Trip B is left unconnected.
+    expect(result[0]).toMatchObject({
+      type: "entire-vehicle-forms-service",
+      fromTripId: "trip-a",
+      toTripId: "trip-c",
+    });
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(
       TransferReferencesTripAlreadyConnectedError,
@@ -146,23 +133,21 @@ describe("GtfsTransferConnector", () => {
   });
 
   it("reports transfers where the 'from' stop & position is different to the 'to' stop & position", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const trips = [makeTripA("1", "2"), makeTripB("3", "4")];
     const transfersCsv = [{ ...TRANSFER, from_stop_id: "2", to_stop_id: "3" }];
-    const result = connector.connect(trips, transfersCsv);
+    const result = parser.parse(trips, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferIsNotSameStopAndPositionError);
   });
 
   it("reports, but allows transfers that cross calendars", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const trips = [
       makeTripA("1", "2").with({
@@ -173,18 +158,21 @@ describe("GtfsTransferConnector", () => {
       }),
     ];
     const transfersCsv = [TRANSFER];
-    const result = connector.connect(trips, transfersCsv);
+    const result = parser.parse(trips, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip?.gtfsTripId).toBe("trip-b");
-    expect(itsOk(result[1]).previousTrip?.gtfsTripId).toBe("trip-a");
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      type: "entire-vehicle-forms-service",
+      fromTripId: "trip-a",
+      toTripId: "trip-b",
+    });
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferCrossesCalendarsError);
   });
 
   it("reports transfers that require time travel", () => {
-    const errors: GtfsTransferConnectionError[] = [];
-    const connector = new GtfsTransferConnector((e) => errors.push(e));
+    const errors: GtfsTransferParsingError[] = [];
+    const parser = new GtfsTransferParser((e) => errors.push(e));
 
     const tripA = makeTrip({
       gtfsTripId: "trip-a",
@@ -203,11 +191,9 @@ describe("GtfsTransferConnector", () => {
 
     const trips = [tripA, tripB];
     const transfersCsv = [TRANSFER];
-    const result = connector.connect(trips, transfersCsv);
+    const result = parser.parse(trips, transfersCsv);
 
-    expect(result).toHaveLength(2);
-    expect(itsOk(result[0]).nextTrip).toBeNull();
-    expect(itsOk(result[1]).previousTrip).toBeNull();
+    expect(result).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(TransferRequiresTimeTravelError);
   });

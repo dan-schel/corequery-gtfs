@@ -145,7 +145,7 @@ function trip({
 }
 
 function realtimeData(trips: GtfsUpdatedTrip[]) {
-  return new GtfsRealtimeData(trips);
+  return GtfsRealtimeData.fromTrips(trips);
 }
 
 function expectResults(

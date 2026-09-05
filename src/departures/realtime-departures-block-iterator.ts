@@ -37,37 +37,8 @@ export class RealtimeDeparturesBlockIterator extends DeparturesBlockIterator<
   }
 
   protected override _shouldSkipEntry(
-    entry: RealtimeDeparturesBlockEntry,
+    _entry: RealtimeDeparturesBlockEntry,
   ): boolean {
-    const { movement, trip } = entry;
-
-    // Even users not filtering arrivals won't be interested to see the same
-    // trip listed twice at stations like Flinders Street or Town Hall, once for
-    // the arrival and then again for the departure of the continuing trip. We
-    // just need to be sure the continuing trip is actually running!
-    //
-    // TODO: This needs to change too.
-    const isArrivalWhichContinues =
-      movement.type === "terminating" &&
-      trip.scheduledTrip.nextTrip != null &&
-      trip.scheduledTrip.nextTrip.calendar.occursOn(trip.serviceDay) &&
-      !this._isTripCancelled(
-        trip.scheduledTrip.nextTrip.gtfsTripId,
-        entry.trip.serviceDay,
-      );
-    if (isArrivalWhichContinues) return true;
-
     return false;
-  }
-
-  private _isTripCancelled(
-    tripId: string,
-    serviceDay: Temporal.PlainDate,
-  ): boolean {
-    const realtimeTrip = this._realtimeData.getForScheduledTrip(
-      tripId,
-      serviceDay,
-    );
-    return realtimeTrip?.isCancelled ?? false;
   }
 }
