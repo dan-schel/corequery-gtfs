@@ -35,7 +35,9 @@ export class GtfsScheduleData {
     this._calendarsById = new Map<string, GtfsCalendar>(
       calendars.map((calendar) => [calendar.gtfsCalendarId, calendar]),
     );
-    this._transfersMapping = GtfsTransferMapping.build(_transfers);
+    this._transfersMapping = GtfsTransferMapping.build(_transfers, (x) =>
+      x.getInvolvedTripIds(),
+    );
     this._ignoredTripIds = new Set<string>(ignoredTripIds);
   }
 
@@ -49,6 +51,10 @@ export class GtfsScheduleData {
 
   getCalendar(gtfsCalendarId: string): GtfsCalendar | null {
     return this._calendarsById.get(gtfsCalendarId) ?? null;
+  }
+
+  getTransfersForTrip(gtfsTripId: string): readonly GtfsTransfer[] {
+    return this._transfersMapping.forTripId(gtfsTripId);
   }
 
   isTripIgnored(gtfsTripId: string): boolean {

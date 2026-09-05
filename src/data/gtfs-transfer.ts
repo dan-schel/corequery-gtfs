@@ -1,8 +1,9 @@
 // Later if we want to support other transfer types, we can add them here!
 export type GtfsTransfer = GtfsEntireVehicleFormsServiceTransfer;
 
-export type IGtfsTransfer = {
+type IGtfsTransfer = {
   getInvolvedTripIds(): readonly string[];
+  equals(other: IGtfsTransfer): boolean;
 };
 
 type GtfsEntireVehicleFormsServiceTransferFields = {
@@ -25,5 +26,12 @@ export class GtfsEntireVehicleFormsServiceTransfer implements IGtfsTransfer {
 
   getInvolvedTripIds(): readonly string[] {
     return [this.fromTripId, this.toTripId];
+  }
+
+  equals(other: IGtfsTransfer): boolean {
+    if (!(other instanceof GtfsEntireVehicleFormsServiceTransfer)) return false;
+    return (
+      this.fromTripId === other.fromTripId && this.toTripId === other.toTripId
+    );
   }
 }

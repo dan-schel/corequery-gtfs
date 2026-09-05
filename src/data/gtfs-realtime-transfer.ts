@@ -1,23 +1,15 @@
-import type { GtfsTransfer, IGtfsTransfer } from "./gtfs-transfer.js";
+import type { GtfsTransfer } from "./gtfs-transfer.js";
 
-export class GtfsBrokenTransfer implements IGtfsTransfer {
+export class GtfsBrokenTransfer {
   constructor(
     readonly transfer: GtfsTransfer,
     readonly serviceDay: Temporal.PlainDate,
   ) {}
-
-  getInvolvedTripIds(): readonly string[] {
-    return this.transfer.getInvolvedTripIds();
-  }
 }
 
-export class GtfsAddedTransfer implements IGtfsTransfer {
+export class GtfsAddedTransfer {
   constructor(
     readonly transfer: GtfsTransfer,
     readonly serviceDay: Temporal.PlainDate,
   ) {}
-
-  getInvolvedTripIds(): readonly string[] {
-    return this.transfer.getInvolvedTripIds();
-  }
 }

@@ -24,7 +24,9 @@ export class GtfsTransferParser {
       trips.map((trip) => [trip.gtfsTripId, trip]),
     );
 
-    const result = new MutableGtfsTransferMapping<GtfsTransfer>();
+    const result = new MutableGtfsTransferMapping<GtfsTransfer>((x) =>
+      x.getInvolvedTripIds(),
+    );
 
     for (const transfer of transfers) {
       const fromTrip = tripMap.get(transfer.from_trip_id);

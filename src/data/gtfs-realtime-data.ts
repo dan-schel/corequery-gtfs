@@ -20,8 +20,14 @@ export class GtfsRealtimeData {
     this._tripsByScheduledTripId = new Map<string, GtfsUpdatedTrip>(
       _updatedTrips.map((trip) => [trip.scheduledTrip.gtfsTripId, trip]),
     );
-    this._brokenTransfersMapping = GtfsTransferMapping.build(_brokenTransfers);
-    this._addedTransfersMapping = GtfsTransferMapping.build(_addedTransfers);
+    this._brokenTransfersMapping = GtfsTransferMapping.build(
+      _brokenTransfers,
+      (x) => x.transfer.getInvolvedTripIds(),
+    );
+    this._addedTransfersMapping = GtfsTransferMapping.build(
+      _addedTransfers,
+      (x) => x.transfer.getInvolvedTripIds(),
+    );
   }
 
   // Or (GtfsUpdatedTrip | GtfsAddedTrip | GtfsCancelledTrip)[] one day.
@@ -42,5 +48,23 @@ export class GtfsRealtimeData {
     const trip = this._tripsByScheduledTripId.get(gtfsTripId);
     if (trip == null || !trip.serviceDay.equals(serviceDay)) return null;
     return trip;
+  }
+
+  getBrokenTransfersForTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): readonly GtfsBrokenTransfer[] {
+    return this._brokenTransfersMapping
+      .forTripId(gtfsTripId)
+      .filter((x) => x.serviceDay.equals(serviceDay));
+  }
+
+  getAddedTransfersForTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): readonly GtfsAddedTransfer[] {
+    return this._addedTransfersMapping
+      .forTripId(gtfsTripId)
+      .filter((x) => x.serviceDay.equals(serviceDay));
   }
 }
