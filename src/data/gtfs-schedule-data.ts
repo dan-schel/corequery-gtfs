@@ -74,9 +74,18 @@ export class GtfsScheduleData {
   withIgnoredTripIds(newIgnoredTripIds: readonly string[]): GtfsScheduleData {
     return new GtfsScheduleData(
       this._trips,
-      [...this._calendarsById.values()],
+      Array.from(this._calendarsById.values()),
       this._transfers,
       newIgnoredTripIds,
+    );
+  }
+
+  withTransfers(newTransfers: readonly GtfsTransfer[]): GtfsScheduleData {
+    return new GtfsScheduleData(
+      this._trips,
+      Array.from(this._calendarsById.values()),
+      newTransfers,
+      Array.from(this._ignoredTripIds),
     );
   }
 
