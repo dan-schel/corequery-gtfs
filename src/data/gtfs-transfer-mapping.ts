@@ -17,3 +17,30 @@ export class GtfsTransferMapping<T extends IGtfsTransfer> {
     return new GtfsTransferMapping(byTripId);
   }
 }
+
+export class MutableGtfsTransferMapping<T extends IGtfsTransfer> {
+  private readonly _map: Map<string, T[]>;
+  private readonly _array: T[];
+
+  constructor() {
+    this._map = new Map<string, T[]>();
+    this._array = [];
+  }
+
+  push(transfer: T): void {
+    this._array.push(transfer);
+    for (const tripId of transfer.getInvolvedTripIds()) {
+      const transfersInvolvingTrip = this._map.get(tripId) ?? [];
+      transfersInvolvingTrip.push(transfer);
+      this._map.set(tripId, transfersInvolvingTrip);
+    }
+  }
+
+  forTripId(tripId: string): readonly T[] {
+    return this._map.get(tripId) ?? [];
+  }
+
+  toArray(): readonly T[] {
+    return this._array;
+  }
+}

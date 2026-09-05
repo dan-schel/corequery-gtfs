@@ -37,7 +37,8 @@ export class GtfsRealtimeDataParser {
       }
     }
 
-    return new GtfsRealtimeData(updatedTrips);
+    // TODO: Cancelled trips should break transfers!
+    return new GtfsRealtimeData(updatedTrips, [], []);
   }
 }
 
