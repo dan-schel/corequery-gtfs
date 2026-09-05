@@ -45,6 +45,8 @@ export class RealtimeDeparturesBlockIterator extends DeparturesBlockIterator<
     // trip listed twice at stations like Flinders Street or Town Hall, once for
     // the arrival and then again for the departure of the continuing trip. We
     // just need to be sure the continuing trip is actually running!
+    //
+    // TODO: This needs to change too.
     const isArrivalWhichContinues =
       movement.type === "terminating" &&
       trip.scheduledTrip.nextTrip != null &&
