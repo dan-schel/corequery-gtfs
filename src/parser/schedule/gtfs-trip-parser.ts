@@ -18,7 +18,7 @@ import {
   type GtfsRouteMatchingError,
 } from "./gtfs-route-matcher.js";
 import {
-  type GtfsTransferConnectionError,
+  type GtfsTransferParsingError,
   GtfsTransferParser,
 } from "./gtfs-transfer-parser.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
@@ -222,7 +222,7 @@ export type GtfsTripParsingError =
   | TripReferencesUnmappedRouteIdError
   | GtfsStopTimeNormalisationError
   | GtfsRouteMatchingError
-  | GtfsTransferConnectionError;
+  | GtfsTransferParsingError;
 
 export class StopTimeReferencesNonExistentTripError {
   readonly type = "stop-time-references-non-existent-trip";

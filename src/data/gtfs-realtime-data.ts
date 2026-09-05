@@ -67,4 +67,8 @@ export class GtfsRealtimeData {
       .forTripId(gtfsTripId)
       .filter((x) => x.serviceDay.equals(serviceDay));
   }
+
+  static fromTrips(trips: readonly GtfsUpdatedTrip[]): GtfsRealtimeData {
+    return new GtfsRealtimeData(trips, [], []);
+  }
 }

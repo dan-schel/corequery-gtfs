@@ -13,7 +13,7 @@ const TRANSFER_TYPE_IN_SEAT_TRANSFER = 4;
 
 export class GtfsTransferParser {
   constructor(
-    private readonly _onError: (error: GtfsTransferConnectionError) => void,
+    private readonly _onError: (error: GtfsTransferParsingError) => void,
   ) {}
 
   parse(
@@ -154,7 +154,7 @@ export class GtfsTransferParser {
   }
 }
 
-export type GtfsTransferConnectionError =
+export type GtfsTransferParsingError =
   | TransferReferencesNonExistentTrip
   | TransferIsNotFromTerminusError
   | TransferIsNotToOriginError

@@ -85,7 +85,7 @@ describe("ScheduledDeparturesBlockIterator", () => {
   });
 
   it("skips departures that have realtime data", () => {
-    const rtData = new GtfsRealtimeData([
+    const rtData = GtfsRealtimeData.fromTrips([
       GtfsUpdatedTrip.unmodified(itsOk(MOVEMENTS[1]).trip, SERVICE_DAY, TZ),
     ]);
     const iterator = new ScheduledDeparturesBlockIterator(BLOCK, rtData);
@@ -100,7 +100,7 @@ describe("ScheduledDeparturesBlockIterator", () => {
   });
 
   it("only skips departures if the realtime data is for the same service day", () => {
-    const rtData = new GtfsRealtimeData([
+    const rtData = GtfsRealtimeData.fromTrips([
       GtfsUpdatedTrip.unmodified(itsOk(MOVEMENTS[1]).trip, NEXT_DAY, TZ),
     ]);
     const iterator = new ScheduledDeparturesBlockIterator(BLOCK, rtData);
