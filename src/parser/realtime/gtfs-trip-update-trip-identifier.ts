@@ -27,12 +27,15 @@ export class GtfsTripUpdateTripIdentifier {
 
     const trip = scheduleData.getTrip(tripDescriptor.tripId);
 
-    // TODO: We filter out trips from replacement bus services, so if we ever
-    // got a trip update for a replacement bus it would trigger this error, but
-    // we should probably ignore that case.
     if (trip == null) {
-      const Err = TripDescriptorReferencesNonExistentTripIdError;
-      this._onError(new Err(tripDescriptor));
+      // We might have intentionally ignored some trips when parsing the
+      // schedule, e.g. replacement buses, so if a trip update is for one of
+      // those it's not really an error. We should ignore it here too.
+      if (!scheduleData.isTripIgnored(tripDescriptor.tripId)) {
+        const Err = TripDescriptorReferencesNonExistentTripIdError;
+        this._onError(new Err(tripDescriptor));
+      }
+
       return null;
     }
 

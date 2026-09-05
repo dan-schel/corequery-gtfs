@@ -1,6 +1,5 @@
 import z from "zod";
 import {
-  floatStringSchema,
   gtfsBooleanSchema,
   gtfsDateSchema,
   gtfsStopTimeSchema,
@@ -9,31 +8,10 @@ import {
 import type {
   CalendarCsvRow,
   CalendarDatesCsvRow,
-  RoutesCsvRow,
-  StopsCsvRow,
   StopTimesCsvRow,
   TransfersCsvRow,
   TripsCsvRow,
 } from "../../../../src/data/raw/schedule-csvs.js";
-
-export const stopsCsvSchema: z.ZodType<StopsCsvRow> = z
-  .object({
-    stop_id: z.string(),
-    stop_name: z.string(),
-    stop_lat: floatStringSchema,
-    stop_lon: floatStringSchema,
-    stop_url: z.string(),
-    parent_station: z.string(),
-    platform_code: z.string().optional(),
-  })
-  .readonly();
-
-export const routesCsvSchema: z.ZodType<RoutesCsvRow> = z
-  .object({
-    route_id: z.string(),
-    route_long_name: z.string(),
-  })
-  .readonly();
 
 export const tripsCsvSchema: z.ZodType<TripsCsvRow> = z
   .object({

@@ -1,25 +1,5 @@
 import type { GtfsStopTime } from "../gtfs-stop-time.js";
 
-// TODO: [DS] Some stuff in there isn't relavent to corequery-gtfs, and is only
-// used by the gtfs linting scripts in trainquery-melbourne, so we can drop it
-// from these types.
-export type StopsCsvRow = {
-  readonly stop_id: string;
-  readonly stop_name: string;
-  readonly stop_lat: number;
-  readonly stop_lon: number;
-  readonly stop_url: string;
-  readonly parent_station: string;
-  readonly platform_code?: string;
-};
-type StopsCsv = readonly StopsCsvRow[];
-
-export type RoutesCsvRow = {
-  readonly route_id: string;
-  readonly route_long_name: string;
-};
-type RoutesCsv = readonly RoutesCsvRow[];
-
 export type TripsCsvRow = {
   readonly route_id: string;
   readonly service_id: string;
@@ -69,8 +49,6 @@ export type TransfersCsvRow = {
 export type TransfersCsv = readonly TransfersCsvRow[];
 
 export type GtfsFeedCsv = {
-  readonly stops: StopsCsv;
-  readonly routes: RoutesCsv;
   readonly trips: TripsCsv;
   readonly stopTimes: StopTimesCsv;
   readonly calendar: CalendarCsv;
