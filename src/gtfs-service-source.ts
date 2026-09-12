@@ -33,11 +33,11 @@ type GtfsServiceSourceFields<
 
   readonly departureIterationLimitHours: number | null;
 
-  buildDeparture: (
+  readonly buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
   ) => CorequeryDepartureClass;
 
-  buildService: (
+  readonly buildService: (
     fields: ServiceFields<
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
@@ -48,25 +48,25 @@ type GtfsServiceSourceFields<
     >,
   ) => CorequeryServiceClass;
 
-  buildTags: (tags: Set<number>) => CorequeryTagsClass;
+  readonly buildTags: (tags: Set<number>) => CorequeryTagsClass;
 
-  buildServiceOriginatingMovement: (
+  readonly buildServiceOriginatingMovement: (
     fields: ServiceOriginatingMovementFields,
   ) => CorequeryServiceOriginatingMovementClass;
 
-  buildServiceRegularMovement: (
+  readonly buildServiceRegularMovement: (
     fields: ServiceRegularMovementFields,
   ) => CorequeryServiceRegularMovementClass;
 
-  buildServiceTerminatingMovement: (
+  readonly buildServiceTerminatingMovement: (
     fields: ServiceTerminatingMovementFields,
   ) => CorequeryServiceTerminatingMovementClass;
 
-  buildServicePassingMovement: (
+  readonly buildServicePassingMovement: (
     fields: ServicePassingMovementFields,
   ) => CorequeryServicePassingMovementClass;
 
-  buildServiceConnection: (
+  readonly buildServiceConnection: (
     fields: ServiceConnectionFields,
   ) => CorequeryServiceConnectionClass;
 };

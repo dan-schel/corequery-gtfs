@@ -30,11 +30,11 @@ export type ServiceConverterFields<
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
 
-  buildDeparture: (
+  readonly buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
   ) => CorequeryDepartureClass;
 
-  buildService: (
+  readonly buildService: (
     fields: ServiceFields<
       CorequeryTagsClass,
       CorequeryServiceOriginatingMovementClass,
@@ -45,25 +45,25 @@ export type ServiceConverterFields<
     >,
   ) => CorequeryServiceClass;
 
-  buildTags: (tags: Set<number>) => CorequeryTagsClass;
+  readonly buildTags: (tags: Set<number>) => CorequeryTagsClass;
 
-  buildServiceOriginatingMovement: (
+  readonly buildServiceOriginatingMovement: (
     fields: ServiceOriginatingMovementFields,
   ) => CorequeryServiceOriginatingMovementClass;
 
-  buildServiceRegularMovement: (
+  readonly buildServiceRegularMovement: (
     fields: ServiceRegularMovementFields,
   ) => CorequeryServiceRegularMovementClass;
 
-  buildServiceTerminatingMovement: (
+  readonly buildServiceTerminatingMovement: (
     fields: ServiceTerminatingMovementFields,
   ) => CorequeryServiceTerminatingMovementClass;
 
-  buildServicePassingMovement: (
+  readonly buildServicePassingMovement: (
     fields: ServicePassingMovementFields,
   ) => CorequeryServicePassingMovementClass;
 
-  buildServiceConnection: (
+  readonly buildServiceConnection: (
     fields: ServiceConnectionFields,
   ) => CorequeryServiceConnectionClass;
 };
