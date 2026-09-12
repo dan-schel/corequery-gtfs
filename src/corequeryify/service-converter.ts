@@ -9,7 +9,7 @@ import type {
   ServiceConnectionFields,
 } from "../corequery-types.js";
 import { GtfsScheduledTrip } from "../data/gtfs-scheduled-trip.js";
-import type { DeparturesIteratorResult } from "../departures/departures-iterator.js";
+import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
 import { GtfsUpdatedTrip } from "../data/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
 import type { GtfsScheduledTripMovement } from "../data/gtfs-scheduled-trip-movements.js";

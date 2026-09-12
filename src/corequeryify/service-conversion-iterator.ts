@@ -1,4 +1,4 @@
-import type { DeparturesIterator } from "../departures/departures-iterator.js";
+import type { DeparturesIterator } from "../departures/iterator/departures-iterator.js";
 import type { ServiceConverter } from "./service-converter.js";
 
 export class ServiceConversionIterator<

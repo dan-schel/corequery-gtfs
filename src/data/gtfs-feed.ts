@@ -1,8 +1,8 @@
 import type { TimezoneData } from "../config/timezone-data.js";
-import type { DeparturesIteratorResult } from "../departures/departures-iterator.js";
-import { FilterIterator } from "../departures/filter-iterator.js";
+import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
+import { FilterIterator } from "../departures/iterator/filter-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
-import { ZipperDeparturesIterator } from "../departures/zipper-departures-iterator.js";
+import { ZipperDeparturesIterator } from "../departures/iterator/zipper-departures-iterator.js";
 import { GtfsRealtimeData } from "./gtfs-realtime-data.js";
 import { GtfsScheduleData } from "./gtfs-schedule-data.js";
 import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";

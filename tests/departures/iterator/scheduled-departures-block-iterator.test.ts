@@ -1,17 +1,17 @@
 import { itsOk } from "@dan-schel/js-utils";
 import { it, describe, expect } from "vitest";
-import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
-import { GtfsRealtimeData } from "../../src/data/gtfs-realtime-data.js";
-import { GtfsScheduleData } from "../../src/data/gtfs-schedule-data.js";
-import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
-import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
-import { GtfsUpdatedTrip } from "../../src/data/gtfs-updated-trip.js";
+import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
+import { GtfsRealtimeData } from "../../../src/data/gtfs-realtime-data.js";
+import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
+import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { GtfsUpdatedTrip } from "../../../src/data/gtfs-updated-trip.js";
 import {
   GtfsScheduledMovementsIndex,
   type GtfsScheduledMovementsIndexEntry,
-} from "../../src/departures/gtfs-scheduled-movements-index.js";
-import { ScheduledDeparturesBlockIterator } from "../../src/departures/scheduled-departures-block-iterator.js";
-import { ScheduledDeparturesBlock } from "../../src/departures/scheduled-departures-block.js";
+} from "../../../src/departures/gtfs-scheduled-movements-index.js";
+import { ScheduledDeparturesBlockIterator } from "../../../src/departures/iterator/scheduled-departures-block-iterator.js";
+import { ScheduledDeparturesBlock } from "../../../src/departures/scheduled-departures-block.js";
 
 describe("ScheduledDeparturesBlockIterator", () => {
   const MOVEMENTS = [

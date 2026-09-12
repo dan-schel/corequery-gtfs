@@ -2,8 +2,8 @@ import { DeparturesIteratorResult } from "./departures-iterator.js";
 import {
   RealtimeDeparturesBlock,
   type RealtimeDeparturesBlockEntry,
-} from "./realtime-departures-block.js";
-import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
+} from "../realtime-departures-block.js";
+import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
 import { DeparturesBlockIterator } from "./departures-block-iterator.js";
 
 export class RealtimeDeparturesBlockIterator extends DeparturesBlockIterator<

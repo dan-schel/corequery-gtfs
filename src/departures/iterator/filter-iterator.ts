@@ -1,4 +1,4 @@
-import type { DeparturesIterationDirection } from "../corequery-types.js";
+import type { DeparturesIterationDirection } from "../../corequery-types.js";
 import {
   DeparturesIterator,
   DeparturesIteratorResult,
