@@ -6,6 +6,8 @@ import {
 import type { DeparturesBlock } from "./departures-block.js";
 import type { DeparturesIterationDirection } from "../corequery-types.js";
 
+// TODO: Create a folder for iterators.
+
 export abstract class DeparturesBlockIterator<
   BlockType extends DeparturesBlock,
   EntryType,
