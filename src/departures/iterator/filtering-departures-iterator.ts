@@ -4,7 +4,7 @@ import {
   DeparturesIteratorResult,
 } from "./departures-iterator.js";
 
-export class FilterIterator extends DeparturesIterator {
+export class FilteringDeparturesIterator extends DeparturesIterator {
   constructor(
     private readonly _iterator: DeparturesIterator,
     private readonly _predicate: (result: DeparturesIteratorResult) => boolean,

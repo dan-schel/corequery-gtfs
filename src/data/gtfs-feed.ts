@@ -1,6 +1,6 @@
 import type { TimezoneData } from "../config/timezone-data.js";
 import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
-import { FilterIterator } from "../departures/iterator/filter-iterator.js";
+import { FilteringDeparturesIterator } from "../departures/iterator/filtering-departures-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
 import { ZipperDeparturesIterator } from "../departures/iterator/zipper-departures-iterator.js";
 import { GtfsRealtimeData } from "./gtfs-realtime-data.js";
@@ -101,7 +101,7 @@ export class GtfsFeed {
   }
 
   createDepartureIterator(stopId: number, iterationLimitHours: number | null) {
-    return new FilterIterator(
+    return new FilteringDeparturesIterator(
       ZipperDeparturesIterator.forFeed(
         stopId,
         this.scheduledMovementsIndex,

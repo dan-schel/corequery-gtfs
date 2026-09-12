@@ -5,10 +5,10 @@ import {
   DeparturesIteratorResult,
   DeparturesIterator,
 } from "../../../src/departures/iterator/departures-iterator.js";
-import { FilterIterator } from "../../../src/departures/iterator/filter-iterator.js";
+import { FilteringDeparturesIterator } from "../../../src/departures/iterator/filtering-departures-iterator.js";
 import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
 
-describe("FilterIterator", () => {
+describe("FilteringDeparturesIterator", () => {
   it("filters departures based on the predicate", () => {
     const iterator = new DummyIterator([
       departure({ instant: "2026-09-12T00:00:00Z", tripId: "A" }),
@@ -16,7 +16,7 @@ describe("FilterIterator", () => {
       departure({ instant: "2026-09-12T00:06:00Z", tripId: "C" }),
     ]);
 
-    const filterIterator = new FilterIterator(
+    const filterIterator = new FilteringDeparturesIterator(
       iterator,
       (result) => result.trip.gtfsTripId !== "B",
     );
@@ -42,7 +42,7 @@ describe("FilterIterator", () => {
       departure({ instant: "2026-09-12T00:06:00Z", tripId: "C" }),
     ]);
 
-    const filterIterator = new FilterIterator(
+    const filterIterator = new FilteringDeparturesIterator(
       iterator,
       (result) => result.trip.gtfsTripId !== "A",
     );
@@ -68,7 +68,7 @@ describe("FilterIterator", () => {
       departure({ instant: "2026-09-12T00:06:00Z", tripId: "C" }),
     ]);
 
-    const filterIterator = new FilterIterator(
+    const filterIterator = new FilteringDeparturesIterator(
       iterator,
       (result) => result.trip.gtfsTripId !== "C",
     );
