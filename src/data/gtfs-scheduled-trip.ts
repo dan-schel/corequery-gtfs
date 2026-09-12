@@ -100,7 +100,7 @@ export class GtfsScheduledTrip {
           positionId: null,
           departureTime: originationTime,
           gtfsIdMetadata: {
-            type: "parent",
+            type: "general",
             id: originGtfsStopId,
             stopId: originStopId,
           },
@@ -111,7 +111,7 @@ export class GtfsScheduledTrip {
           positionId: null,
           arrivalTime: terminationTime,
           gtfsIdMetadata: {
-            type: "parent",
+            type: "general",
             id: terminusGtfsStopId,
             stopId: terminusStopId,
           },

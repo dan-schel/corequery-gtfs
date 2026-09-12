@@ -1,325 +1,304 @@
 {
   "lineGtfsIds": {
     "6": {
-      "primary": "aus:vic:vic-01-TRN:",
-      "other": [
+      "general": [
+        "aus:vic:vic-01-TRN:",
         "aus:vic:vic-01-BDE:"
       ]
     },
     "15": {
-      "primary": "aus:vic:vic-01-SER:",
-      "other": [
+      "general": [
+        "aus:vic:vic-01-SER:",
         "aus:vic:vic-01-ABY:",
         "aus:vic:vic-01-SNH:"
       ]
     },
     "18": {
-      "primary": "aus:vic:vic-01-BGO:",
-      "other": [
+      "general": [
+        "aus:vic:vic-01-BGO:",
         "aus:vic:vic-01-ECH:",
         "aus:vic:vic-01-SWL:"
       ]
     },
     "19": {
-      "primary": "aus:vic:vic-01-BAT:",
-      "other": [
+      "general": [
+        "aus:vic:vic-01-BAT:",
         "aus:vic:vic-01-ART:",
         "aus:vic:vic-01-MBY:"
       ]
     },
     "20": {
-      "primary": "aus:vic:vic-01-GEL:",
-      "other": [
+      "general": [
+        "aus:vic:vic-01-GEL:",
         "aus:vic:vic-01-WBL:"
       ]
     }
   },
   "stopGtfsIds": {
     "4": {
-      "parent": "nsw:rail:ABY",
       "general": [
+        "nsw:rail:ABY",
         "20287"
       ]
     },
     "8": {
-      "parent": "vic:rail:ART",
       "general": [
+        "vic:rail:ART",
         "20288"
       ]
     },
     "9": {
-      "parent": "vic:rail:ARR",
       "general": [
+        "vic:rail:ARR",
         "20020"
       ]
     },
     "15": {
-      "parent": "vic:rail:AVL",
       "general": [
+        "vic:rail:AVL",
         "20289"
       ]
     },
     "16": {
-      "parent": "vic:rail:BAH",
       "general": [
+        "vic:rail:BAH",
         "20290"
       ]
     },
     "17": {
-      "parent": "vic:rail:BDE",
       "general": [
+        "vic:rail:BDE",
         "20291"
       ]
     },
     "19": {
-      "parent": "vic:rail:BLN",
       "general": [
+        "vic:rail:BLN",
         "20292"
       ]
     },
     "20": {
-      "parent": "vic:rail:BAT-V",
       "general": [
+        "vic:rail:BAT-V",
         "20293"
       ]
     },
     "25": {
-      "parent": "vic:rail:BET",
       "general": [
+        "vic:rail:BET",
         "20294"
       ]
     },
     "28": {
-      "parent": "vic:rail:BXA",
       "general": [
+        "vic:rail:BXA",
         "20295"
       ]
     },
     "29": {
-      "parent": "vic:rail:BGO",
       "general": [
+        "vic:rail:BGO",
         "20296"
       ]
     },
     "31": {
-      "parent": "vic:rail:BEW",
       "general": [
+        "vic:rail:BEW",
         "22251",
         "27882",
         "27883",
         "12178",
         "12179"
-      ],
-      "replacementBus": [
-        "26119"
       ]
     },
     "32": {
-      "parent": "vic:rail:BGE",
       "general": [
+        "vic:rail:BGE",
         "20297"
       ]
     },
     "39": {
-      "parent": "vic:rail:BRF",
       "general": [
+        "vic:rail:BRF",
         "20298"
       ]
     },
     "40": {
-      "parent": "vic:rail:BMS",
       "general": [
+        "vic:rail:BMS",
         "22254",
         "15529",
         "15530",
         "26500"
-      ],
-      "replacementBus": [
-        "26126"
       ]
     },
     "42": {
-      "parent": "vic:rail:BYP",
       "general": [
+        "vic:rail:BYP",
         "20299"
       ]
     },
     "46": {
-      "parent": "vic:rail:CPD",
       "general": [
+        "vic:rail:CPD",
         "20300"
       ]
     },
     "50": {
-      "parent": "vic:rail:RVH",
       "general": [
+        "vic:rail:RVH",
         "52011"
       ]
     },
     "52": {
-      "parent": "vic:rail:CME",
       "general": [
+        "vic:rail:CME",
         "20301"
       ]
     },
     "53": {
-      "parent": "vic:rail:CFD",
       "general": [
+        "vic:rail:CFD",
         "22248",
         "14251",
         "14252",
         "14253",
         "14254"
-      ],
-      "replacementBus": [
-        "26135"
       ]
     },
     "57": {
-      "parent": "vic:rail:CHI",
       "general": [
+        "vic:rail:CHI",
         "20302"
       ]
     },
     "58": {
-      "parent": "vic:rail:CKF",
       "general": [
+        "vic:rail:CKF",
         "20303"
       ]
     },
     "59": {
-      "parent": "vic:rail:CLA",
       "general": [
+        "vic:rail:CLA",
         "22249",
         "13718",
         "13719"
-      ],
-      "replacementBus": [
-        "26139"
       ]
     },
     "61": {
-      "parent": "vic:rail:CLU",
       "general": [
+        "vic:rail:CLU",
         "44952"
       ]
     },
     "62": {
-      "parent": "vic:rail:TLN",
       "general": [
+        "vic:rail:TLN",
         "48804"
       ]
     },
     "64": {
-      "parent": "vic:rail:COL",
       "general": [
+        "vic:rail:COL",
         "20304"
       ]
     },
     "67": {
-      "parent": "vic:rail:COR",
       "general": [
+        "vic:rail:COR",
         "20305"
       ]
     },
     "68": {
-      "parent": "vic:rail:CGB",
       "general": [
+        "vic:rail:CGB",
         "20029",
         "15527",
         "15528"
-      ],
-      "replacementBus": [
-        "26144"
       ]
     },
     "70": {
-      "parent": "vic:rail:CWK",
       "general": [
+        "vic:rail:CWK",
         "44951"
       ]
     },
     "74": {
-      "parent": "vic:rail:DNG",
       "general": [
+        "vic:rail:DNG",
         "22250",
         "12187",
         "12188",
         "12189"
-      ],
-      "replacementBus": [
-        "26149"
       ]
     },
     "77": {
-      "parent": "vic:rail:DEK",
       "general": [
+        "vic:rail:DEK",
         "19982"
       ]
     },
     "81": {
-      "parent": "vic:rail:DGE",
       "general": [
+        "vic:rail:DGE",
         "20306"
       ]
     },
     "82": {
-      "parent": "vic:rail:DBK",
       "general": [
+        "vic:rail:DBK",
         "20307"
       ]
     },
     "83": {
-      "parent": "vic:rail:DRN",
       "general": [
+        "vic:rail:DRN",
         "20308"
       ]
     },
     "84": {
-      "parent": "vic:rail:EHK",
       "general": [
+        "vic:rail:EHK",
         "20309"
       ]
     },
     "89": {
-      "parent": "vic:rail:ECH",
       "general": [
+        "vic:rail:ECH",
         "20310"
       ]
     },
     "91": {
-      "parent": "vic:rail:EME",
       "general": [
+        "vic:rail:EME",
         "20311"
       ]
     },
     "95": {
-      "parent": "vic:rail:EPM",
       "general": [
+        "vic:rail:EPM",
         "47642"
       ]
     },
     "96": {
-      "parent": "vic:rail:ESD",
       "general": [
+        "vic:rail:ESD",
         "22253",
         "15543",
         "15544",
         "15545"
-      ],
-      "replacementBus": [
-        "26164"
       ]
     },
     "97": {
-      "parent": "vic:rail:EOA",
       "general": [
+        "vic:rail:EOA",
         "20312"
       ]
     },
     "104": {
-      "parent": "vic:rail:FSS",
       "general": [
+        "vic:rail:FSS",
         "22238",
         "11212",
         "11213",
@@ -333,14 +312,11 @@
         "12203",
         "12202",
         "12201"
-      ],
-      "replacementBus": [
-        "26170"
       ]
     },
     "105": {
-      "parent": "vic:rail:FSY",
       "general": [
+        "vic:rail:FSY",
         "22240",
         "15518",
         "15519",
@@ -348,158 +324,155 @@
         "15521",
         "26508",
         "26509"
-      ],
-      "replacementBus": [
-        "26171"
       ]
     },
     "109": {
-      "parent": "vic:rail:GFD",
       "general": [
+        "vic:rail:GFD",
         "20313"
       ]
     },
     "110": {
-      "parent": "vic:rail:GEL",
       "general": [
+        "vic:rail:GEL",
         "20314"
       ]
     },
     "112": {
-      "parent": "vic:rail:GIS",
       "general": [
+        "vic:rail:GIS",
         "20315"
       ]
     },
     "119": {
-      "parent": "vic:rail:GRG",
       "general": [
+        "vic:rail:GRG",
         "51809"
       ]
     },
     "129": {
-      "parent": "vic:rail:HCJ",
       "general": [
+        "vic:rail:HCJ",
         "20316"
       ]
     },
     "146": {
-      "parent": "vic:rail:KFT",
       "general": [
+        "vic:rail:KFT",
         "20317"
       ]
     },
     "150": {
-      "parent": "vic:rail:KER",
       "general": [
+        "vic:rail:KER",
         "20318"
       ]
     },
     "151": {
-      "parent": "vic:rail:KET",
       "general": [
+        "vic:rail:KET",
         "20319"
       ]
     },
     "153": {
-      "parent": "vic:rail:KYN",
       "general": [
+        "vic:rail:KYN",
         "20320"
       ]
     },
     "156": {
-      "parent": "vic:rail:LRA",
       "general": [
+        "vic:rail:LRA",
         "20321"
       ]
     },
     "160": {
-      "parent": "vic:rail:LRR",
       "general": [
+        "vic:rail:LRR",
         "20323"
       ]
     },
     "161": {
-      "parent": "vic:rail:LWY",
       "general": [
+        "vic:rail:LWY",
         "20324"
       ]
     },
     "164": {
-      "parent": "vic:rail:MDN",
       "general": [
+        "vic:rail:MDN",
         "20325"
       ]
     },
     "166": {
-      "parent": "vic:rail:MBY",
       "general": [
+        "vic:rail:MBY",
         "20326"
       ]
     },
     "168": {
-      "parent": "vic:rail:MAS",
       "general": [
+        "vic:rail:MAS",
         "20327"
       ]
     },
     "169": {
-      "parent": "vic:rail:MYB",
       "general": [
+        "vic:rail:MYB",
         "44953"
       ]
     },
     "172": {
-      "parent": "vic:rail:MEL",
       "general": [
+        "vic:rail:MEL",
         "19980"
       ]
     },
     "182": {
-      "parent": "vic:rail:MOE",
       "general": [
+        "vic:rail:MOE",
         "20328"
       ]
     },
     "188": {
-      "parent": "vic:rail:MPA",
       "general": [
+        "vic:rail:MPA",
         "20329"
       ]
     },
     "192": {
-      "parent": "vic:rail:MWL",
       "general": [
+        "vic:rail:MWL",
         "20330"
       ]
     },
     "194": {
-      "parent": "vic:rail:MST",
       "general": [
+        "vic:rail:MST",
         "20331"
       ]
     },
     "196": {
-      "parent": "vic:rail:NGE",
       "general": [
+        "vic:rail:NGE",
         "20332"
       ]
     },
     "197": {
-      "parent": "vic:rail:NNG",
       "general": [
+        "vic:rail:NNG",
         "20333"
       ]
     },
     "203": {
-      "parent": "vic:rail:NGL",
       "general": [
+        "vic:rail:NGL",
         "20334"
       ]
     },
     "204": {
-      "parent": "vic:rail:NME",
       "general": [
+        "vic:rail:NME",
         "22239",
         "14324",
         "14325",
@@ -507,37 +480,31 @@
         "14327",
         "14328",
         "14329"
-      ],
-      "replacementBus": [
-        "26245"
       ]
     },
     "206": {
-      "parent": "vic:rail:NSH",
       "general": [
+        "vic:rail:NSH",
         "20335"
       ]
     },
     "214": {
-      "parent": "vic:rail:PKM",
       "general": [
+        "vic:rail:PKM",
         "22252",
         "12172",
         "12173"
-      ],
-      "replacementBus": [
-        "26254"
       ]
     },
     "221": {
-      "parent": "vic:rail:PYD",
       "general": [
+        "vic:rail:PYD",
         "20336"
       ]
     },
     "224": {
-      "parent": "vic:rail:RMD",
       "general": [
+        "vic:rail:RMD",
         "22247",
         "12253",
         "12254",
@@ -549,68 +516,65 @@
         "12260",
         "12261",
         "12262"
-      ],
-      "replacementBus": [
-        "26263"
       ]
     },
     "225": {
-      "parent": "vic:rail:RIK",
       "general": [
+        "vic:rail:RIK",
         "20337"
       ]
     },
     "230": {
-      "parent": "vic:rail:ROR",
       "general": [
+        "vic:rail:ROR",
         "20338"
       ]
     },
     "231": {
-      "parent": "vic:rail:RBK",
       "general": [
+        "vic:rail:RBK",
         "19981"
       ]
     },
     "233": {
-      "parent": "vic:rail:ROE",
       "general": [
+        "vic:rail:ROE",
         "20339"
       ]
     },
     "238": {
-      "parent": "vic:rail:SAE",
       "general": [
+        "vic:rail:SAE",
         "20341"
       ]
     },
     "244": {
-      "parent": "vic:rail:SER",
       "general": [
+        "vic:rail:SER",
         "20342"
       ]
     },
     "245": {
-      "parent": "vic:rail:SNH",
       "general": [
+        "vic:rail:SNH",
         "20343"
       ]
     },
     "246": {
-      "parent": "vic:rail:SDP",
       "general": [
+        "vic:rail:SDP",
         "22257"
       ]
     },
     "249": {
-      "parent": "vic:rail:SOG",
       "general": [
+        "vic:rail:SOG",
         "20344"
       ]
     },
     "253": {
-      "parent": "vic:rail:SSS",
       "general": [
+        "vic:rail:SSS",
         "20043",
         "22181",
         "22182",
@@ -628,206 +592,191 @@
         "26524",
         "26525",
         "26526"
-      ],
-      "replacementBus": [
-        "26282"
       ]
     },
     "256": {
-      "parent": "vic:rail:SHT",
       "general": [
+        "vic:rail:SHT",
         "22490"
       ]
     },
     "260": {
-      "parent": "vic:rail:STD",
       "general": [
+        "vic:rail:STD",
         "20346"
       ]
     },
     "262": {
-      "parent": "vic:rail:SUY",
       "general": [
+        "vic:rail:SUY",
         "19998",
         "15352",
         "26529"
-      ],
-      "replacementBus": [
-        "26289"
       ]
     },
     "263": {
-      "parent": "vic:rail:SUN",
       "general": [
+        "vic:rail:SUN",
         "22241",
         "26530",
         "26531",
         "26532",
         "26533"
-      ],
-      "replacementBus": [
-        "26290"
       ]
     },
     "265": {
-      "parent": "vic:rail:SWL",
       "general": [
+        "vic:rail:SWL",
         "20347"
       ]
     },
     "267": {
-      "parent": "vic:rail:TAT",
       "general": [
+        "vic:rail:TAT",
         "47482"
       ]
     },
     "268": {
-      "parent": "vic:rail:TOK",
       "general": [
+        "vic:rail:TOK",
         "20348"
       ]
     },
     "269": {
-      "parent": "vic:rail:TNT",
       "general": [
+        "vic:rail:TNT",
         "47648"
       ]
     },
     "271": {
-      "parent": "vic:rail:TER",
       "general": [
+        "vic:rail:TER",
         "20349"
       ]
     },
     "277": {
-      "parent": "vic:rail:TAR",
       "general": [
+        "vic:rail:TAR",
         "20350"
       ]
     },
     "278": {
-      "parent": "vic:rail:TRN",
       "general": [
+        "vic:rail:TRN",
         "20351"
       ]
     },
     "280": {
-      "parent": "vic:rail:TYN",
       "general": [
+        "vic:rail:TYN",
         "20352"
       ]
     },
     "285": {
-      "parent": "vic:rail:VTN",
       "general": [
+        "vic:rail:VTN",
         "20353"
       ]
     },
     "286": {
-      "parent": "vic:rail:WAN",
       "general": [
+        "vic:rail:WAN",
         "17204"
       ]
     },
     "287": {
-      "parent": "vic:rail:WDG",
       "general": [
+        "vic:rail:WDG",
         "20355"
       ]
     },
     "288": {
-      "parent": "vic:rail:WRT",
       "general": [
+        "vic:rail:WRT",
         "20356"
       ]
     },
     "289": {
-      "parent": "vic:rail:WGL",
       "general": [
+        "vic:rail:WGL",
         "20357"
       ]
     },
     "290": {
-      "parent": "vic:rail:WBL",
       "general": [
+        "vic:rail:WBL",
         "20358"
       ]
     },
     "291": {
-      "parent": "vic:rail:WGS",
       "general": [
+        "vic:rail:WGS",
         "22244",
         "15355",
         "15356",
         "15357"
-      ],
-      "replacementBus": [
-        "26304"
       ]
     },
     "294": {
-      "parent": "vic:rail:WPP",
       "general": [
+        "vic:rail:WPP",
         "47641"
       ]
     },
     "295": {
-      "parent": "vic:rail:WED",
       "general": [
+        "vic:rail:WED",
         "43469"
       ]
     },
     "306": {
-      "parent": "vic:rail:WIA",
       "general": [
+        "vic:rail:WIA",
         "20359"
       ]
     },
     "308": {
-      "parent": "vic:rail:WOD",
       "general": [
+        "vic:rail:WOD",
         "20360"
       ]
     },
     "309": {
-      "parent": "vic:rail:WNO",
       "general": [
+        "vic:rail:WNO",
         "20361"
       ]
     },
     "310": {
-      "parent": "vic:rail:WVL",
       "general": [
+        "vic:rail:WVL",
         "47647"
       ]
     },
     "311": {
-      "parent": "vic:rail:YON",
       "general": [
+        "vic:rail:YON",
         "20362"
       ]
     },
     "314": {
-      "parent": "vic:rail:HUY",
       "general": [
+        "vic:rail:HUY",
         "49296"
       ]
     },
     "315": {
-      "parent": "vic:rail:RAY",
       "general": [
+        "vic:rail:RAY",
         "49295"
       ]
     },
     "317": {
-      "parent": "vic:rail:EPH",
       "general": [
+        "vic:rail:EPH",
         "49848",
         "26506",
         "26507"
-      ],
-      "replacementBus": [
-        "26158"
       ]
     }
   },

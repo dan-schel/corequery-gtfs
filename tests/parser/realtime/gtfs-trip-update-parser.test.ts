@@ -18,7 +18,6 @@ import {
   NeitherTimeNorDelayGivenError,
   TimeAndDelayDisagreeWithEachOtherError,
   NeitherArrivalNorDepartureGivenError,
-  StopTimeUpdateEntryChangesPlatformError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 
 const TIMEZONE = "Australia/Melbourne";
@@ -43,8 +42,8 @@ const TRIP_DESCRIPTOR = {
 
 const STOP_MAPPING = new StopGtfsIdMapping(
   new Map([
-    [1, StopGtfsIdCollection.withParentOnly(1, "stop-1")],
-    [2, StopGtfsIdCollection.withParentOnly(2, "stop-2")],
+    [1, StopGtfsIdCollection.simple(1, "stop-1")],
+    [2, StopGtfsIdCollection.simple(2, "stop-2")],
   ]),
 );
 
@@ -429,18 +428,18 @@ describe("GtfsTripUpdateParser", () => {
     expect(errors[0]).toBeInstanceOf(NeitherArrivalNorDepartureGivenError);
   });
 
-  it("allows platform changes when they still map to the same stop", () => {
+  it("allows positional ID changes when they still map to the same stop", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
 
-    const stop1Platforms = new Map([
+    const stop1PositionalIds = new Map([
       [1, ["1-PLATFORM-A"]],
       [2, ["1-PLATFORM-B"]],
     ]);
 
     const mapping = new StopGtfsIdMapping(
       new Map([
-        [1, new StopGtfsIdCollection(1, "1", [], stop1Platforms, [])],
-        [2, StopGtfsIdCollection.withParentOnly(2, "2")],
+        [1, new StopGtfsIdCollection(1, ["1"], stop1PositionalIds)],
+        [2, StopGtfsIdCollection.simple(2, "2")],
       ]),
     );
 
@@ -449,7 +448,7 @@ describe("GtfsTripUpdateParser", () => {
         TRIP.origination.with({
           positionId: 1,
           gtfsIdMetadata: {
-            type: "platform",
+            type: "positional",
             id: "1-PLATFORM-A",
             stopId: 1,
             positionId: 1,
@@ -482,12 +481,7 @@ describe("GtfsTripUpdateParser", () => {
     const parsed = parser.parse(tripUpdate, schedule);
 
     expect(parsed).not.toBeNull();
-
-    // Despite parsing everything just fine (we SUPPORT platform changes), we
-    // still log an "error" just for my curiousity to see if this ever actually
-    // happens.
-    expect(errors).toHaveLength(1);
-    expect(errors[0]).toBeInstanceOf(StopTimeUpdateEntryChangesPlatformError);
+    expect(errors).toHaveLength(0);
 
     const updatedFirstMovement = parsed?.movements[0];
     if (updatedFirstMovement?.type !== "originating")

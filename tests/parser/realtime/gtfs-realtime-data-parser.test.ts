@@ -41,9 +41,9 @@ const TRIP_1_DESCRIPTOR = {
 
 const STOP_MAPPING = new StopGtfsIdMapping(
   new Map([
-    [1, StopGtfsIdCollection.withParentOnly(1, "stop-1")],
-    [2, StopGtfsIdCollection.withParentOnly(2, "stop-2")],
-    [3, StopGtfsIdCollection.withParentOnly(3, "stop-3")],
+    [1, StopGtfsIdCollection.simple(1, "stop-1")],
+    [2, StopGtfsIdCollection.simple(2, "stop-2")],
+    [3, StopGtfsIdCollection.simple(3, "stop-3")],
   ]),
 );
 

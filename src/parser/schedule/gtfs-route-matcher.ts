@@ -165,7 +165,7 @@ export class GtfsRouteMatcher {
       }
 
       const positionId =
-        gtfsIdMetadata.type === "platform" ? gtfsIdMetadata.positionId : null;
+        gtfsIdMetadata.type === "positional" ? gtfsIdMetadata.positionId : null;
 
       const picksUp = this._doesPickUp(stopTime);
       const dropsOff = this._doesDropOff(stopTime);

@@ -23,14 +23,12 @@ describe("GtfsTripParser", () => {
   const LINE_GTFS_ID = "line-1";
 
   const LINE_GTFS_ID_MAPPING = new LineGtfsIdMapping(
-    new Map([
-      [LINE_ID, LineGtfsIdCollection.withParentOnly(LINE_ID, LINE_GTFS_ID)],
-    ]),
+    new Map([[LINE_ID, LineGtfsIdCollection.simple(LINE_ID, LINE_GTFS_ID)]]),
   );
   const STOP_GTFS_ID_MAPPING = new StopGtfsIdMapping(
     new Map([
-      [1, StopGtfsIdCollection.withParentOnly(1, "1")],
-      [2, StopGtfsIdCollection.withParentOnly(2, "2")],
+      [1, StopGtfsIdCollection.simple(1, "1")],
+      [2, StopGtfsIdCollection.simple(2, "2")],
     ]),
   );
 
@@ -434,15 +432,14 @@ describe("GtfsTripParser", () => {
     expect(trip.serviceTags).toStrictEqual([7]);
   });
 
-  it("outputs ignored trip IDs for any replacement bus lines", () => {
+  it("outputs ignored trip IDs for any ignored line IDs", () => {
     const lineGtfsIdMapping = new LineGtfsIdMapping(
       new Map([
         [
           LINE_ID,
           new LineGtfsIdCollection(
             LINE_ID,
-            LINE_GTFS_ID,
-            [],
+            [LINE_GTFS_ID],
             ["line-1-replacement-bus"],
           ),
         ],
