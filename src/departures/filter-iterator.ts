@@ -1,5 +1,4 @@
 import type { DeparturesIterationDirection } from "../corequery-types.js";
-import type { GtfsFeed } from "../data/gtfs-feed.js";
 import {
   DeparturesIterator,
   DeparturesIteratorResult,
