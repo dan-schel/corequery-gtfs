@@ -11,26 +11,6 @@ import type { RealtimeDataJson } from "./data/raw/realtime-data-json.js";
 import type { GtfsFeedCsv } from "./data/raw/schedule-csvs.js";
 
 export class GtfsSystem {
-  // TODO: The parsers are designed assuming that the same instance will be used
-  // to parse multiple feeds. I'm now thinking that this GtfsSystem class should
-  // house the feed, but only represent one GTFS feed so that it can be a
-  // departure source for Corequery just like any other, e.g. Corequery would
-  // have departure sources:
-  //
-  // - GTFS regional
-  // - GTFS suburban
-  // - PTV API
-  // - Static timetables
-  //
-  // And it would all be zipped together at the Corequery level. The advantage
-  // is that we don't have to track subfeed IDs within the GTFS systems, and we
-  // can say within Corequery itself that every service is uniquely identified
-  // by a source ID and service ID within that source.
-  //
-  // This is a long winded way of saying that I think GtfsFeedParser will
-  // probably only be used for one feed, and I should check if there's any
-  // reason I decided to make it reusable for multiple feeds (some expensive
-  // setup that I wanted to avoid repeating?).
   private readonly _parser: GtfsFeedParser;
 
   private _feed: GtfsFeed | null;
@@ -44,13 +24,15 @@ export class GtfsSystem {
     private readonly _bonusLinesMapping: BonusLinesMapping,
     private readonly _timezoneData: TimezoneData,
   ) {
-    this._parser = new GtfsFeedParser(
-      this._lineRoutesMapping,
-      this._bonusLinesMapping,
-      this._timezoneData,
-      (error) => this._onScheduledParsingError(error),
-      (error) => this._onRealtimeParsingError(error),
-    );
+    this._parser = new GtfsFeedParser({
+      lineRoutesMapping: this._lineRoutesMapping,
+      bonusLinesMapping: this._bonusLinesMapping,
+      lineGtfsIdMapping: this._lineGtfsIdMapping,
+      stopGtfsIdMapping: this._stopGtfsIdMapping,
+      timezoneData: this._timezoneData,
+      onScheduleParsingError: (error) => this._onScheduledParsingError(error),
+      onRealtimeParsingError: (error) => this._onRealtimeParsingError(error),
+    });
 
     this._feed = null;
     this._scheduleParsingErrors = [];
@@ -88,12 +70,7 @@ export class GtfsSystem {
     this._scheduleParsingErrors = [];
     this._realtimeParsingErrors = [];
 
-    const result = this._parser.parse(
-      scheduleCsvs,
-      realtimeJson,
-      this._lineGtfsIdMapping,
-      this._stopGtfsIdMapping,
-    );
+    const result = this._parser.parse(scheduleCsvs, realtimeJson);
 
     this._feed = result;
   }
@@ -106,7 +83,6 @@ export class GtfsSystem {
     const result = this._parser.updateWithNewRealtimeData(
       this._feed,
       realtimeJson,
-      this._stopGtfsIdMapping,
     );
 
     this._feed = result;

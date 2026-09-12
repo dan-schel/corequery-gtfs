@@ -77,23 +77,21 @@ describe("GtfsScheduleParser", () => {
   };
 
   it("builds a schedule from parsed calendars and trips", () => {
-    const parser = new GtfsScheduleDataParser(
-      LINE_ROUTES_MAPPING,
-      BONUS_LINES_MAPPING,
-      () => {},
-    );
+    const parser = new GtfsScheduleDataParser({
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      stopGtfsIdMapping: STOP_GTFS_ID_MAPPING,
+      onError: () => {},
+    });
 
-    const schedule = parser.parse(
-      {
-        calendar: [CALENDAR],
-        calendarDates: [],
-        trips: [TRIP],
-        stopTimes: [STOP_TIME_1, STOP_TIME_2],
-        transfers: [],
-      },
-      LINE_GTFS_ID_MAPPING,
-      STOP_GTFS_ID_MAPPING,
-    );
+    const schedule = parser.parse({
+      calendar: [CALENDAR],
+      calendarDates: [],
+      trips: [TRIP],
+      stopTimes: [STOP_TIME_1, STOP_TIME_2],
+      transfers: [],
+    });
 
     const trips = schedule.allTrips();
     expect(trips).toHaveLength(1);

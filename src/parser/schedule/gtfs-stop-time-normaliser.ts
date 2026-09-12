@@ -1,5 +1,9 @@
 import type { StopTimesCsv } from "../../data/raw/schedule-csvs.js";
 
+export type GtfsStopTimeNormaliserFields = {
+  onError: (error: GtfsStopTimeNormalisationError) => void;
+};
+
 /**
  * Responsible for checking that in a list of stop times, the stop_sequence
  * values start from 1 and increment by 1 each time. Where stop_sequence values
@@ -8,9 +12,11 @@ import type { StopTimesCsv } from "../../data/raw/schedule-csvs.js";
  * best as possible.
  */
 export class GtfsStopTimeNormaliser {
-  constructor(
-    private readonly _onError: (error: GtfsStopTimeNormalisationError) => void,
-  ) {}
+  private readonly _onError: (error: GtfsStopTimeNormalisationError) => void;
+
+  constructor(fields: GtfsStopTimeNormaliserFields) {
+    this._onError = fields.onError;
+  }
 
   normalise(unsortedStopTimes: StopTimesCsv): StopTimesCsv | null {
     const sortedStopTimes = [...unsortedStopTimes].sort(

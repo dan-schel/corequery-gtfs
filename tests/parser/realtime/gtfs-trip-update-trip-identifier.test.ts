@@ -45,7 +45,9 @@ function expectEqualDates(
 describe("GtfsTripUpdateTripIdentifier", () => {
   it("identifies a trip and service day from trip descriptor fields", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const result = identifier.identify(TRIP_DESCRIPTOR, SCHEDULE);
 
@@ -57,7 +59,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("reports missing tripId fields", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const tripDescriptor = { ...TRIP_DESCRIPTOR, tripId: undefined };
 
@@ -70,7 +74,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("reports trip IDs that do not exist in the schedule", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const tripDescriptor = { ...TRIP_DESCRIPTOR, tripId: "missing-trip" };
     const result = identifier.identify(tripDescriptor, SCHEDULE);
@@ -84,7 +90,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("reports start dates where the trip does not occur", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const neverOccurs = Temporal.PlainDate.from("2026-07-14");
     const tripOutsideDate = TRIP.with({
@@ -122,7 +130,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("identifies overnight trips where startTime is over 24:00:00", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const overnightTrip = TRIP.with({
       movements: [
@@ -152,7 +162,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("reports mismatching startTime values but still identifies the trip", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const tripDescriptor = {
       ...TRIP_DESCRIPTOR,
@@ -170,7 +182,9 @@ describe("GtfsTripUpdateTripIdentifier", () => {
 
   it("doesn't report trip IDs that do not exist in the schedule if they were ignored intentionally when parsing the schedule", () => {
     const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier((e) => errors.push(e));
+    const identifier = new GtfsTripUpdateTripIdentifier({
+      onError: (e) => errors.push(e),
+    });
 
     const tripDescriptor = { ...TRIP_DESCRIPTOR, tripId: "missing-trip" };
     const schedule = SCHEDULE.withIgnoredTripIds(["missing-trip"]);

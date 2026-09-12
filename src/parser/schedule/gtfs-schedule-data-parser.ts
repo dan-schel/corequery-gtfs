@@ -13,41 +13,38 @@ import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js"
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { GtfsFeedCsv } from "../../data/raw/schedule-csvs.js";
 
+export type GtfsScheduleDataParserFields = {
+  lineRoutesMapping: LineRoutesMapping;
+  bonusLinesMapping: BonusLinesMapping;
+  lineGtfsIdMapping: LineGtfsIdMapping;
+  stopGtfsIdMapping: StopGtfsIdMapping;
+  onError: (error: GtfsScheduleParsingError) => void;
+};
+
 export class GtfsScheduleDataParser {
   private readonly _calendarParser: GtfsCalendarParser;
   private readonly _tripParser: GtfsTripParser;
 
-  constructor(
-    lineRoutesMapping: LineRoutesMapping,
-    bonusLinesMapping: BonusLinesMapping,
-    onError: (error: GtfsScheduleParsingError) => void,
-  ) {
-    this._calendarParser = new GtfsCalendarParser(onError);
-    this._tripParser = new GtfsTripParser(
-      lineRoutesMapping,
-      bonusLinesMapping,
-      onError,
-    );
+  constructor(fields: GtfsScheduleDataParserFields) {
+    this._calendarParser = new GtfsCalendarParser({
+      onError: fields.onError,
+    });
+    this._tripParser = new GtfsTripParser({
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      onError: fields.onError,
+    });
   }
 
-  parse(
-    csvs: GtfsFeedCsv,
-    lineGtfsIdMapping: LineGtfsIdMapping,
-    stopGtfsIdMapping: StopGtfsIdMapping,
-  ): GtfsScheduleData {
+  parse(csvs: GtfsFeedCsv): GtfsScheduleData {
     const { calendar, calendarDates, trips, stopTimes, transfers } = csvs;
 
     const parsedCalendars = this._calendarParser.parse(calendar, calendarDates);
 
     const { parsedTrips, parsedTransfers, ignoredTripIds } =
-      this._tripParser.parse(
-        trips,
-        stopTimes,
-        transfers,
-        parsedCalendars,
-        lineGtfsIdMapping,
-        stopGtfsIdMapping,
-      );
+      this._tripParser.parse(trips, stopTimes, transfers, parsedCalendars);
 
     return new GtfsScheduleData(
       parsedTrips,

@@ -10,26 +10,28 @@ import {
   type GtfsTripUpdateParsingError,
 } from "./gtfs-trip-update-parser.js";
 
+export type GtfsRealtimeDataParserFields = {
+  timezone: string;
+  stopGtfsIdMapping: StopGtfsIdMapping;
+  onError: (error: GtfsRealtimeDataParsingError) => void;
+};
+
 export class GtfsRealtimeDataParser {
   private readonly _tripUpdateParser: GtfsTripUpdateParser;
 
-  constructor(
-    timezone: string,
-    onError: (error: GtfsRealtimeDataParsingError) => void,
-  ) {
-    this._tripUpdateParser = new GtfsTripUpdateParser(timezone, onError);
+  constructor(fields: GtfsRealtimeDataParserFields) {
+    this._tripUpdateParser = new GtfsTripUpdateParser({
+      timezone: fields.timezone,
+      stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      onError: fields.onError,
+    });
   }
 
   parse(
     realtimeData: RealtimeDataJson,
     scheduleData: GtfsScheduleData,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ): GtfsRealtimeData {
-    const updatedTrips = this._parseTripUpdates(
-      realtimeData,
-      scheduleData,
-      stopGtfsIdMapping,
-    );
+    const updatedTrips = this._parseTripUpdates(realtimeData, scheduleData);
 
     const brokenTransfers = this._breakTransfers(updatedTrips, scheduleData);
 
@@ -39,16 +41,11 @@ export class GtfsRealtimeDataParser {
   private _parseTripUpdates(
     realtimeData: RealtimeDataJson,
     scheduleData: GtfsScheduleData,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ) {
     const updatedTrips: GtfsUpdatedTrip[] = [];
 
     for (const tripUpdates of realtimeData.tripUpdates) {
-      const result = this._tripUpdateParser.parse(
-        tripUpdates,
-        scheduleData,
-        stopGtfsIdMapping,
-      );
+      const result = this._tripUpdateParser.parse(tripUpdates, scheduleData);
 
       if (result != null) {
         updatedTrips.push(result);

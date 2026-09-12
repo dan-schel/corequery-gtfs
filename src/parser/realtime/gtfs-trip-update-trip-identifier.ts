@@ -2,12 +2,18 @@ import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
 import type { TripDescriptorJson } from "../../data/raw/realtime-data-json.js";
 
+export type GtfsTripUpdateTripIdentifierFields = {
+  onError: (error: GtfsTripUpdateTripIdentificationError) => void;
+};
+
 export class GtfsTripUpdateTripIdentifier {
-  constructor(
-    private readonly _onError: (
-      error: GtfsTripUpdateTripIdentificationError,
-    ) => void,
-  ) {}
+  private readonly _onError: (
+    error: GtfsTripUpdateTripIdentificationError,
+  ) => void;
+
+  constructor(fields: GtfsTripUpdateTripIdentifierFields) {
+    this._onError = fields.onError;
+  }
 
   identify(tripDescriptor: TripDescriptorJson, scheduleData: GtfsScheduleData) {
     // Currently it seems like PTV always gives `tripId` and `startDate` in the

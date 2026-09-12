@@ -29,7 +29,7 @@ describe("GtfsCalendarParser", () => {
 
   it("parses base calendars and calendar date exceptions", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     const calendarCsv = [{ ...STANDARD_CALENDAR, monday: true }];
     const calendarDatesCsv = [
@@ -61,7 +61,7 @@ describe("GtfsCalendarParser", () => {
 
   it("creates calendars from calendar_dates only", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     const calendarDatesCsv = [
       { service_id: "new", date: PLAIN_DATE_2026_06_17, exception_type: 1 },
@@ -81,7 +81,7 @@ describe("GtfsCalendarParser", () => {
 
   it("reports, but ultimately ignores subsequent rows with the same ID", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     const calendarCsv = [
       { ...STANDARD_CALENDAR, service_id: "dup", monday: true },
@@ -102,7 +102,7 @@ describe("GtfsCalendarParser", () => {
 
   it("does not create calendars which are invalid, even if rows in calendar_dates for that calendar exist", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     // Because the calendar is invalid, it will be reported and then ignored.
     // The parser needs to be smart enough to know that the calendar_dates row
@@ -133,7 +133,7 @@ describe("GtfsCalendarParser", () => {
 
   it("reports unexpected exception types in calendar_dates rows", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     const calendarDatesCsv = [
       {
@@ -151,7 +151,7 @@ describe("GtfsCalendarParser", () => {
 
   it("reports duplicate calendar_dates exceptions for the same date", () => {
     const errors: GtfsCalendarParsingError[] = [];
-    const parser = new GtfsCalendarParser((e) => errors.push(e));
+    const parser = new GtfsCalendarParser({ onError: (e) => errors.push(e) });
 
     const calendarDatesCsv = [
       { service_id: "dup", date: PLAIN_DATE_2026_06_21, exception_type: 1 },
