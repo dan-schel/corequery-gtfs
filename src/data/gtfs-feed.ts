@@ -84,20 +84,24 @@ export class GtfsFeed {
     gtfsTripId: string,
     serviceDay: Temporal.PlainDate,
   ): GtfsTransfer[] {
-    const scheduled = this.scheduleData.getTransfersForTrip(gtfsTripId);
-    const broken = this.realtimeData.getBrokenTransfersForTrip(
-      gtfsTripId,
-      serviceDay,
-    );
-    const added = this.realtimeData.getAddedTransfersForTrip(
-      gtfsTripId,
-      serviceDay,
-    );
+    const rtData = this.realtimeData;
+    const added = rtData.getAddedTransfersForTrip(gtfsTripId, serviceDay);
+    const broken = rtData.getBrokenTransfersForTrip(gtfsTripId, serviceDay);
 
-    return [
-      ...scheduled.filter((x) => !broken.some((b) => b.transfer.equals(x))),
-      ...added.map((x) => x.transfer),
-    ];
+    // We allow transfers between trips on different calendars to exist, but
+    // that means a transfer can be broken simply if the other trip is not
+    // running on this service day according to its calendar. In that situation,
+    // it isn't realtime data which broke the transfer, so we need to filter
+    // the scheduled transfers both on this case AND realtime broken transfers.
+    const scheduled = this.scheduleData
+      .getTransfersForTrip(gtfsTripId)
+      .filter(
+        (x) =>
+          !broken.some((b) => b.transfer.equals(x)) &&
+          this._doesScheduledTransferOccurOnDay(gtfsTripId, x, serviceDay),
+      );
+
+    return [...scheduled, ...added.map((x) => x.transfer)];
   }
 
   createDepartureIterator(stopId: number, iterationLimitHours: number | null) {
@@ -126,5 +130,23 @@ export class GtfsFeed {
         x.type === "entire-vehicle-forms-service" &&
         x.fromTripId === result.trip.gtfsTripId,
     );
+  }
+
+  private _doesScheduledTransferOccurOnDay(
+    gtfsTripId: string,
+    transfer: GtfsTransfer,
+    serviceDay: Temporal.PlainDate,
+  ): boolean {
+    return transfer.getInvolvedTripIds().every((x) => {
+      // Just to avoid looking up a trip we already know exists!
+      if (x === gtfsTripId) return true;
+
+      // We only need to check the scheduled data. If the connecting trip was
+      // cancelled in realtime data, getUpheldTransfersForTrip already accounts
+      // for that, because there will be a broken transfer recorded in the
+      // realtime data.
+      const otherTrip = this.scheduleData.getTrip(x);
+      return otherTrip != null && otherTrip.calendar.occursOn(serviceDay);
+    });
   }
 }

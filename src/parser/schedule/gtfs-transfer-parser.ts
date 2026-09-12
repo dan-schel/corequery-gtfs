@@ -93,12 +93,13 @@ export class GtfsTransferParser {
         continue;
       }
 
-      // TODO: I'm gonna let this one slide, so long as we remember to:
-      // - When filtering out arrivals for trips which ultimately continue, make
-      //   sure to check the next trip runs on that service day. ✅
-      // - When building the services for corequery (either through the
-      //   departures algorithm, or lookup by ID), only add the extra leg if the
-      //   next trip runs on that service day.
+      // This is allowed, but I'm curious to see if it ever happens. We support
+      // calendar differences by only considering a transfer to be "upheld" if
+      // all of the trips "involved" in the transfer are running on the service
+      // day in question. For any days where the calendars differ, that won't be
+      // true, so the transfer will be dropped for that day.
+      //
+      // (See GtfsFeed#getUpheldTransfersForTrip.)
       if (fromTrip.calendar.gtfsCalendarId !== toTrip.calendar.gtfsCalendarId) {
         this._onError(new TransferCrossesCalendarsError(transfer));
       }
