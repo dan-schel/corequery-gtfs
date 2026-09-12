@@ -4,10 +4,10 @@ import {
   DeparturesIteratorResult,
 } from "./departures-iterator.js";
 import { ScheduledDeparturesIterator } from "./scheduled-departures-iterator.js";
-import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
-import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import type { TimezoneData } from "../config/timezone-data.js";
-import type { DeparturesIterationDirection } from "../corequery-types.js";
+import type { GtfsScheduledMovementsIndex } from "../gtfs-scheduled-movements-index.js";
+import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
+import type { TimezoneData } from "../../config/timezone-data.js";
+import type { DeparturesIterationDirection } from "../../corequery-types.js";
 import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-iterator.js";
 
 export class ZipperDeparturesIterator extends DeparturesIterator {

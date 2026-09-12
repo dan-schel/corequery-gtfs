@@ -24,26 +24,48 @@ import {
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 
+export type GtfsTripParserFields = {
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsTripParsingError) => void;
+};
+
 export class GtfsTripParser {
+  private readonly _lineRoutesMapping: LineRoutesMapping;
+  private readonly _bonusLinesMapping: BonusLinesMapping;
+  private readonly _lineGtfsIdMapping: LineGtfsIdMapping;
+
+  private readonly _onError: (error: GtfsTripParsingError) => void;
+
   private readonly _stopTimeNormaliser: GtfsStopTimeNormaliser;
   private readonly _primaryRouteMatcher: GtfsRouteMatcher;
   private readonly _bonusRouteMatcher: GtfsRouteMatcher;
   private readonly _transferParser: GtfsTransferParser;
 
-  constructor(
-    // Unlike csvs, lineGtfsIdMapping, and stopGtfsIdMapping, these are not
-    // subfeed-dependent, so I'm opting to make them constructor args.
-    private readonly _lineRoutesMapping: LineRoutesMapping,
-    private readonly _bonusLinesMapping: BonusLinesMapping,
+  constructor(fields: GtfsTripParserFields) {
+    this._lineRoutesMapping = fields.lineRoutesMapping;
+    this._bonusLinesMapping = fields.bonusLinesMapping;
+    this._lineGtfsIdMapping = fields.lineGtfsIdMapping;
+    this._onError = fields.onError;
 
-    private readonly _onError: (error: GtfsTripParsingError) => void,
-  ) {
-    this._stopTimeNormaliser = new GtfsStopTimeNormaliser(this._onError);
-    this._primaryRouteMatcher = new GtfsRouteMatcher(this._onError);
-    this._transferParser = new GtfsTransferParser(this._onError);
+    this._stopTimeNormaliser = new GtfsStopTimeNormaliser({
+      onError: this._onError,
+    });
+    this._primaryRouteMatcher = new GtfsRouteMatcher({
+      onError: this._onError,
+      stopGtfsIdMapping: fields.stopGtfsIdMapping,
+    });
+    this._transferParser = new GtfsTransferParser({
+      onError: this._onError,
+    });
 
     // We don't care if a bonus route doesn't match. Most of the time, it won't!
-    this._bonusRouteMatcher = new GtfsRouteMatcher(() => {});
+    this._bonusRouteMatcher = new GtfsRouteMatcher({
+      onError: () => {},
+      stopGtfsIdMapping: fields.stopGtfsIdMapping,
+    });
   }
 
   parse(
@@ -51,8 +73,6 @@ export class GtfsTripParser {
     stopTimes: StopTimesCsv,
     transfers: TransfersCsv,
     calendars: readonly GtfsCalendar[],
-    lineGtfsIdMapping: LineGtfsIdMapping,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ) {
     const calendarMap = this._buildCalendarMap(calendars);
     const rowsByTrip = this._organiseStopTimesIntoTrips(trips, stopTimes);
@@ -67,7 +87,7 @@ export class GtfsTripParser {
         continue;
       }
 
-      const lineIdMatch = lineGtfsIdMapping.tryResolve(trip.route_id);
+      const lineIdMatch = this._lineGtfsIdMapping.tryResolve(trip.route_id);
       if (lineIdMatch == null) {
         this._onError(new TripReferencesUnmappedRouteIdError(trip));
         continue;
@@ -87,7 +107,6 @@ export class GtfsTripParser {
       const routeMatchResult = this._primaryRouteMatcher.match(
         normalizedStopTimes,
         routesForLine,
-        stopGtfsIdMapping,
       );
       // Route matcher reports its own errors.
       if (routeMatchResult == null) continue;
@@ -96,7 +115,6 @@ export class GtfsTripParser {
         lineIdMatch.lineId,
         routeMatchResult.serviceTags,
         normalizedStopTimes,
-        stopGtfsIdMapping,
       );
 
       parsedTrips.push(
@@ -166,7 +184,6 @@ export class GtfsTripParser {
     mainRouteLineId: number,
     mainRouteServiceTags: readonly number[],
     normalizedStopTimes: StopTimesCsv,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ) {
     const bonusLines = this._bonusLinesMapping.forLine(mainRouteLineId);
     if (bonusLines == null) {
@@ -181,7 +198,6 @@ export class GtfsTripParser {
       const matchResult = this._bonusRouteMatcher.match(
         normalizedStopTimes,
         this._lineRoutesMapping.forLine(bonusLine),
-        stopGtfsIdMapping,
       );
 
       if (matchResult != null) {

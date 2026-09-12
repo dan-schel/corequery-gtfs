@@ -35,7 +35,10 @@ describe("GtfsRouteMatcher", () => {
 
   it("matches the shortest compatible route and injects passing movements", () => {
     const errors: GtfsRouteMatchingError[] = [];
-    const matcher = new GtfsRouteMatcher((e) => errors.push(e));
+    const matcher = new GtfsRouteMatcher({
+      onError: (e) => errors.push(e),
+      stopGtfsIdMapping: STOP_MAPPING,
+    });
 
     const routes = [
       new Route({
@@ -53,7 +56,6 @@ describe("GtfsRouteMatcher", () => {
     const result = matcher.match(
       [stopTime("1"), stopTime("3"), stopTime("4")],
       routes,
-      STOP_MAPPING,
     );
 
     expect(errors).toEqual([]);
@@ -74,10 +76,13 @@ describe("GtfsRouteMatcher", () => {
 
   it("reports when no route matches the served stop order", () => {
     const errors: GtfsRouteMatchingError[] = [];
-    const matcher = new GtfsRouteMatcher((e) => errors.push(e));
+    const matcher = new GtfsRouteMatcher({
+      onError: (e) => errors.push(e),
+      stopGtfsIdMapping: STOP_MAPPING,
+    });
 
     const stopTimes = [stopTime("1"), stopTime("4")];
-    const result = matcher.match(stopTimes, ROUTES_FOR_LINE, STOP_MAPPING);
+    const result = matcher.match(stopTimes, ROUTES_FOR_LINE);
 
     expect(result).toBeNull();
     expect(errors).toHaveLength(1);
@@ -86,10 +91,13 @@ describe("GtfsRouteMatcher", () => {
 
   it("reports stop IDs that are not in the GTFS stop mapping", () => {
     const errors: GtfsRouteMatchingError[] = [];
-    const matcher = new GtfsRouteMatcher((e) => errors.push(e));
+    const matcher = new GtfsRouteMatcher({
+      onError: (e) => errors.push(e),
+      stopGtfsIdMapping: STOP_MAPPING,
+    });
 
     const stopTimes = [stopTime("missing")];
-    const result = matcher.match(stopTimes, ROUTES_FOR_LINE, STOP_MAPPING);
+    const result = matcher.match(stopTimes, ROUTES_FOR_LINE);
 
     expect(result).toBeNull();
     expect(errors).toHaveLength(1);
@@ -98,10 +106,13 @@ describe("GtfsRouteMatcher", () => {
 
   it("reports unexpected pickup types but still matches the trip", () => {
     const errors: GtfsRouteMatchingError[] = [];
-    const matcher = new GtfsRouteMatcher((e) => errors.push(e));
+    const matcher = new GtfsRouteMatcher({
+      onError: (e) => errors.push(e),
+      stopGtfsIdMapping: STOP_MAPPING,
+    });
 
     const stopTimes = [{ ...stopTime("1"), pickup_type: 2 }, stopTime("2")];
-    const result = matcher.match(stopTimes, ROUTES_FOR_LINE, STOP_MAPPING);
+    const result = matcher.match(stopTimes, ROUTES_FOR_LINE);
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(UnexpectedPickupTypeError);
@@ -110,10 +121,13 @@ describe("GtfsRouteMatcher", () => {
 
   it("reports unexpected drop-off types but still matches the trip", () => {
     const errors: GtfsRouteMatchingError[] = [];
-    const matcher = new GtfsRouteMatcher((e) => errors.push(e));
+    const matcher = new GtfsRouteMatcher({
+      onError: (e) => errors.push(e),
+      stopGtfsIdMapping: STOP_MAPPING,
+    });
 
     const stopTimes = [stopTime("1"), { ...stopTime("2"), drop_off_type: 2 }];
-    const result = matcher.match(stopTimes, ROUTES_FOR_LINE, STOP_MAPPING);
+    const result = matcher.match(stopTimes, ROUTES_FOR_LINE);
 
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(UnexpectedDropOffTypeError);

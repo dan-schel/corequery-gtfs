@@ -7,8 +7,8 @@ type IGtfsTransfer = {
 };
 
 type GtfsEntireVehicleFormsServiceTransferFields = {
-  fromTripId: string;
-  toTripId: string;
+  readonly fromTripId: string;
+  readonly toTripId: string;
 };
 
 export class GtfsEntireVehicleFormsServiceTransfer implements IGtfsTransfer {

@@ -10,10 +10,16 @@ import { PlainDateRange } from "../../data/plain-date-range.js";
 const CALENDAR_DATE_EXCEPTION_TYPE_ADDED = 1;
 const CALENDAR_DATE_EXCEPTION_TYPE_REMOVED = 2;
 
+export type GtfsCalendarParserFields = {
+  readonly onError: (error: GtfsCalendarParsingError) => void;
+};
+
 export class GtfsCalendarParser {
-  constructor(
-    private readonly _onError: (error: GtfsCalendarParsingError) => void,
-  ) {}
+  private readonly _onError: (error: GtfsCalendarParsingError) => void;
+
+  constructor(fields: GtfsCalendarParserFields) {
+    this._onError = fields.onError;
+  }
 
   parse(
     calendarCsv: CalendarCsv,

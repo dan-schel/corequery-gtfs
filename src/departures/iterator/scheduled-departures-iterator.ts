@@ -3,13 +3,13 @@ import {
   DeparturesIterator,
   type DeparturesIteratorResult,
 } from "./departures-iterator.js";
-import { BoundedInstantRange } from "../data/bounded-instant-range.js";
+import { BoundedInstantRange } from "../../data/bounded-instant-range.js";
 import { ScheduledDeparturesBlockIterator } from "./scheduled-departures-block-iterator.js";
-import type { GtfsScheduledMovementsIndex } from "./gtfs-scheduled-movements-index.js";
-import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import { ScheduledDeparturesBlocksBuilder } from "./scheduled-departures-blocks-builder.js";
-import type { TimezoneData } from "../config/timezone-data.js";
-import type { DeparturesIterationDirection } from "../corequery-types.js";
+import type { GtfsScheduledMovementsIndex } from "../gtfs-scheduled-movements-index.js";
+import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
+import { ScheduledDeparturesBlocksBuilder } from "../scheduled-departures-blocks-builder.js";
+import type { TimezoneData } from "../../config/timezone-data.js";
+import type { DeparturesIterationDirection } from "../../corequery-types.js";
 
 const DEFAULT_BLOCK_SCAN_HOURS = 48;
 

@@ -26,20 +26,25 @@ export type MatchedRoute = {
   serviceTags: readonly number[];
 };
 
+export type GtfsRouteMatcherFields = {
+  readonly onError: (error: GtfsRouteMatchingError) => void;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+};
+
 export class GtfsRouteMatcher {
-  constructor(
-    private readonly _onError: (error: GtfsRouteMatchingError) => void,
-  ) {}
+  private readonly _onError: (error: GtfsRouteMatchingError) => void;
+  private readonly _stopGtfsIdMapping: StopGtfsIdMapping;
+
+  constructor(fields: GtfsRouteMatcherFields) {
+    this._onError = fields.onError;
+    this._stopGtfsIdMapping = fields.stopGtfsIdMapping;
+  }
 
   match(
     stopTimes: StopTimesCsv,
     routesForLine: readonly Route[],
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ): MatchedRoute | null {
-    const servicingMovements = this._convertToServicingMovements(
-      stopTimes,
-      stopGtfsIdMapping,
-    );
+    const servicingMovements = this._convertToServicingMovements(stopTimes);
     if (servicingMovements == null) return null;
 
     const match = this._matchToRoute(servicingMovements, routesForLine);
@@ -145,14 +150,15 @@ export class GtfsRouteMatcher {
    */
   private _convertToServicingMovements(
     stopTimes: StopTimesCsv,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ): readonly GtfsScheduledTripServicingMovement[] | null {
     const result: GtfsScheduledTripServicingMovement[] = [];
 
     for (let i = 0; i < stopTimes.length; i++) {
       const stopTime = itsOk(stopTimes[i]);
 
-      const gtfsIdMetadata = stopGtfsIdMapping.tryResolve(stopTime.stop_id);
+      const gtfsIdMetadata = this._stopGtfsIdMapping.tryResolve(
+        stopTime.stop_id,
+      );
       if (gtfsIdMetadata == null) {
         this._onError(new StopTimeReferencesUnmappedStopIdError(stopTime));
         return null;

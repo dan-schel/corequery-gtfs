@@ -30,7 +30,7 @@ describe("GtfsTransferParser", () => {
 
   it("connects trips using in-seat transfers", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const result = parser.parse(TRIPS, [TRANSFER]);
 
@@ -45,7 +45,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports non in-seat transfers and leaves the trips disconnected", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const transfersCsv = [{ ...TRANSFER, transfer_type: 0 }];
     const result = parser.parse(TRIPS, transfersCsv);
@@ -57,7 +57,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers that reference a missing 'from' trip", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const transfersCsv = [{ ...TRANSFER, from_trip_id: "missing" }];
     const result = parser.parse(TRIPS, transfersCsv);
@@ -69,7 +69,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers that reference a missing 'to' trip", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const transfersCsv = [{ ...TRANSFER, to_trip_id: "missing" }];
     const result = parser.parse(TRIPS, transfersCsv);
@@ -81,7 +81,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers that do not start from the 'from' trip terminus", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const trips = [makeTripA("1", "2"), makeTripB("1", "3")];
     const transfersCsv = [{ ...TRANSFER, from_stop_id: "1", to_stop_id: "1" }];
@@ -94,7 +94,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers that do not end at the 'to' trip origin", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const trips = [makeTripA("1", "2"), makeTripB("3", "2")];
     const transfersCsv = [{ ...TRANSFER, to_stop_id: "2", from_stop_id: "2" }];
@@ -107,7 +107,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers involving trips that are already connected", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const tripC = makeTripB("2", "4").with({ gtfsTripId: "trip-c" });
     const tripCTransfer = { ...TRANSFER, to_trip_id: tripC.gtfsTripId };
@@ -134,7 +134,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers where the 'from' stop & position is different to the 'to' stop & position", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const trips = [makeTripA("1", "2"), makeTripB("3", "4")];
     const transfersCsv = [{ ...TRANSFER, from_stop_id: "2", to_stop_id: "3" }];
@@ -147,7 +147,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports, but allows transfers that cross calendars", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const trips = [
       makeTripA("1", "2").with({
@@ -172,7 +172,7 @@ describe("GtfsTransferParser", () => {
 
   it("reports transfers that require time travel", () => {
     const errors: GtfsTransferParsingError[] = [];
-    const parser = new GtfsTransferParser((e) => errors.push(e));
+    const parser = new GtfsTransferParser({ onError: (e) => errors.push(e) });
 
     const tripA = makeTrip({
       gtfsTripId: "trip-a",

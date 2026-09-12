@@ -51,7 +51,11 @@ const STOP_MAPPING = new StopGtfsIdMapping(
 describe("GtfsTripUpdateParser", () => {
   it("parses a scheduled trip update and applies realtime stop times", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const realtimeDeparture = TRIP.origination.departureTime
       .toInstant(TRIP_DESCRIPTOR.startDate, TIMEZONE)
@@ -81,7 +85,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(errors).toEqual([]);
     if (parsed == null) throw new Error("Expected updated trip.");
@@ -97,7 +101,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("parses cancelled trip updates", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: {
@@ -106,7 +114,7 @@ describe("GtfsTripUpdateParser", () => {
       },
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(errors).toEqual([]);
     expect(parsed).not.toBeNull();
@@ -115,7 +123,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports unsupported trip schedule relationships", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: {
@@ -123,7 +135,7 @@ describe("GtfsTripUpdateParser", () => {
       },
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -134,14 +146,18 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports scheduled updates without stopTimeUpdate fields", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
       stopTimeUpdate: undefined,
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -150,14 +166,18 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports unsupported stop time entry schedule relationships", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
       stopTimeUpdate: [{ scheduleRelationship: "SKIPPED" }],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -168,7 +188,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports missing necessary fields in stop time update entries", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -183,7 +207,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -194,7 +218,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports stop sequences that do not exist in the matched trip", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -209,7 +237,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -220,7 +248,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports duplicate stop updates for the same stop sequence", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -242,7 +274,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -253,7 +285,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports unmapped stop IDs in stop time updates", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -268,7 +304,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -279,7 +315,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports stop updates that change the station", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -294,7 +334,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -303,7 +343,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports updated time objects with neither time nor delay", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -318,7 +362,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).not.toBeNull();
     expect(errors).toHaveLength(1);
@@ -327,7 +371,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports when time and delay disagree for the same update", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const scheduledDepartureSeconds =
       TRIP.origination.departureTime.toInstant(
@@ -348,7 +396,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).not.toBeNull();
     expect(errors).toHaveLength(1);
@@ -357,7 +405,11 @@ describe("GtfsTripUpdateParser", () => {
 
   it("reports entries where both arrival and departure updates are missing", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
@@ -370,7 +422,7 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
 
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
@@ -379,7 +431,6 @@ describe("GtfsTripUpdateParser", () => {
 
   it("allows platform changes when they still map to the same stop", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsTripUpdateParser(TIMEZONE, (e) => errors.push(e));
 
     const stop1Platforms = new Map([
       [1, ["1-PLATFORM-A"]],
@@ -422,7 +473,13 @@ describe("GtfsTripUpdateParser", () => {
       ],
     };
 
-    const parsed = parser.parse(tripUpdate, schedule, mapping);
+    const parser = new GtfsTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: mapping,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(tripUpdate, schedule);
 
     expect(parsed).not.toBeNull();
 

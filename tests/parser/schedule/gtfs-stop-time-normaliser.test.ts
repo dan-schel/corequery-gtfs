@@ -24,7 +24,9 @@ function stopTime(overrides: Partial<StopTimesCsvRow> = {}): StopTimesCsvRow {
 describe("GtfsStopTimeNormaliser", () => {
   it("returns already regular stop sequences unchanged", () => {
     const errors: GtfsStopTimeNormalisationError[] = [];
-    const normaliser = new GtfsStopTimeNormaliser((e) => errors.push(e));
+    const normaliser = new GtfsStopTimeNormaliser({
+      onError: (e) => errors.push(e),
+    });
 
     const stopTimes = [
       stopTime({ stop_sequence: 1, stop_id: "1" }),
@@ -38,7 +40,9 @@ describe("GtfsStopTimeNormaliser", () => {
 
   it("sorts regular stop times by stop sequence number", () => {
     const errors: GtfsStopTimeNormalisationError[] = [];
-    const normaliser = new GtfsStopTimeNormaliser((e) => errors.push(e));
+    const normaliser = new GtfsStopTimeNormaliser({
+      onError: (e) => errors.push(e),
+    });
 
     const stopTimes = [
       stopTime({ stop_sequence: 2, stop_id: "2" }),
@@ -54,7 +58,9 @@ describe("GtfsStopTimeNormaliser", () => {
 
   it("returns null for non-regular stop sequences", () => {
     const errors: GtfsStopTimeNormalisationError[] = [];
-    const normaliser = new GtfsStopTimeNormaliser((e) => errors.push(e));
+    const normaliser = new GtfsStopTimeNormaliser({
+      onError: (e) => errors.push(e),
+    });
 
     const stopTimes = [
       stopTime({ stop_sequence: 1, stop_id: "1" }),
@@ -68,7 +74,9 @@ describe("GtfsStopTimeNormaliser", () => {
 
   it("returns the first regular sequence when multiple regular sequences are present", () => {
     const errors: GtfsStopTimeNormalisationError[] = [];
-    const normaliser = new GtfsStopTimeNormaliser((e) => errors.push(e));
+    const normaliser = new GtfsStopTimeNormaliser({
+      onError: (e) => errors.push(e),
+    });
 
     const stopTimes = [
       stopTime({ stop_sequence: 1, stop_id: "1-a" }),
@@ -87,7 +95,9 @@ describe("GtfsStopTimeNormaliser", () => {
 
   it("returns null if the stopping sequence requires time travel", () => {
     const errors: GtfsStopTimeNormalisationError[] = [];
-    const normaliser = new GtfsStopTimeNormaliser((e) => errors.push(e));
+    const normaliser = new GtfsStopTimeNormaliser({
+      onError: (e) => errors.push(e),
+    });
 
     const stopTimes = [
       stopTime({

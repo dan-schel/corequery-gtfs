@@ -19,32 +19,34 @@ const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 
+export type GtfsTripUpdateParserFields = {
+  readonly timezone: string;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsTripUpdateParsingError) => void;
+};
+
 export class GtfsTripUpdateParser {
+  private readonly _timezone: string;
+  private readonly _stopGtfsIdMapping: StopGtfsIdMapping;
+  private readonly _onError: (error: GtfsTripUpdateParsingError) => void;
+
   private readonly _tripIdentifier: GtfsTripUpdateTripIdentifier;
 
-  constructor(
-    // We could maybe store this in the GtfsSchedule obj itself if we wanted,
-    // since you can parse it from agency.txt.
-    private readonly _timezone: string,
+  constructor(fields: GtfsTripUpdateParserFields) {
+    this._timezone = fields.timezone;
+    this._stopGtfsIdMapping = fields.stopGtfsIdMapping;
+    this._onError = fields.onError;
 
-    private readonly _onError: (error: GtfsTripUpdateParsingError) => void,
-  ) {
-    this._tripIdentifier = new GtfsTripUpdateTripIdentifier(_onError);
+    this._tripIdentifier = new GtfsTripUpdateTripIdentifier({
+      onError: this._onError,
+    });
   }
 
-  parse(
-    tripUpdate: TripUpdateJson,
-    scheduleData: GtfsScheduleData,
-    stopGtfsIdMapping: StopGtfsIdMapping,
-  ) {
+  parse(tripUpdate: TripUpdateJson, scheduleData: GtfsScheduleData) {
     const sr = tripUpdate.trip.scheduleRelationship;
 
     if (sr === TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED) {
-      return this._parseForScheduledTrip(
-        tripUpdate,
-        scheduleData,
-        stopGtfsIdMapping,
-      );
+      return this._parseForScheduledTrip(tripUpdate, scheduleData);
     } else if (sr === TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED) {
       return this._parseForCancelledTrip(tripUpdate, scheduleData);
     } else {
@@ -58,7 +60,6 @@ export class GtfsTripUpdateParser {
   private _parseForScheduledTrip(
     tripUpdate: TripUpdateJson,
     scheduleData: GtfsScheduleData,
-    stopGtfsIdMapping: StopGtfsIdMapping,
   ): GtfsUpdatedTrip | null {
     const result = this._tripIdentifier.identify(tripUpdate.trip, scheduleData);
     if (result == null) return null;
@@ -125,7 +126,7 @@ export class GtfsTripUpdateParser {
       // Look up the stop GTFS ID given in the stop time update entry, and check
       // whether it still maps to the same (CoreQuery) stop. In this way, we
       // allow the platform/position ID to change, not the overall stop/station.
-      const gtfsIdMetadata = stopGtfsIdMapping.tryResolve(entry.stopId);
+      const gtfsIdMetadata = this._stopGtfsIdMapping.tryResolve(entry.stopId);
       if (gtfsIdMetadata == null) {
         const Err = StopTimeUpdateEntryReferencesUnmappedStopIdError;
         this._onError(new Err(tripUpdate, entry));
@@ -294,6 +295,7 @@ export type GtfsTripUpdateParsingError =
 
 export class UnsupportedTripUpdateScheduleRelationshipError {
   readonly type = "unsupported-trip-update-schedule-relationship";
+
   constructor(readonly tripUpdate: TripUpdateJson) {}
 }
 

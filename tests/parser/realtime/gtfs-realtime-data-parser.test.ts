@@ -50,7 +50,11 @@ const STOP_MAPPING = new StopGtfsIdMapping(
 describe("GtfsRealtimeDataParser", () => {
   it("parses realtime feed into updated trips and drops invalid updates", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsRealtimeDataParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsRealtimeDataParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const realtimeFeed = {
       tripUpdates: [
@@ -77,7 +81,7 @@ describe("GtfsRealtimeDataParser", () => {
       ],
     };
 
-    const parsed = parser.parse(realtimeFeed, SCHEDULE, STOP_MAPPING);
+    const parsed = parser.parse(realtimeFeed, SCHEDULE);
 
     expect(parsed.allTrips()).toHaveLength(1);
     const updatedTrip = itsOk(parsed.allTrips()[0]);
@@ -97,7 +101,11 @@ describe("GtfsRealtimeDataParser", () => {
 
   it("tracks broken transfers for cancelled trips", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
-    const parser = new GtfsRealtimeDataParser(TIMEZONE, (e) => errors.push(e));
+    const parser = new GtfsRealtimeDataParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      onError: (e) => errors.push(e),
+    });
 
     const realtimeFeed = {
       tripUpdates: [
@@ -114,7 +122,7 @@ describe("GtfsRealtimeDataParser", () => {
       }),
     ];
     const schedule = SCHEDULE.withTransfers(transfers);
-    const parsed = parser.parse(realtimeFeed, schedule, STOP_MAPPING);
+    const parsed = parser.parse(realtimeFeed, schedule);
 
     expect(errors).toHaveLength(0);
     expect(parsed.allTrips()).toHaveLength(1);

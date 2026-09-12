@@ -1,15 +1,15 @@
 import { itsOk } from "@dan-schel/js-utils";
 import { it, describe, expect } from "vitest";
-import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
-import { GtfsRealtimeData } from "../../src/data/gtfs-realtime-data.js";
-import { GtfsScheduleData } from "../../src/data/gtfs-schedule-data.js";
-import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
-import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
-import { PlainDateRange } from "../../src/data/plain-date-range.js";
-import { GtfsScheduledMovementsIndex } from "../../src/departures/gtfs-scheduled-movements-index.js";
-import { ScheduledDeparturesBlocksBuilder } from "../../src/departures/scheduled-departures-blocks-builder.js";
-import { ScheduledDeparturesIterator } from "../../src/departures/scheduled-departures-iterator.js";
-import type { TimezoneData } from "../../src/config/timezone-data.js";
+import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
+import { GtfsRealtimeData } from "../../../src/data/gtfs-realtime-data.js";
+import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
+import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { PlainDateRange } from "../../../src/data/plain-date-range.js";
+import { GtfsScheduledMovementsIndex } from "../../../src/departures/gtfs-scheduled-movements-index.js";
+import { ScheduledDeparturesBlocksBuilder } from "../../../src/departures/scheduled-departures-blocks-builder.js";
+import { ScheduledDeparturesIterator } from "../../../src/departures/iterator/scheduled-departures-iterator.js";
+import type { TimezoneData } from "../../../src/config/timezone-data.js";
 
 export const MELBOURNE_TIMEZONE_DATA: TimezoneData = {
   timezone: "Australia/Melbourne",
