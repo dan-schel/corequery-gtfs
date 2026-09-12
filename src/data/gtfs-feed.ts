@@ -1,4 +1,6 @@
 import type { TimezoneData } from "../config/timezone-data.js";
+import type { DeparturesIteratorResult } from "../departures/departures-iterator.js";
+import { FilterIterator } from "../departures/filter-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
 import { ZipperDeparturesIterator } from "../departures/zipper-departures-iterator.js";
 import { GtfsRealtimeData } from "./gtfs-realtime-data.js";
@@ -99,12 +101,30 @@ export class GtfsFeed {
   }
 
   createDepartureIterator(stopId: number, iterationLimitHours: number | null) {
-    return ZipperDeparturesIterator.forFeed(
-      stopId,
-      this.scheduledMovementsIndex,
-      this.realtimeData,
-      this.timezoneData,
-      iterationLimitHours,
+    return new FilterIterator(
+      ZipperDeparturesIterator.forFeed(
+        stopId,
+        this.scheduledMovementsIndex,
+        this.realtimeData,
+        this.timezoneData,
+        iterationLimitHours,
+      ),
+      (result) => !this._isArrivalWhichContinues(result),
+    );
+  }
+
+  private _isArrivalWhichContinues(result: DeparturesIteratorResult): boolean {
+    if (result.movement.type !== "terminating") return false;
+
+    const transfers = this.getUpheldTransfersForTrip(
+      result.trip.gtfsTripId,
+      result.serviceDay,
+    );
+
+    return transfers.some(
+      (x) =>
+        x.type === "entire-vehicle-forms-service" &&
+        x.fromTripId === result.trip.gtfsTripId,
     );
   }
 }
