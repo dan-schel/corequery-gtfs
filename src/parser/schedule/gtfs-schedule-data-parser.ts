@@ -14,11 +14,11 @@ import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js"
 import type { GtfsFeedCsv } from "../../data/raw/schedule-csvs.js";
 
 export type GtfsScheduleDataParserFields = {
-  lineRoutesMapping: LineRoutesMapping;
-  bonusLinesMapping: BonusLinesMapping;
-  lineGtfsIdMapping: LineGtfsIdMapping;
-  stopGtfsIdMapping: StopGtfsIdMapping;
-  onError: (error: GtfsScheduleParsingError) => void;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsScheduleParsingError) => void;
 };
 
 export class GtfsScheduleDataParser {

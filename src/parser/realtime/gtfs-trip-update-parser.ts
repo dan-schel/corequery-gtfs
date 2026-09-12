@@ -20,9 +20,9 @@ const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 
 export type GtfsTripUpdateParserFields = {
-  timezone: string;
-  stopGtfsIdMapping: StopGtfsIdMapping;
-  onError: (error: GtfsTripUpdateParsingError) => void;
+  readonly timezone: string;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsTripUpdateParsingError) => void;
 };
 
 export class GtfsTripUpdateParser {

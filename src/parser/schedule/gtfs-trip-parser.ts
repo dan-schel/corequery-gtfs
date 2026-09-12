@@ -25,11 +25,11 @@ import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js"
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 
 export type GtfsTripParserFields = {
-  lineRoutesMapping: LineRoutesMapping;
-  bonusLinesMapping: BonusLinesMapping;
-  lineGtfsIdMapping: LineGtfsIdMapping;
-  stopGtfsIdMapping: StopGtfsIdMapping;
-  onError: (error: GtfsTripParsingError) => void;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsTripParsingError) => void;
 };
 
 export class GtfsTripParser {

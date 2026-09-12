@@ -1,7 +1,7 @@
 import type { StopTimesCsv } from "../../data/raw/schedule-csvs.js";
 
 export type GtfsStopTimeNormaliserFields = {
-  onError: (error: GtfsStopTimeNormalisationError) => void;
+  readonly onError: (error: GtfsStopTimeNormalisationError) => void;
 };
 
 /**

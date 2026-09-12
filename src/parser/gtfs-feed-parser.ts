@@ -16,13 +16,15 @@ import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
 import type { TimezoneData } from "../config/timezone-data.js";
 
 export type GtfsFeedParserFields = {
-  lineRoutesMapping: LineRoutesMapping;
-  bonusLinesMapping: BonusLinesMapping;
-  lineGtfsIdMapping: LineGtfsIdMapping;
-  stopGtfsIdMapping: StopGtfsIdMapping;
-  timezoneData: TimezoneData;
-  onScheduleParsingError: (error: GtfsScheduleParsingError) => void;
-  onRealtimeParsingError: (error: GtfsRealtimeDataParsingError) => void;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly timezoneData: TimezoneData;
+  readonly onScheduleParsingError: (error: GtfsScheduleParsingError) => void;
+  readonly onRealtimeParsingError: (
+    error: GtfsRealtimeDataParsingError,
+  ) => void;
 };
 
 export class GtfsFeedParser {

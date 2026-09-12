@@ -3,7 +3,7 @@ import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
 import type { TripDescriptorJson } from "../../data/raw/realtime-data-json.js";
 
 export type GtfsTripUpdateTripIdentifierFields = {
-  onError: (error: GtfsTripUpdateTripIdentificationError) => void;
+  readonly onError: (error: GtfsTripUpdateTripIdentificationError) => void;
 };
 
 export class GtfsTripUpdateTripIdentifier {

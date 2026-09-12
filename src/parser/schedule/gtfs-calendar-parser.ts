@@ -11,7 +11,7 @@ const CALENDAR_DATE_EXCEPTION_TYPE_ADDED = 1;
 const CALENDAR_DATE_EXCEPTION_TYPE_REMOVED = 2;
 
 export type GtfsCalendarParserFields = {
-  onError: (error: GtfsCalendarParsingError) => void;
+  readonly onError: (error: GtfsCalendarParsingError) => void;
 };
 
 export class GtfsCalendarParser {

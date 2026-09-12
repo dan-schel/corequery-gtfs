@@ -11,9 +11,9 @@ import {
 } from "./gtfs-trip-update-parser.js";
 
 export type GtfsRealtimeDataParserFields = {
-  timezone: string;
-  stopGtfsIdMapping: StopGtfsIdMapping;
-  onError: (error: GtfsRealtimeDataParsingError) => void;
+  readonly timezone: string;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsRealtimeDataParsingError) => void;
 };
 
 export class GtfsRealtimeDataParser {

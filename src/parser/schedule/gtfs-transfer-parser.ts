@@ -12,7 +12,7 @@ import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js"
 const TRANSFER_TYPE_IN_SEAT_TRANSFER = 4;
 
 export type GtfsTransferParserFields = {
-  onError: (error: GtfsTransferParsingError) => void;
+  readonly onError: (error: GtfsTransferParsingError) => void;
 };
 
 export class GtfsTransferParser {

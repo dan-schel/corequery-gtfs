@@ -27,8 +27,8 @@ export type MatchedRoute = {
 };
 
 export type GtfsRouteMatcherFields = {
-  onError: (error: GtfsRouteMatchingError) => void;
-  stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly onError: (error: GtfsRouteMatchingError) => void;
+  readonly stopGtfsIdMapping: StopGtfsIdMapping;
 };
 
 export class GtfsRouteMatcher {
