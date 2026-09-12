@@ -1,9 +1,12 @@
 import type { TimezoneData } from "../config/timezone-data.js";
+import type { DeparturesIteratorResult } from "../departures/departures-iterator.js";
+import { FilterIterator } from "../departures/filter-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
 import { ZipperDeparturesIterator } from "../departures/zipper-departures-iterator.js";
 import { GtfsRealtimeData } from "./gtfs-realtime-data.js";
 import { GtfsScheduleData } from "./gtfs-schedule-data.js";
 import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
+import type { GtfsTransfer } from "./gtfs-transfer.js";
 import type { GtfsUpdatedTrip } from "./gtfs-updated-trip.js";
 
 export class GtfsFeed {
@@ -69,13 +72,59 @@ export class GtfsFeed {
     return null;
   }
 
+  requireTrip(gtfsTripId: string, serviceDay: Temporal.PlainDate) {
+    const trip = this.getTrip(gtfsTripId, serviceDay);
+    if (trip == null) {
+      throw new Error(`No trip "${gtfsTripId}" on ${serviceDay.toString()}.`);
+    }
+    return trip;
+  }
+
+  getUpheldTransfersForTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): GtfsTransfer[] {
+    const scheduled = this.scheduleData.getTransfersForTrip(gtfsTripId);
+    const broken = this.realtimeData.getBrokenTransfersForTrip(
+      gtfsTripId,
+      serviceDay,
+    );
+    const added = this.realtimeData.getAddedTransfersForTrip(
+      gtfsTripId,
+      serviceDay,
+    );
+
+    return [
+      ...scheduled.filter((x) => !broken.some((b) => b.transfer.equals(x))),
+      ...added.map((x) => x.transfer),
+    ];
+  }
+
   createDepartureIterator(stopId: number, iterationLimitHours: number | null) {
-    return ZipperDeparturesIterator.forFeed(
-      stopId,
-      this.scheduledMovementsIndex,
-      this.realtimeData,
-      this.timezoneData,
-      iterationLimitHours,
+    return new FilterIterator(
+      ZipperDeparturesIterator.forFeed(
+        stopId,
+        this.scheduledMovementsIndex,
+        this.realtimeData,
+        this.timezoneData,
+        iterationLimitHours,
+      ),
+      (result) => !this._isArrivalWhichContinues(result),
+    );
+  }
+
+  private _isArrivalWhichContinues(result: DeparturesIteratorResult): boolean {
+    if (result.movement.type !== "terminating") return false;
+
+    const transfers = this.getUpheldTransfersForTrip(
+      result.trip.gtfsTripId,
+      result.serviceDay,
+    );
+
+    return transfers.some(
+      (x) =>
+        x.type === "entire-vehicle-forms-service" &&
+        x.fromTripId === result.trip.gtfsTripId,
     );
   }
 }

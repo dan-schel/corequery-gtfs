@@ -39,16 +39,22 @@ export class GtfsScheduleDataParser {
 
     const parsedCalendars = this._calendarParser.parse(calendar, calendarDates);
 
-    const { parsedTrips, ignoredTripIds } = this._tripParser.parse(
-      trips,
-      stopTimes,
-      transfers,
-      parsedCalendars,
-      lineGtfsIdMapping,
-      stopGtfsIdMapping,
-    );
+    const { parsedTrips, parsedTransfers, ignoredTripIds } =
+      this._tripParser.parse(
+        trips,
+        stopTimes,
+        transfers,
+        parsedCalendars,
+        lineGtfsIdMapping,
+        stopGtfsIdMapping,
+      );
 
-    return new GtfsScheduleData(parsedTrips, parsedCalendars, ignoredTripIds);
+    return new GtfsScheduleData(
+      parsedTrips,
+      parsedCalendars,
+      parsedTransfers,
+      ignoredTripIds,
+    );
   }
 }
 

@@ -1,9 +1,12 @@
 import type { GtfsCalendar } from "./gtfs-calendar.js";
 import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
+import { GtfsTransferMapping } from "./gtfs-transfer-mapping.js";
+import type { GtfsTransfer } from "./gtfs-transfer.js";
 
 export class GtfsScheduleData {
   private readonly _tripsById: Map<string, GtfsScheduledTrip>;
   private readonly _calendarsById: Map<string, GtfsCalendar>;
+  private readonly _transfersMapping: GtfsTransferMapping<GtfsTransfer>;
 
   /** 
    * Trip IDs we saw during parsing, but intentionally ignored (e.g. because
@@ -14,9 +17,11 @@ export class GtfsScheduleData {
 
   static readonly empty = GtfsScheduleData.fromTrips([]);
 
+  // TODO: Use a fields object (and proper `with` method).
   constructor(
     private readonly _trips: readonly GtfsScheduledTrip[],
     calendars: readonly GtfsCalendar[],
+    private readonly _transfers: readonly GtfsTransfer[],
     ignoredTripIds: readonly string[],
   ) {
     // Arguably we should be taking the map as the constructor argument because
@@ -29,6 +34,9 @@ export class GtfsScheduleData {
     );
     this._calendarsById = new Map<string, GtfsCalendar>(
       calendars.map((calendar) => [calendar.gtfsCalendarId, calendar]),
+    );
+    this._transfersMapping = GtfsTransferMapping.build(_transfers, (x) =>
+      x.getInvolvedTripIds(),
     );
     this._ignoredTripIds = new Set<string>(ignoredTripIds);
   }
@@ -43,6 +51,10 @@ export class GtfsScheduleData {
 
   getCalendar(gtfsCalendarId: string): GtfsCalendar | null {
     return this._calendarsById.get(gtfsCalendarId) ?? null;
+  }
+
+  getTransfersForTrip(gtfsTripId: string): readonly GtfsTransfer[] {
+    return this._transfersMapping.forTripId(gtfsTripId);
   }
 
   isTripIgnored(gtfsTripId: string): boolean {
@@ -62,8 +74,18 @@ export class GtfsScheduleData {
   withIgnoredTripIds(newIgnoredTripIds: readonly string[]): GtfsScheduleData {
     return new GtfsScheduleData(
       this._trips,
-      [...this._calendarsById.values()],
+      Array.from(this._calendarsById.values()),
+      this._transfers,
       newIgnoredTripIds,
+    );
+  }
+
+  withTransfers(newTransfers: readonly GtfsTransfer[]): GtfsScheduleData {
+    return new GtfsScheduleData(
+      this._trips,
+      Array.from(this._calendarsById.values()),
+      newTransfers,
+      Array.from(this._ignoredTripIds),
     );
   }
 
@@ -74,6 +96,6 @@ export class GtfsScheduleData {
         calendars.set(trip.calendar.gtfsCalendarId, trip.calendar);
       }
     }
-    return new GtfsScheduleData(trips, [...calendars.values()], []);
+    return new GtfsScheduleData(trips, [...calendars.values()], [], []);
   }
 }

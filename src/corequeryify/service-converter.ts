@@ -14,6 +14,8 @@ import { GtfsUpdatedTrip } from "../data/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
 import type { GtfsScheduledTripMovement } from "../data/gtfs-scheduled-trip-movements.js";
 import type { GtfsUpdatedTripMovement } from "../data/gtfs-updated-trip-movements.js";
+import { GtfsEntireVehicleFormsServiceTransfer } from "../data/gtfs-transfer.js";
+import type { GtfsSystem } from "../gtfs-system.js";
 
 export type ServiceConverterFields<
   CorequeryDepartureClass,
@@ -26,6 +28,7 @@ export type ServiceConverterFields<
   CorequeryServiceConnectionClass,
 > = {
   readonly sourceId: string;
+  readonly gtfsSystem: GtfsSystem;
 
   buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
@@ -76,6 +79,7 @@ export class ServiceConverter<
   CorequeryServiceConnectionClass,
 > {
   private readonly _sourceId: string;
+  private readonly _gtfsSystem: GtfsSystem;
 
   private readonly _buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
@@ -127,6 +131,7 @@ export class ServiceConverter<
     >,
   ) {
     this._sourceId = fields.sourceId;
+    this._gtfsSystem = fields.gtfsSystem;
 
     this._buildDeparture = fields.buildDeparture;
     this._buildService = fields.buildService;
@@ -186,17 +191,7 @@ export class ServiceConverter<
       ),
       isCancelled: false,
 
-      // TODO: This is the part where we check if the connections are still
-      // running, though it'd be great if that wasn't the converter's job. Maybe
-      // we should pass in another param for `upheldConnections` or something.
-      // In the service source after we call GtfsFeed#getTrip maybe we should
-      // call a second GtfsFeed#getUpheldConnectionsForTrip method so that the
-      // GtfsFeed can decide looking at the schedule and realtime data together
-      // which connections are running, and then it can model that however it
-      // wants. (Probably remove the `nextTrip` and `previousTrip` properties
-      // from trips, and just store transfers in an array in the feed, or in the
-      // scheduled/realtime data?)
-      connections: this._convertScheduledTripConnections(trip, serviceDay),
+      connections: this._convertConnections(trip, serviceDay),
     });
   }
 
@@ -215,12 +210,7 @@ export class ServiceConverter<
       movements: trip.movements.map((m) => this._convertUpdatedTripMovement(m)),
       isCancelled: trip.isCancelled,
 
-      // TODO: See the comment on this above. We can't assume the connection
-      // given in the schedule is still running!
-      connections: this._convertScheduledTripConnections(
-        trip.scheduledTrip,
-        trip.serviceDay,
-      ),
+      connections: this._convertConnections(trip, trip.serviceDay),
     });
   }
 
@@ -374,46 +364,38 @@ export class ServiceConverter<
     }
   }
 
-  // TODO: This implementation was only ever designed to be temporary, and
-  // should be discarded entirely.
-  private _convertScheduledTripConnections(
-    trip: GtfsScheduledTrip,
+  private _convertConnections(
+    trip: GtfsScheduledTrip | GtfsUpdatedTrip,
     serviceDay: Temporal.PlainDate,
   ) {
-    const result = [];
+    const feed = this._gtfsSystem.requireFeed();
 
-    if (trip.previousTrip != null) {
-      result.push(
-        this._buildServiceConnection({
-          type: "entire-vehicle-forms-service",
-          direction: "from-other",
-          otherServiceSourceId: this._sourceId,
-          otherServiceIntrasourceId: new CorequeryIntrasourceId(
-            trip.previousTrip.gtfsTripId,
-            serviceDay,
-          ).toString(),
-          movementIndex: 0,
-          otherServiceMovementIndex: trip.previousTrip.movements.length - 1,
-        }),
-      );
-    }
+    return feed
+      .getUpheldTransfersForTrip(trip.gtfsTripId, serviceDay)
+      .map((transfer) => {
+        if (transfer instanceof GtfsEntireVehicleFormsServiceTransfer) {
+          const fromMe = transfer.fromTripId === trip.gtfsTripId;
+          const otherTripId = fromMe ? transfer.toTripId : transfer.fromTripId;
+          const otherTrip = feed.requireTrip(otherTripId, serviceDay);
 
-    if (trip.nextTrip != null) {
-      result.push(
-        this._buildServiceConnection({
-          type: "entire-vehicle-forms-service",
-          direction: "to-other",
-          otherServiceSourceId: this._sourceId,
-          otherServiceIntrasourceId: new CorequeryIntrasourceId(
-            trip.nextTrip.gtfsTripId,
-            serviceDay,
-          ).toString(),
-          movementIndex: trip.movements.length - 1,
-          otherServiceMovementIndex: 0,
-        }),
-      );
-    }
+          // Note: We don't need to check if the other trip is cancelled now,
+          // since the transfer would be broken already in that case.
 
-    return result;
+          const isid = new CorequeryIntrasourceId(otherTripId, serviceDay);
+          const myFinalMovementIndex = trip.movements.length - 1;
+          const otherFinalMovementIndex = otherTrip.movements.length;
+
+          return this._buildServiceConnection({
+            type: "entire-vehicle-forms-service",
+            direction: fromMe ? "to-other" : "from-other",
+            otherServiceSourceId: this._sourceId,
+            otherServiceIntrasourceId: isid.toString(),
+            movementIndex: fromMe ? myFinalMovementIndex : 0,
+            otherServiceMovementIndex: fromMe ? 0 : otherFinalMovementIndex,
+          });
+        } else {
+          assertNever(transfer);
+        }
+      });
   }
 }

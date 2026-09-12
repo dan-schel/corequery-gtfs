@@ -3,34 +3,43 @@ import type {
   TransfersCsvRow,
 } from "../../data/raw/schedule-csvs.js";
 import { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
+import {
+  GtfsEntireVehicleFormsServiceTransfer,
+  type GtfsTransfer,
+} from "../../data/gtfs-transfer.js";
+import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js";
 
 const TRANSFER_TYPE_IN_SEAT_TRANSFER = 4;
 
-export class GtfsTransferConnector {
+export class GtfsTransferParser {
   constructor(
-    private readonly _onError: (error: GtfsTransferConnectionError) => void,
+    private readonly _onError: (error: GtfsTransferParsingError) => void,
   ) {}
 
-  connect(
+  parse(
     trips: readonly GtfsScheduledTrip[],
     transfers: TransfersCsv,
-  ): readonly GtfsScheduledTrip[] {
+  ): readonly GtfsTransfer[] {
     const tripMap = new Map<string, GtfsScheduledTrip>(
       trips.map((trip) => [trip.gtfsTripId, trip]),
+    );
+
+    const result = new MutableGtfsTransferMapping<GtfsTransfer>((x) =>
+      x.getInvolvedTripIds(),
     );
 
     for (const transfer of transfers) {
       const fromTrip = tripMap.get(transfer.from_trip_id);
       const toTrip = tripMap.get(transfer.to_trip_id);
 
-      // TrainQuery only cares about "in-seat" transfers, because we're only
-      // parsing these transfers to form trips into multiple "legs" of a
-      // service, a.k.a. what I used to call continuations.
-      //
-      // We should ignore them, but it's not really an error. I'm just reporting
-      // them because right now PTV only publishes in-seat transfers, and I'm
-      // curious to see if that changes one day (e.g. with V/Line's guaranteed
-      // coach connections, or coupling of trains at Ballarat).
+      // Right now, TrainQuery Melbourne only cares about "in-seat" transfers,
+      // so we can show Metro Tunnel or City Loop services with their final
+      // destinations correctly. I'm just gonna ignore other transfer types for
+      // now, but it's not really an error. The reason I want to report them
+      // like errors is that PTV doesn't seem to currently publish other
+      // transfer types, and I'm curious to see if that changes one day (e.g.
+      // with V/Line's guaranteed coach connections, or coupling of trains at
+      // Ballarat).
       if (transfer.transfer_type !== TRANSFER_TYPE_IN_SEAT_TRANSFER) {
         this._onError(new TransferIsNotInSeatTransferError(transfer));
         continue;
@@ -52,11 +61,13 @@ export class GtfsTransferConnector {
         continue;
       }
 
-      // As alluded to above, I suspect one day V/Line might make things
-      // difficult if they start (accurately, to be fair) considering their
-      // Maryborough shuttles as "in-seat" transfers because the trains couple
-      // at Ballarat. No idea how we'd even want to _display_ those, let alone
-      // model it!
+      // As alluded to above, I suspect one day V/Line might start considering
+      // their Maryborough shuttles as "in-seat" transfers because the trains
+      // couple at Ballarat. We don't handle it for now. I wonder how I'd even
+      // display that in CoreQuery? It'll either break the first two rules
+      // (ex-Maryborough train transfers to ex-Wendouree/Ararat), or the next
+      // two (ex-Wendouree/Ararat and ex-Maryborough train transfer to
+      // ex-Ballarat train).
       if (fromTrip.termination.gtfsIdMetadata.id !== transfer.from_stop_id) {
         this._onError(new TransferIsNotFromTerminusError(transfer, fromTrip));
         continue;
@@ -65,12 +76,12 @@ export class GtfsTransferConnector {
         this._onError(new TransferIsNotToOriginError(transfer, toTrip));
         continue;
       }
-      if (fromTrip.nextTrip != null) {
+      if (this._isEntireVehicleAlreadyFormingNextService(fromTrip, result)) {
         const Err = TransferReferencesTripAlreadyConnectedError;
         this._onError(new Err(transfer, fromTrip));
         continue;
       }
-      if (toTrip.previousTrip != null) {
+      if (this._isEntireVehicleAlreadyFormedByPreviousService(toTrip, result)) {
         const Err = TransferReferencesTripAlreadyConnectedError;
         this._onError(new Err(transfer, toTrip));
         continue;
@@ -105,19 +116,45 @@ export class GtfsTransferConnector {
         continue;
       }
 
-      const [newFrom, newTo] = GtfsScheduledTrip.connectAsTransfer(
-        fromTrip,
-        toTrip,
+      result.push(
+        new GtfsEntireVehicleFormsServiceTransfer({
+          fromTripId: fromTrip.gtfsTripId,
+          toTripId: toTrip.gtfsTripId,
+        }),
       );
-      tripMap.set(fromTrip.gtfsTripId, newFrom);
-      tripMap.set(toTrip.gtfsTripId, newTo);
     }
 
-    return Array.from(tripMap.values());
+    return result.toArray();
+  }
+
+  private _isEntireVehicleAlreadyFormingNextService(
+    fromTrip: GtfsScheduledTrip,
+    transfers: MutableGtfsTransferMapping<GtfsTransfer>,
+  ) {
+    return transfers
+      .forTripId(fromTrip.gtfsTripId)
+      .some(
+        (t) =>
+          t.type === "entire-vehicle-forms-service" &&
+          t.fromTripId === fromTrip.gtfsTripId,
+      );
+  }
+
+  private _isEntireVehicleAlreadyFormedByPreviousService(
+    toTrip: GtfsScheduledTrip,
+    transfers: MutableGtfsTransferMapping<GtfsTransfer>,
+  ) {
+    return transfers
+      .forTripId(toTrip.gtfsTripId)
+      .some(
+        (t) =>
+          t.type === "entire-vehicle-forms-service" &&
+          t.toTripId === toTrip.gtfsTripId,
+      );
   }
 }
 
-export type GtfsTransferConnectionError =
+export type GtfsTransferParsingError =
   | TransferReferencesNonExistentTrip
   | TransferIsNotFromTerminusError
   | TransferIsNotToOriginError

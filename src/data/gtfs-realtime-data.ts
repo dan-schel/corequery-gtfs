@@ -1,13 +1,32 @@
+import type {
+  GtfsAddedTransfer,
+  GtfsBrokenTransfer,
+} from "./gtfs-realtime-transfer.js";
+import { GtfsTransferMapping } from "./gtfs-transfer-mapping.js";
 import type { GtfsUpdatedTrip } from "./gtfs-updated-trip.js";
 
 export class GtfsRealtimeData {
   private readonly _tripsByScheduledTripId: Map<string, GtfsUpdatedTrip>;
+  private readonly _brokenTransfersMapping: GtfsTransferMapping<GtfsBrokenTransfer>;
+  private readonly _addedTransfersMapping: GtfsTransferMapping<GtfsAddedTransfer>;
 
-  static readonly empty = new GtfsRealtimeData([]);
+  static readonly empty = new GtfsRealtimeData([], [], []);
 
-  constructor(private readonly _updatedTrips: readonly GtfsUpdatedTrip[]) {
+  constructor(
+    private readonly _updatedTrips: readonly GtfsUpdatedTrip[],
+    private readonly _brokenTransfers: readonly GtfsBrokenTransfer[],
+    private readonly _addedTransfers: readonly GtfsAddedTransfer[],
+  ) {
     this._tripsByScheduledTripId = new Map<string, GtfsUpdatedTrip>(
       _updatedTrips.map((trip) => [trip.scheduledTrip.gtfsTripId, trip]),
+    );
+    this._brokenTransfersMapping = GtfsTransferMapping.build(
+      _brokenTransfers,
+      (x) => x.transfer.getInvolvedTripIds(),
+    );
+    this._addedTransfersMapping = GtfsTransferMapping.build(
+      _addedTransfers,
+      (x) => x.transfer.getInvolvedTripIds(),
     );
   }
 
@@ -29,5 +48,27 @@ export class GtfsRealtimeData {
     const trip = this._tripsByScheduledTripId.get(gtfsTripId);
     if (trip == null || !trip.serviceDay.equals(serviceDay)) return null;
     return trip;
+  }
+
+  getBrokenTransfersForTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): readonly GtfsBrokenTransfer[] {
+    return this._brokenTransfersMapping
+      .forTripId(gtfsTripId)
+      .filter((x) => x.serviceDay.equals(serviceDay));
+  }
+
+  getAddedTransfersForTrip(
+    gtfsTripId: string,
+    serviceDay: Temporal.PlainDate,
+  ): readonly GtfsAddedTransfer[] {
+    return this._addedTransfersMapping
+      .forTripId(gtfsTripId)
+      .filter((x) => x.serviceDay.equals(serviceDay));
+  }
+
+  static fromTrips(trips: readonly GtfsUpdatedTrip[]): GtfsRealtimeData {
+    return new GtfsRealtimeData(trips, [], []);
   }
 }

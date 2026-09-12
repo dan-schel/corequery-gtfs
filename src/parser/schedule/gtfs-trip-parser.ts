@@ -18,9 +18,9 @@ import {
   type GtfsRouteMatchingError,
 } from "./gtfs-route-matcher.js";
 import {
-  type GtfsTransferConnectionError,
-  GtfsTransferConnector,
-} from "./gtfs-transfer-connector.js";
+  type GtfsTransferParsingError,
+  GtfsTransferParser,
+} from "./gtfs-transfer-parser.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 
@@ -28,7 +28,7 @@ export class GtfsTripParser {
   private readonly _stopTimeNormaliser: GtfsStopTimeNormaliser;
   private readonly _primaryRouteMatcher: GtfsRouteMatcher;
   private readonly _bonusRouteMatcher: GtfsRouteMatcher;
-  private readonly _transferConnector: GtfsTransferConnector;
+  private readonly _transferParser: GtfsTransferParser;
 
   constructor(
     // Unlike csvs, lineGtfsIdMapping, and stopGtfsIdMapping, these are not
@@ -40,7 +40,7 @@ export class GtfsTripParser {
   ) {
     this._stopTimeNormaliser = new GtfsStopTimeNormaliser(this._onError);
     this._primaryRouteMatcher = new GtfsRouteMatcher(this._onError);
-    this._transferConnector = new GtfsTransferConnector(this._onError);
+    this._transferParser = new GtfsTransferParser(this._onError);
 
     // We don't care if a bonus route doesn't match. Most of the time, it won't!
     this._bonusRouteMatcher = new GtfsRouteMatcher(() => {});
@@ -57,7 +57,7 @@ export class GtfsTripParser {
     const calendarMap = this._buildCalendarMap(calendars);
     const rowsByTrip = this._organiseStopTimesIntoTrips(trips, stopTimes);
 
-    const unconnectedTrips: GtfsScheduledTrip[] = [];
+    const parsedTrips: GtfsScheduledTrip[] = [];
     const ignoredTripIds: string[] = [];
 
     for (const { trip, stopTimes } of rowsByTrip) {
@@ -99,7 +99,7 @@ export class GtfsTripParser {
         stopGtfsIdMapping,
       );
 
-      unconnectedTrips.push(
+      parsedTrips.push(
         new GtfsScheduledTrip({
           gtfsTripId: trip.trip_id,
           gtfsRouteId: trip.route_id,
@@ -108,16 +108,13 @@ export class GtfsTripParser {
           lineIds,
           color: routeMatchResult.color,
           serviceTags,
-          previousTrip: null,
-          nextTrip: null,
         }),
       );
     }
 
-    const parsedTrips: readonly GtfsScheduledTrip[] =
-      this._transferConnector.connect(unconnectedTrips, transfers);
+    const parsedTransfers = this._transferParser.parse(parsedTrips, transfers);
 
-    return { parsedTrips, ignoredTripIds };
+    return { parsedTrips, parsedTransfers, ignoredTripIds };
   }
 
   private _organiseStopTimesIntoTrips(
@@ -225,7 +222,7 @@ export type GtfsTripParsingError =
   | TripReferencesUnmappedRouteIdError
   | GtfsStopTimeNormalisationError
   | GtfsRouteMatchingError
-  | GtfsTransferConnectionError;
+  | GtfsTransferParsingError;
 
 export class StopTimeReferencesNonExistentTripError {
   readonly type = "stop-time-references-non-existent-trip";

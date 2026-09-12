@@ -16,16 +16,6 @@ export type GtfsScheduledTripFields = {
   readonly lineIds: readonly number[];
   readonly color: Color | null;
   readonly serviceTags: readonly number[];
-
-  // TODO: This only supports 1-1 connections. You could theoretically have a
-  // trip that runs to Ballarat, the train splits, and half goes to Ararat and
-  // half goes to Maryborough. In that case, the Ballarat trip would have 2 next
-  // trips. V/Line might also represent it as a train from Melbourne to Ararat
-  // and a train from Ballarat to Maryborough, where the transfer happens at
-  // Ballarat. Right now we expect the transfer to always be terminus to origin,
-  // but that could change in the future.
-  readonly previousTrip: GtfsScheduledTrip | null;
-  readonly nextTrip: GtfsScheduledTrip | null;
 };
 
 export class GtfsScheduledTrip {
@@ -36,8 +26,6 @@ export class GtfsScheduledTrip {
   readonly lineIds: readonly number[];
   readonly color: Color | null;
   readonly serviceTags: readonly number[];
-  readonly previousTrip: GtfsScheduledTrip | null;
-  readonly nextTrip: GtfsScheduledTrip | null;
 
   constructor(fields: GtfsScheduledTripFields) {
     this.gtfsTripId = fields.gtfsTripId;
@@ -47,8 +35,6 @@ export class GtfsScheduledTrip {
     this.lineIds = fields.lineIds;
     this.color = fields.color;
     this.serviceTags = fields.serviceTags;
-    this.previousTrip = fields.previousTrip;
-    this.nextTrip = fields.nextTrip;
 
     if (this.lineIds.length < 1) throw new Error("Must have 1+ line IDs.");
     if (this.movements.length < 2) throw new Error("Must have 2+ movements.");
@@ -65,13 +51,6 @@ export class GtfsScheduledTrip {
     return new GtfsScheduledTrip({ ...this, ...newValues });
   }
 
-  static connectAsTransfer(
-    from: GtfsScheduledTrip,
-    to: GtfsScheduledTrip,
-  ): readonly [GtfsScheduledTrip, GtfsScheduledTrip] {
-    return [from.with({ nextTrip: to }), to.with({ previousTrip: from })];
-  }
-
   get origination(): GtfsScheduledTripOriginatingMovement {
     const firstMovement = this.movements[0];
     if (firstMovement?.type === "originating") return firstMovement;
@@ -86,12 +65,6 @@ export class GtfsScheduledTrip {
 
     // Can't happen. Checked in constructor.
     throw new Error();
-  }
-
-  get finalTermination(): GtfsScheduledTripTerminatingMovement {
-    if (this.nextTrip == null) return this.termination;
-
-    return this.nextTrip.finalTermination;
   }
 
   requireMovementIndex(movement: GtfsScheduledTripMovement): number {
@@ -148,8 +121,6 @@ export class GtfsScheduledTrip {
       lineIds: [1],
       color: null,
       serviceTags: [],
-      previousTrip: null,
-      nextTrip: null,
     });
   }
 }
