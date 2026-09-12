@@ -11,12 +11,12 @@ import type {
   ServiceSource,
   ServiceTerminatingMovementFields,
 } from "./corequery-types.js";
-import { CorequeryIntrasourceId } from "./corequeryify/corequery-intrasource-id.js";
-import { ServiceConverter } from "./corequeryify/service-converter.js";
+import { CorequeryIntrasourceId } from "./conversion/corequery-intrasource-id.js";
+import { ServiceConverter } from "./conversion/service-converter.js";
 import { GtfsScheduledTrip } from "./data/gtfs-scheduled-trip.js";
 import type { GtfsSystem } from "./gtfs-system.js";
 import { GtfsUpdatedTrip } from "./data/gtfs-updated-trip.js";
-import { ServiceConversionIterator } from "./corequeryify/service-conversion-iterator.js";
+import { ServiceConversionIterator } from "./conversion/service-conversion-iterator.js";
 
 type GtfsServiceSourceFields<
   CorequeryDepartureClass,
