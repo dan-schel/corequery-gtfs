@@ -5,19 +5,16 @@ import type { GtfsConfig } from "../../../../src/config/index.js";
 const lineGtfsIdsSchema = z.record(
   intStringSchema,
   z.object({
-    primary: z.string(),
-    other: z.string().array().optional(),
-    replacementBus: z.string().array().optional(),
+    general: z.string().array(),
+    ignored: z.string().array().optional(),
   }),
 );
 
 const stopGtfsIdsSchema = z.record(
   intStringSchema,
   z.object({
-    parent: z.string(),
-    general: z.string().array().optional(),
-    platforms: z.record(intStringSchema, z.string().array()).optional(),
-    replacementBus: z.string().array().optional(),
+    general: z.string().array(),
+    positional: z.record(intStringSchema, z.string().array()).optional(),
   }),
 );
 

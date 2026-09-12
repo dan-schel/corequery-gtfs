@@ -24,10 +24,7 @@ interface IGtfsUpdatedTripMovement {
   get isNonTerminal(): boolean;
 }
 interface IGtfsUpdatedTripServicingMovement extends IGtfsUpdatedTripMovement {
-  // Original & updated to support platform changes. Can be removed in favour of
-  // just having `positionId` and `gtfsIdMetadata` like the scheduled movements
-  // have if it turns out PTV don't actually do platform changes like this (e.g.
-  // they just remove this trip and create a new "ADDED" one instead, idk).
+  // Original & updated to support platform changes.
   readonly originalPositionId: number | null;
   readonly updatedPositionId: number | null;
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;

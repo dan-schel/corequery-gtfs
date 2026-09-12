@@ -138,17 +138,8 @@ export class GtfsTripUpdateParser {
         return null;
       }
 
-      // This is not really an error (note that I don't return null!), it's just
-      // logging to see if it ever happens. We support platform changes done in
-      // this way, but I built that support on assumptions, and I have no idea
-      // if this is typically how PTV would represent a platform change.
-      if (gtfsIdMetadata.id !== scheduledMovement.gtfsIdMetadata.id) {
-        const Err = StopTimeUpdateEntryChangesPlatformError;
-        this._onError(new Err(tripUpdate, entry, trip, movementIndex));
-      }
-
       const updatedPositionId =
-        gtfsIdMetadata.type === "platform" ? gtfsIdMetadata.positionId : null;
+        gtfsIdMetadata.type === "positional" ? gtfsIdMetadata.positionId : null;
 
       // Parse the updated times from the `arrivalTime` and `departureTime`
       // fields.
@@ -288,7 +279,6 @@ export type GtfsTripUpdateParsingError =
   | MultipleStopTimeUpdateEntriesForSameMovementIndexError
   | StopTimeUpdateEntryReferencesUnmappedStopIdError
   | StopTimeUpdateEntryChangesStopError
-  | StopTimeUpdateEntryChangesPlatformError
   | NeitherTimeNorDelayGivenError
   | TimeAndDelayDisagreeWithEachOtherError
   | NeitherArrivalNorDepartureGivenError;
@@ -349,22 +339,10 @@ export class StopTimeUpdateEntryReferencesUnmappedStopIdError {
   ) {}
 }
 
-// i.e. It doesn't just change the platform (which we're fine with), but the
-// entire stop.
+// i.e. It doesn't just change the position/platform (which we're fine with),
+// but the entire stop.
 export class StopTimeUpdateEntryChangesStopError {
   readonly type = "stop-time-update-entry-changes-stop";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly matchedTrip: GtfsScheduledTrip,
-    readonly matchedMovementIndex: number,
-  ) {}
-}
-
-// Just logging this to see if it ever happens. It's not really an error, and we
-// handle it well.
-export class StopTimeUpdateEntryChangesPlatformError {
-  readonly type = "stop-time-update-entry-changes-platform";
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,

@@ -4,57 +4,44 @@ import type { LineGtfsIdCollectionConfig } from "../../config/ids.js";
 export class LineGtfsIdCollection {
   constructor(
     readonly lineId: number,
-    readonly primary: string,
-    readonly other: readonly string[],
-    readonly replacementBus: readonly string[],
+    readonly general: readonly string[],
+    readonly ignored: readonly string[],
   ) {}
 
   all(): LineGtfsIdMetadata[] {
     return [
-      {
-        type: "primary",
-        id: this.primary,
-        lineId: this.lineId,
-      },
-
-      ...this.other.map((id) => ({
-        type: "other" as const,
+      ...this.general.map((id) => ({
+        type: "general" as const,
         id,
         lineId: this.lineId,
       })),
 
-      ...this.replacementBus.map((id) => ({
-        type: "replacement-bus" as const,
+      ...this.ignored.map((id) => ({
+        type: "ignored" as const,
         id,
         lineId: this.lineId,
       })),
     ];
   }
 
-  allExcludingReplacementBus(): LineGtfsIdMetadata[] {
-    return this.all().filter((metadata) => metadata.type !== "replacement-bus");
+  allNonIgnored(): LineGtfsIdMetadata[] {
+    return this.all().filter((metadata) => metadata.type !== "ignored");
   }
 
-  includes(
-    id: string,
-    { ignoreReplacementBusIds }: { ignoreReplacementBusIds: boolean },
-  ) {
-    const idsToCheck = ignoreReplacementBusIds
-      ? this.allExcludingReplacementBus()
-      : this.all();
+  includes(id: string, { excludeIgnored }: { excludeIgnored: boolean }) {
+    const idsToCheck = excludeIgnored ? this.allNonIgnored() : this.all();
     return idsToCheck.some((metadata) => metadata.id === id);
   }
 
   static build(stopId: number, gtfsIdsForSubfeed: LineGtfsIdCollectionConfig) {
     return new LineGtfsIdCollection(
       stopId,
-      gtfsIdsForSubfeed.primary,
-      gtfsIdsForSubfeed.other ?? [],
-      gtfsIdsForSubfeed.replacementBus ?? [],
+      gtfsIdsForSubfeed.general,
+      gtfsIdsForSubfeed.ignored ?? [],
     );
   }
 
-  static withParentOnly(lineId: number, parentGtfsId: string) {
-    return new LineGtfsIdCollection(lineId, parentGtfsId, [], []);
+  static simple(lineId: number, gtfsId: string) {
+    return new LineGtfsIdCollection(lineId, [gtfsId], []);
   }
 }

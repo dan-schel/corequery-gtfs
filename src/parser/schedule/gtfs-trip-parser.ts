@@ -93,7 +93,7 @@ export class GtfsTripParser {
         continue;
       }
 
-      if (lineIdMatch.type === "replacement-bus") {
+      if (lineIdMatch.type === "ignored") {
         ignoredTripIds.push(trip.trip_id);
         continue;
       }

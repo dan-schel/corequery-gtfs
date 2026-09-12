@@ -17,11 +17,11 @@ import {
 describe("GtfsRouteMatcher", () => {
   const STOP_MAPPING = new StopGtfsIdMapping(
     new Map([
-      [1, StopGtfsIdCollection.withParentOnly(1, "1")],
-      [2, StopGtfsIdCollection.withParentOnly(2, "2")],
-      [3, StopGtfsIdCollection.withParentOnly(3, "3")],
-      [4, StopGtfsIdCollection.withParentOnly(4, "4")],
-      [5, StopGtfsIdCollection.withParentOnly(5, "5")],
+      [1, StopGtfsIdCollection.simple(1, "1")],
+      [2, StopGtfsIdCollection.simple(2, "2")],
+      [3, StopGtfsIdCollection.simple(3, "3")],
+      [4, StopGtfsIdCollection.simple(4, "4")],
+      [5, StopGtfsIdCollection.simple(5, "5")],
     ]),
   );
 

@@ -1,22 +1,15 @@
 export type LineGtfsIdMetadata =
-  | PrimaryLineGtfsIdMetadata
-  | OtherLineGtfsIdMetadata
-  | ReplacementBusLineGtfsIdMetadata;
+  | GeneralLineGtfsIdMetadata
+  | IgnoredLineGtfsIdMetadata;
 
-type PrimaryLineGtfsIdMetadata = {
-  readonly type: "primary";
+type GeneralLineGtfsIdMetadata = {
+  readonly type: "general";
   readonly id: string;
   readonly lineId: number;
 };
 
-type OtherLineGtfsIdMetadata = {
-  readonly type: "other";
-  readonly id: string;
-  readonly lineId: number;
-};
-
-type ReplacementBusLineGtfsIdMetadata = {
-  readonly type: "replacement-bus";
+type IgnoredLineGtfsIdMetadata = {
+  readonly type: "ignored";
   readonly id: string;
   readonly lineId: number;
 };
