@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - package.json
 
 permissions:
   id-token: write
@@ -13,10 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: version_check
+        shell: bash
+        run: bash ./.github/scripts/version-changed.sh "${{ github.event.before }}"
       - uses: actions/setup-node@v7
+        if: steps.version_check.outputs.changed == 'true'
         with:
           node-version: "24.21.0"
           registry-url: "https://registry.npmjs.org"
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish
+      - if: steps.version_check.outputs.changed == 'true'
+        run: npm ci
+      - if: steps.version_check.outputs.changed == 'true'
+        run: npm run build
+      - if: steps.version_check.outputs.changed == 'true'
+        run: npm publish
