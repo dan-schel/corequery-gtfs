@@ -22,7 +22,7 @@
   "devDependencies": {
     "@dan-schel/js-utils": "4.14.1",
     "@eslint/js": "10.0.1",
-    "@types/node": "25.9.6",
+    "@types/node": "25.9.7",
     "@vitest/coverage-v8": "5.0.1",
     "csv-parser": "3.2.1",
     "eslint": "10.10.0",
