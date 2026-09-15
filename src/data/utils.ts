@@ -2,5 +2,4 @@ import type { GtfsScheduledTripServicingMovement } from "./gtfs-scheduled-trip-m
 import type { GtfsUpdatedTripServicingMovement } from "./gtfs-updated-trip-movements.js";
 
 export type GtfsTripServicingMovement =
-  | GtfsScheduledTripServicingMovement
-  | GtfsUpdatedTripServicingMovement;
+  GtfsScheduledTripServicingMovement | GtfsUpdatedTripServicingMovement;

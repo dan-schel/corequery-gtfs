@@ -56,5 +56,4 @@ export class GtfsScheduleDataParser {
 }
 
 export type GtfsScheduleParsingError =
-  | GtfsCalendarParsingError
-  | GtfsTripParsingError;
+  GtfsCalendarParsingError | GtfsTripParsingError;
