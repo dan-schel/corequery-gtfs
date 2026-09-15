@@ -1,6 +1,5 @@
 export type LineGtfsIdMetadata =
-  | GeneralLineGtfsIdMetadata
-  | IgnoredLineGtfsIdMetadata;
+  GeneralLineGtfsIdMetadata | IgnoredLineGtfsIdMetadata;
 
 type GeneralLineGtfsIdMetadata = {
   readonly type: "general";

@@ -117,21 +117,12 @@ export type ServiceConnectionFields = {
 export type DeparturesIterationDirection = "forwards" | "backwards";
 
 export type Color =
-  | "red"
-  | "yellow"
-  | "green"
-  | "cyan"
-  | "blue"
-  | "pink"
-  | "purple"
-  | "gray";
+  "red" | "yellow" | "green" | "cyan" | "blue" | "pink" | "purple" | "gray";
 
 type ServiceLiveDataType = "scheduled" | "updated" | "added";
 
 type ServiceTimeType =
-  | "scheduled-time"
-  | "provided-live-time"
-  | "interpolated-live-time";
+  "scheduled-time" | "provided-live-time" | "interpolated-live-time";
 
 type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
 

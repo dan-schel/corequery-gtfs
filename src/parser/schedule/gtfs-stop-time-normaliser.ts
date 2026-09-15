@@ -131,8 +131,7 @@ export class GtfsStopTimeNormaliser {
 }
 
 export type GtfsStopTimeNormalisationError =
-  | InvalidStopSequenceError
-  | MultipleStopSequencesError;
+  InvalidStopSequenceError | MultipleStopSequencesError;
 
 export class InvalidStopSequenceError {
   readonly type = "stop-sequence-duplicated";

@@ -1,6 +1,5 @@
 export type StopGtfsIdMetadata =
-  | GeneralStopGtfsIdMetadata
-  | PositionalStopGtfsIdMetadata;
+  GeneralStopGtfsIdMetadata | PositionalStopGtfsIdMetadata;
 
 type GeneralStopGtfsIdMetadata = {
   readonly type: "general";
