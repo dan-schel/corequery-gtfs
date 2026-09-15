@@ -23,7 +23,7 @@
     "@dan-schel/js-utils": "4.14.1",
     "@eslint/js": "10.0.1",
     "@types/node": "25.9.6",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "5.0.1",
     "csv-parser": "3.2.1",
     "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
@@ -32,7 +32,7 @@
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.0",
-    "vitest": "4.1.11",
+    "vitest": "5.0.1",
     "zod": "4.6.5"
   },
   "author": "dan-schel",
