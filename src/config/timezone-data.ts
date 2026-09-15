@@ -1,3 +1,4 @@
+// TODO: Should it include __Config in the name?
 export type TimezoneData = {
   readonly timezone: string;
   readonly minimumViableOffsetSeconds: number;
