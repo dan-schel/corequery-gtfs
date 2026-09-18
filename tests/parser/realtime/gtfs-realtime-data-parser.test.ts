@@ -87,7 +87,8 @@ describe("GtfsRealtimeDataParser", () => {
     const updatedTrip = itsOk(parsed.allTrips()[0]);
 
     expect(updatedTrip.scheduledTrip.gtfsTripId).toBe(TRIP_1.gtfsTripId);
-    const parsedDepartureTime = updatedTrip.origination.realtimeDepartureTime;
+    const parsedDepartureTime =
+      updatedTrip.origination.knownRealtimeDepartureTime;
     const expectedDepartureTime = TRIP_1.origination.departureTime
       .toInstant(TRIP_1_DESCRIPTOR.startDate, TIMEZONE)
       .add({ seconds: 120 });

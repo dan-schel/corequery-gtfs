@@ -142,7 +142,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       // But no realtime data.
-      realtimeDepartureTime: null,
+      knownRealtimeDepartureTime: null,
       updatedPositionId: this.positionId,
       updatedGtfsIdMetadata: this.gtfsIdMetadata,
     });
@@ -162,7 +162,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       // Realtime data.
-      realtimeDepartureTime: values.departureTime,
+      knownRealtimeDepartureTime: values.departureTime,
       updatedPositionId: values.updatedPositionId,
       updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
     });
@@ -174,7 +174,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
     delayMins: number,
   ): GtfsUpdatedTripOriginatingMovement {
     return this.asHollowUpdatedTripMovement(serviceDay, timezone).with({
-      realtimeDepartureTime: this.departureTime
+      knownRealtimeDepartureTime: this.departureTime
         .toInstant(serviceDay, timezone)
         .add({ minutes: delayMins }),
     });
@@ -239,8 +239,8 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
       gtfsStopSequence: this.gtfsStopSequence,
 
       // But no realtime data.
-      realtimeArrivalTime: null,
-      realtimeDepartureTime: null,
+      knownRealtimeArrivalTime: null,
+      knownRealtimeDepartureTime: null,
       updatedPositionId: this.positionId,
       updatedGtfsIdMetadata: this.gtfsIdMetadata,
     });
@@ -266,8 +266,8 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
       gtfsStopSequence: this.gtfsStopSequence,
 
       // Realtime data.
-      realtimeArrivalTime: values.arrivalTime,
-      realtimeDepartureTime: values.departureTime,
+      knownRealtimeArrivalTime: values.arrivalTime,
+      knownRealtimeDepartureTime: values.departureTime,
       updatedPositionId: values.updatedPositionId,
       updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
     });
@@ -279,10 +279,10 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
     delayMins: number,
   ): GtfsUpdatedTripRegularMovement {
     return this.asHollowUpdatedTripMovement(serviceDay, timezone).with({
-      realtimeArrivalTime: this.arrivalTime
+      knownRealtimeArrivalTime: this.arrivalTime
         .toInstant(serviceDay, timezone)
         .add({ minutes: delayMins }),
-      realtimeDepartureTime: this.departureTime
+      knownRealtimeDepartureTime: this.departureTime
         .toInstant(serviceDay, timezone)
         .add({ minutes: delayMins }),
     });
@@ -335,7 +335,7 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       // But no realtime data.
-      realtimeArrivalTime: null,
+      knownRealtimeArrivalTime: null,
       updatedPositionId: this.positionId,
       updatedGtfsIdMetadata: this.gtfsIdMetadata,
     });
@@ -355,7 +355,7 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       // Realtime data.
-      realtimeArrivalTime: values.arrivalTime,
+      knownRealtimeArrivalTime: values.arrivalTime,
       updatedPositionId: values.updatedPositionId,
       updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
     });
@@ -367,7 +367,7 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
     delayMins: number,
   ): GtfsUpdatedTripTerminatingMovement {
     return this.asHollowUpdatedTripMovement(serviceDay, timezone).with({
-      realtimeArrivalTime: this.arrivalTime
+      knownRealtimeArrivalTime: this.arrivalTime
         .toInstant(serviceDay, timezone)
         .add({ minutes: delayMins }),
     });

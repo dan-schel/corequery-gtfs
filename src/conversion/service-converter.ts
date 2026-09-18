@@ -297,13 +297,14 @@ export class ServiceConverter<
         // Corequery's data format? Genuinely, is there an argument to be made?
         // Maybe the whole corequeryify folder should be removed?
         departureTimeType:
-          movement.realtimeDepartureTime !== null
+          movement.knownRealtimeDepartureTime !== null
             ? "provided-live-time"
             : "scheduled-time",
         departureTime:
-          movement.realtimeDepartureTime ?? movement.scheduledDepartureTime,
+          movement.knownRealtimeDepartureTime ??
+          movement.scheduledDepartureTime,
         formerDepartureTime:
-          movement.realtimeDepartureTime !== null
+          movement.knownRealtimeDepartureTime !== null
             ? movement.scheduledDepartureTime
             : null,
       });
@@ -314,24 +315,25 @@ export class ServiceConverter<
         updatedPositionId: movement.updatedPositionId,
 
         arrivalTimeType:
-          movement.realtimeArrivalTime !== null
+          movement.knownRealtimeArrivalTime !== null
             ? "provided-live-time"
             : "scheduled-time",
         arrivalTime:
-          movement.realtimeArrivalTime ?? movement.scheduledArrivalTime,
+          movement.knownRealtimeArrivalTime ?? movement.scheduledArrivalTime,
         formerArrivalTime:
-          movement.realtimeArrivalTime !== null
+          movement.knownRealtimeArrivalTime !== null
             ? movement.scheduledArrivalTime
             : null,
 
         departureTimeType:
-          movement.realtimeDepartureTime !== null
+          movement.knownRealtimeDepartureTime !== null
             ? "provided-live-time"
             : "scheduled-time",
         departureTime:
-          movement.realtimeDepartureTime ?? movement.scheduledDepartureTime,
+          movement.knownRealtimeDepartureTime ??
+          movement.scheduledDepartureTime,
         formerDepartureTime:
-          movement.realtimeDepartureTime !== null
+          movement.knownRealtimeDepartureTime !== null
             ? movement.scheduledDepartureTime
             : null,
 
@@ -345,13 +347,13 @@ export class ServiceConverter<
         updatedPositionId: movement.updatedPositionId,
 
         arrivalTimeType:
-          movement.realtimeArrivalTime !== null
+          movement.knownRealtimeArrivalTime !== null
             ? "provided-live-time"
             : "scheduled-time",
         arrivalTime:
-          movement.realtimeArrivalTime ?? movement.scheduledArrivalTime,
+          movement.knownRealtimeArrivalTime ?? movement.scheduledArrivalTime,
         formerArrivalTime:
-          movement.realtimeArrivalTime !== null
+          movement.knownRealtimeArrivalTime !== null
             ? movement.scheduledArrivalTime
             : null,
       });

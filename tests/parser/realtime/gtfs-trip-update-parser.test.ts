@@ -91,10 +91,10 @@ describe("GtfsTripUpdateParser", () => {
     expect(parsed.isCancelled).toBe(false);
 
     expect(
-      parsed.origination.realtimeDepartureTime?.equals(realtimeDeparture),
+      parsed.origination.knownRealtimeDepartureTime?.equals(realtimeDeparture),
     ).toBe(true);
     expect(
-      parsed.termination.realtimeArrivalTime?.equals(realtimeArrival),
+      parsed.termination.knownRealtimeArrivalTime?.equals(realtimeArrival),
     ).toBe(true);
   });
 
