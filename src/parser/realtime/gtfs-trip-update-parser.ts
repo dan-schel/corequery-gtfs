@@ -14,6 +14,7 @@ import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { GtfsStopTime } from "../../data/gtfs-stop-time.js";
 import { itsOk } from "@dan-schel/js-utils";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
+import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
@@ -31,6 +32,7 @@ export class GtfsTripUpdateParser {
   private readonly _onError: (error: GtfsTripUpdateParsingError) => void;
 
   private readonly _tripIdentifier: GtfsTripUpdateTripIdentifier;
+  private readonly _movementsInterpolator: GtfsTripMovementsInterpolator;
 
   constructor(fields: GtfsTripUpdateParserFields) {
     this._timezone = fields.timezone;
@@ -40,6 +42,7 @@ export class GtfsTripUpdateParser {
     this._tripIdentifier = new GtfsTripUpdateTripIdentifier({
       onError: this._onError,
     });
+    this._movementsInterpolator = new GtfsTripMovementsInterpolator();
   }
 
   parse(tripUpdate: TripUpdateJson, scheduleData: GtfsScheduleData) {
@@ -184,10 +187,13 @@ export class GtfsTripUpdateParser {
       return updatedMovementsByIndex.get(i) ?? movement;
     });
 
+    const movementsAfterInterpolation =
+      this._movementsInterpolator.interpolate(movements);
+
     return new GtfsUpdatedTrip({
       scheduledTrip: trip,
       serviceDay,
-      movements,
+      movements: movementsAfterInterpolation,
       isCancelled: false,
     });
   }
