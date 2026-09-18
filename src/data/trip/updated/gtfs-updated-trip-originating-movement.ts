@@ -62,15 +62,11 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime;
-  }
-
-  get realtimeTimeRelevantToDeparturesAlgorithm() {
-    return this.knownRealtimeDepartureTime;
-  }
-
-  get scheduledTimeRelevantToDeparturesAlgorithm() {
-    return this.scheduledDepartureTime;
+    return (
+      this.knownRealtimeDepartureTime ??
+      this.assumedRealtimeDepartureTime ??
+      this.scheduledDepartureTime
+    );
   }
 
   asCorequeryFields(): ServiceOriginatingMovementFields {
