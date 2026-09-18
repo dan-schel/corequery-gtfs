@@ -1,6 +1,6 @@
 import type { GtfsStopTime } from "../../gtfs-stop-time.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
-import { GtfsUpdatedTripTerminatingMovement } from "../updated/terminating.js";
+import { GtfsUpdatedTripTerminatingMovement } from "../updated/gtfs-updated-trip-terminating-movement.js";
 import type {
   IGtfsScheduledTripServicingMovement,
   PromotionToUpdatedTripFields,

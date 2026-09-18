@@ -1,8 +1,8 @@
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
-import type { GtfsUpdatedTripOriginatingMovement } from "./originating.js";
-import type { GtfsUpdatedTripPassingMovement } from "./passing.js";
-import type { GtfsUpdatedTripRegularMovement } from "./regular.js";
-import type { GtfsUpdatedTripTerminatingMovement } from "./terminating.js";
+import type { GtfsUpdatedTripOriginatingMovement } from "./gtfs-updated-trip-originating-movement.js";
+import type { GtfsUpdatedTripPassingMovement } from "./gtfs-updated-trip-passing-movement.js";
+import type { GtfsUpdatedTripRegularMovement } from "./gtfs-updated-trip-regular-movement.js";
+import type { GtfsUpdatedTripTerminatingMovement } from "./gtfs-updated-trip-terminating-movement.js";
 
 export type GtfsUpdatedTripMovement =
   | GtfsUpdatedTripOriginatingMovement

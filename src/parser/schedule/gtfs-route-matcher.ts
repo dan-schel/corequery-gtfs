@@ -5,10 +5,10 @@ import type {
 } from "../../data/raw/schedule-csvs.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { Route } from "../../data/route/route.js";
-import { GtfsScheduledTripOriginatingMovement } from "../../data/trip/scheduled/originating.js";
-import { GtfsScheduledTripPassingMovement } from "../../data/trip/scheduled/passing.js";
-import { GtfsScheduledTripRegularMovement } from "../../data/trip/scheduled/regular.js";
-import { GtfsScheduledTripTerminatingMovement } from "../../data/trip/scheduled/terminating.js";
+import { GtfsScheduledTripOriginatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
+import { GtfsScheduledTripPassingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-passing-movement.js";
+import { GtfsScheduledTripRegularMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
+import { GtfsScheduledTripTerminatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
 import type {
   GtfsScheduledTripMovement,
   GtfsScheduledTripServicingMovement,

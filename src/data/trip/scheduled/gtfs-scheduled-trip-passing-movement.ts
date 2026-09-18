@@ -1,5 +1,5 @@
 import type { IGtfsScheduledTripMovement } from "./types.js";
-import { GtfsUpdatedTripPassingMovement } from "../updated/passing.js";
+import { GtfsUpdatedTripPassingMovement } from "../updated/gtfs-updated-trip-passing-movement.js";
 
 export type GtfsScheduledTripPassingMovementFields = {
   readonly stopId: number;
