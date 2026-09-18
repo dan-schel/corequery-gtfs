@@ -80,6 +80,8 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
 
       knownRealtimeArrivalTime: null,
       knownRealtimeDepartureTime: null,
+      assumedRealtimeArrivalTime: null,
+      assumedRealtimeDepartureTime: null,
       updatedPositionId: this.positionId,
       updatedGtfsIdMetadata: this.gtfsIdMetadata,
     });
@@ -106,6 +108,8 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
 
       knownRealtimeArrivalTime: values.arrivalTime,
       knownRealtimeDepartureTime: values.departureTime,
+      assumedRealtimeArrivalTime: null,
+      assumedRealtimeDepartureTime: null,
       updatedPositionId: values.updatedPositionId,
       updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
     });

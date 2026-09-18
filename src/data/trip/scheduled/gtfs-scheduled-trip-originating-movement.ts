@@ -67,6 +67,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       knownRealtimeDepartureTime: null,
+      assumedRealtimeDepartureTime: null,
       updatedPositionId: this.positionId,
       updatedGtfsIdMetadata: this.gtfsIdMetadata,
     });
@@ -86,6 +87,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
       gtfsStopSequence: this.gtfsStopSequence,
 
       knownRealtimeDepartureTime: values.departureTime,
+      assumedRealtimeDepartureTime: null,
       updatedPositionId: values.updatedPositionId,
       updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
     });

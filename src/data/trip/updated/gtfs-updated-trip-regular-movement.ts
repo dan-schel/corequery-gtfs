@@ -6,12 +6,18 @@ export type GtfsUpdatedTripRegularMovementFields = {
   readonly stopId: number;
   readonly originalPositionId: number | null;
   readonly updatedPositionId: number | null;
+
   readonly scheduledArrivalTime: Temporal.Instant;
   readonly knownRealtimeArrivalTime: Temporal.Instant | null;
+  readonly assumedRealtimeArrivalTime: Temporal.Instant | null;
+
   readonly scheduledDepartureTime: Temporal.Instant;
   readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+
   readonly picksUp: boolean;
   readonly dropsOff: boolean;
+
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;
   readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
@@ -21,12 +27,18 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
   readonly stopId: number;
   readonly originalPositionId: number | null;
   readonly updatedPositionId: number | null;
+
   readonly scheduledArrivalTime: Temporal.Instant;
   readonly knownRealtimeArrivalTime: Temporal.Instant | null;
+  readonly assumedRealtimeArrivalTime: Temporal.Instant | null;
+
   readonly scheduledDepartureTime: Temporal.Instant;
   readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+
   readonly picksUp: boolean;
   readonly dropsOff: boolean;
+
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;
   readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
@@ -37,8 +49,10 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
     this.updatedPositionId = fields.updatedPositionId;
     this.scheduledArrivalTime = fields.scheduledArrivalTime;
     this.knownRealtimeArrivalTime = fields.knownRealtimeArrivalTime;
+    this.assumedRealtimeArrivalTime = fields.assumedRealtimeArrivalTime;
     this.scheduledDepartureTime = fields.scheduledDepartureTime;
     this.knownRealtimeDepartureTime = fields.knownRealtimeDepartureTime;
+    this.assumedRealtimeDepartureTime = fields.assumedRealtimeDepartureTime;
     this.picksUp = fields.picksUp;
     this.dropsOff = fields.dropsOff;
     this.originalGtfsIdMetadata = fields.originalGtfsIdMetadata;
