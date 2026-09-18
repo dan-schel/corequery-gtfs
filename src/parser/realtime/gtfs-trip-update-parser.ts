@@ -13,7 +13,7 @@ import {
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { GtfsStopTime } from "../../data/gtfs-stop-time.js";
 import { itsOk } from "@dan-schel/js-utils";
-import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";

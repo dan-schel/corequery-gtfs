@@ -1,10 +1,8 @@
 import { itsOk } from "@dan-schel/js-utils";
 import type { GtfsScheduledTrip } from "../scheduled/gtfs-scheduled-trip.js";
-import type {
-  GtfsUpdatedTripMovement,
-  GtfsUpdatedTripOriginatingMovement,
-  GtfsUpdatedTripTerminatingMovement,
-} from "./gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTripMovement } from "./types.js";
+import type { GtfsUpdatedTripOriginatingMovement } from "./originating.js";
+import type { GtfsUpdatedTripTerminatingMovement } from "./terminating.js";
 import type { Color } from "../../../corequery-types.js";
 
 type GtfsUpdatedTripFields = {

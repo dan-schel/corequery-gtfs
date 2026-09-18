@@ -12,8 +12,8 @@ import { GtfsScheduledTrip } from "../data/trip/scheduled/gtfs-scheduled-trip.js
 import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
 import { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
-import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/gtfs-scheduled-trip-movements.js";
-import type { GtfsUpdatedTripMovement } from "../data/trip/updated/gtfs-updated-trip-movements.js";
+import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/types.js";
+import type { GtfsUpdatedTripMovement } from "../data/trip/updated/types.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../data/gtfs-transfer.js";
 import type { GtfsSystem } from "../gtfs-system.js";
 

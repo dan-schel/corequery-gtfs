@@ -1,6 +1,6 @@
 import { itsOk } from "@dan-schel/js-utils";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import type { GtfsUpdatedTripServicingMovement } from "../data/trip/updated/gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTripServicingMovement } from "../data/trip/updated/types.js";
 import type { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { DeparturesBlock } from "./departures-block.js";
 
