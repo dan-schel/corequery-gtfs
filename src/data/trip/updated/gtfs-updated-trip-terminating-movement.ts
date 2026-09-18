@@ -75,15 +75,29 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
       originalPositionId: this.originalPositionId,
       updatedPositionId: this.updatedPositionId,
 
-      arrivalTimeType:
-        this.knownRealtimeArrivalTime !== null
-          ? "provided-live-time"
-          : "scheduled-time",
-      arrivalTime: this.knownRealtimeArrivalTime ?? this.scheduledArrivalTime,
-      formerArrivalTime:
-        this.knownRealtimeArrivalTime !== null
-          ? this.scheduledArrivalTime
-          : null,
+      ...this._arrivalTimeCorequeryFields,
     };
+  }
+
+  private get _arrivalTimeCorequeryFields() {
+    if (this.knownRealtimeArrivalTime !== null) {
+      return {
+        arrivalTimeType: "provided-live-time" as const,
+        arrivalTime: this.knownRealtimeArrivalTime,
+        formerArrivalTime: this.scheduledArrivalTime,
+      };
+    } else if (this.assumedRealtimeArrivalTime !== null) {
+      return {
+        arrivalTimeType: "interpolated-live-time" as const,
+        arrivalTime: this.assumedRealtimeArrivalTime,
+        formerArrivalTime: this.scheduledArrivalTime,
+      };
+    } else {
+      return {
+        arrivalTimeType: "scheduled-time" as const,
+        arrivalTime: this.scheduledArrivalTime,
+        formerArrivalTime: null,
+      };
+    }
   }
 }

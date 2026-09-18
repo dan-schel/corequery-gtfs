@@ -121,7 +121,7 @@ export type Color =
 
 type ServiceLiveDataType = "scheduled" | "updated" | "added";
 
-type ServiceTimeType =
+export type ServiceTimeType =
   "scheduled-time" | "provided-live-time" | "interpolated-live-time";
 
 type ServiceConnectionType = "entire-vehicle-forms-service" | "other";

@@ -92,29 +92,55 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
       originalPositionId: this.originalPositionId,
       updatedPositionId: this.updatedPositionId,
 
-      arrivalTimeType:
-        this.knownRealtimeArrivalTime !== null
-          ? "provided-live-time"
-          : "scheduled-time",
-      arrivalTime: this.knownRealtimeArrivalTime ?? this.scheduledArrivalTime,
-      formerArrivalTime:
-        this.knownRealtimeArrivalTime !== null
-          ? this.scheduledArrivalTime
-          : null,
-
-      departureTimeType:
-        this.knownRealtimeDepartureTime !== null
-          ? "provided-live-time"
-          : "scheduled-time",
-      departureTime:
-        this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime,
-      formerDepartureTime:
-        this.knownRealtimeDepartureTime !== null
-          ? this.scheduledDepartureTime
-          : null,
+      ...this._arrivalTimeCorequeryFields,
+      ...this._departureTimeCorequeryFields,
 
       picksUp: this.picksUp,
       dropsOff: this.dropsOff,
     };
+  }
+
+  private get _arrivalTimeCorequeryFields() {
+    if (this.knownRealtimeArrivalTime !== null) {
+      return {
+        arrivalTimeType: "provided-live-time" as const,
+        arrivalTime: this.knownRealtimeArrivalTime,
+        formerArrivalTime: this.scheduledArrivalTime,
+      };
+    } else if (this.assumedRealtimeArrivalTime !== null) {
+      return {
+        arrivalTimeType: "interpolated-live-time" as const,
+        arrivalTime: this.assumedRealtimeArrivalTime,
+        formerArrivalTime: this.scheduledArrivalTime,
+      };
+    } else {
+      return {
+        arrivalTimeType: "scheduled-time" as const,
+        arrivalTime: this.scheduledArrivalTime,
+        formerArrivalTime: null,
+      };
+    }
+  }
+
+  private get _departureTimeCorequeryFields() {
+    if (this.knownRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "provided-live-time" as const,
+        departureTime: this.knownRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else if (this.assumedRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "interpolated-live-time" as const,
+        departureTime: this.assumedRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else {
+      return {
+        departureTimeType: "scheduled-time" as const,
+        departureTime: this.scheduledDepartureTime,
+        formerDepartureTime: null,
+      };
+    }
   }
 }
