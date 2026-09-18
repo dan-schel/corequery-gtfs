@@ -62,7 +62,7 @@ export class GtfsTripMovementsInterpolator {
     // regardless of what I do :)
     const delays = result.map((movement) => {});
 
-    // TODO: What happens to arrival times. For terminating movements, I
+    // TODO: What happens to arrival times? For terminating movements, I
     // definitely just want to treat the arrival time like a departure time, but
     // what about for regular movements. Is there a chance of creating a time
     // travel issue, where the arrival time of one stop is before the departure
