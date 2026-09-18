@@ -224,46 +224,19 @@ export class ServiceConverter<
     | CorequeryServiceTerminatingMovementClass
     | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
-      return this._buildServiceOriginatingMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.positionId,
-        updatedPositionId: null,
-
-        departureTimeType: "scheduled-time",
-        departureTime: movement.departureTime.toInstant(serviceDay, timezone),
-        formerDepartureTime: null,
-      });
+      return this._buildServiceOriginatingMovement(
+        movement.asCorequeryFields(serviceDay, timezone),
+      );
     } else if (movement.type === "regular") {
-      return this._buildServiceRegularMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.positionId,
-        updatedPositionId: null,
-
-        arrivalTimeType: "scheduled-time",
-        arrivalTime: movement.arrivalTime.toInstant(serviceDay, timezone),
-        formerArrivalTime: null,
-
-        departureTimeType: "scheduled-time",
-        departureTime: movement.departureTime.toInstant(serviceDay, timezone),
-        formerDepartureTime: null,
-
-        picksUp: movement.picksUp,
-        dropsOff: movement.dropsOff,
-      });
+      return this._buildServiceRegularMovement(
+        movement.asCorequeryFields(serviceDay, timezone),
+      );
     } else if (movement.type === "terminating") {
-      return this._buildServiceTerminatingMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.positionId,
-        updatedPositionId: null,
-
-        arrivalTimeType: "scheduled-time",
-        arrivalTime: movement.arrivalTime.toInstant(serviceDay, timezone),
-        formerArrivalTime: null,
-      });
+      return this._buildServiceTerminatingMovement(
+        movement.asCorequeryFields(serviceDay, timezone),
+      );
     } else if (movement.type === "passing") {
-      return this._buildServicePassingMovement({
-        stopId: movement.stopId,
-      });
+      return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
       assertNever(movement);
     }
@@ -277,90 +250,17 @@ export class ServiceConverter<
     | CorequeryServiceTerminatingMovementClass
     | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
-      return this._buildServiceOriginatingMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.originalPositionId,
-        updatedPositionId: movement.updatedPositionId,
-
-        // TODO: Probably move this logic into the GtfsUpdatedTripMovement
-        // classes themselves. I was hesitant at first because I didn't want
-        // them to be concerned with Corequery's data format, but given that
-        // this whole is meant to serve as a plugin to Corequery, it's probably
-        // ok. (And we already do it with `Color` anyway!)
-        //
-        // When we start doing interpolation, I'll forget to update here, and
-        // then the `departureTimeType` will be wrong!
-        //
-        // Note: If pushing things like `departureTimeType` into the
-        // GtfsUpdatedTripMovement classes, why draw the line there? Why not
-        // have a method on the movement classes to convert themselves into
-        // Corequery's data format? Genuinely, is there an argument to be made?
-        // Maybe the whole corequeryify folder should be removed?
-        departureTimeType:
-          movement.knownRealtimeDepartureTime !== null
-            ? "provided-live-time"
-            : "scheduled-time",
-        departureTime:
-          movement.knownRealtimeDepartureTime ??
-          movement.scheduledDepartureTime,
-        formerDepartureTime:
-          movement.knownRealtimeDepartureTime !== null
-            ? movement.scheduledDepartureTime
-            : null,
-      });
+      return this._buildServiceOriginatingMovement(
+        movement.asCorequeryFields(),
+      );
     } else if (movement.type === "regular") {
-      return this._buildServiceRegularMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.originalPositionId,
-        updatedPositionId: movement.updatedPositionId,
-
-        arrivalTimeType:
-          movement.knownRealtimeArrivalTime !== null
-            ? "provided-live-time"
-            : "scheduled-time",
-        arrivalTime:
-          movement.knownRealtimeArrivalTime ?? movement.scheduledArrivalTime,
-        formerArrivalTime:
-          movement.knownRealtimeArrivalTime !== null
-            ? movement.scheduledArrivalTime
-            : null,
-
-        departureTimeType:
-          movement.knownRealtimeDepartureTime !== null
-            ? "provided-live-time"
-            : "scheduled-time",
-        departureTime:
-          movement.knownRealtimeDepartureTime ??
-          movement.scheduledDepartureTime,
-        formerDepartureTime:
-          movement.knownRealtimeDepartureTime !== null
-            ? movement.scheduledDepartureTime
-            : null,
-
-        picksUp: movement.picksUp,
-        dropsOff: movement.dropsOff,
-      });
+      return this._buildServiceRegularMovement(movement.asCorequeryFields());
     } else if (movement.type === "terminating") {
-      return this._buildServiceTerminatingMovement({
-        stopId: movement.stopId,
-        originalPositionId: movement.originalPositionId,
-        updatedPositionId: movement.updatedPositionId,
-
-        arrivalTimeType:
-          movement.knownRealtimeArrivalTime !== null
-            ? "provided-live-time"
-            : "scheduled-time",
-        arrivalTime:
-          movement.knownRealtimeArrivalTime ?? movement.scheduledArrivalTime,
-        formerArrivalTime:
-          movement.knownRealtimeArrivalTime !== null
-            ? movement.scheduledArrivalTime
-            : null,
-      });
+      return this._buildServiceTerminatingMovement(
+        movement.asCorequeryFields(),
+      );
     } else if (movement.type === "passing") {
-      return this._buildServicePassingMovement({
-        stopId: movement.stopId,
-      });
+      return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
       assertNever(movement);
     }

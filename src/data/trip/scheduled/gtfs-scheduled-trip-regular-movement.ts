@@ -1,3 +1,4 @@
+import type { ServiceRegularMovementFields } from "../../../corequery-types.js";
 import type { GtfsStopTime } from "../../gtfs-stop-time.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
 import { GtfsUpdatedTripRegularMovement } from "../updated/gtfs-updated-trip-regular-movement.js";
@@ -41,12 +42,15 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
   get type() {
     return "regular" as const;
   }
+
   get isServicing() {
     return true as const;
   }
+
   get isNonTerminal() {
     return true as const;
   }
+
   get timeRelevantToDeparturesAlgorithm() {
     return this.departureTime;
   }
@@ -120,5 +124,27 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
         .toInstant(serviceDay, timezone)
         .add({ minutes: delayMins }),
     });
+  }
+
+  asCorequeryFields(
+    serviceDay: Temporal.PlainDate,
+    timezone: string,
+  ): ServiceRegularMovementFields {
+    return {
+      stopId: this.stopId,
+      originalPositionId: this.positionId,
+      updatedPositionId: null,
+
+      arrivalTimeType: "scheduled-time",
+      arrivalTime: this.arrivalTime.toInstant(serviceDay, timezone),
+      formerArrivalTime: null,
+
+      departureTimeType: "scheduled-time",
+      departureTime: this.departureTime.toInstant(serviceDay, timezone),
+      formerDepartureTime: null,
+
+      picksUp: this.picksUp,
+      dropsOff: this.dropsOff,
+    };
   }
 }

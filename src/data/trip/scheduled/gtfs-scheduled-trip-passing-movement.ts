@@ -1,5 +1,6 @@
 import type { IGtfsScheduledTripMovement } from "./types.js";
 import { GtfsUpdatedTripPassingMovement } from "../updated/gtfs-updated-trip-passing-movement.js";
+import type { ServicePassingMovementFields } from "../../../corequery-types.js";
 
 export type GtfsScheduledTripPassingMovementFields = {
   readonly stopId: number;
@@ -15,9 +16,11 @@ export class GtfsScheduledTripPassingMovement implements IGtfsScheduledTripMovem
   get type() {
     return "passing" as const;
   }
+
   get isServicing() {
     return false as const;
   }
+
   get isNonTerminal() {
     return true as const;
   }
@@ -45,5 +48,11 @@ export class GtfsScheduledTripPassingMovement implements IGtfsScheduledTripMovem
     return new GtfsUpdatedTripPassingMovement({
       stopId: this.stopId,
     });
+  }
+
+  asCorequeryFields(): ServicePassingMovementFields {
+    return {
+      stopId: this.stopId,
+    };
   }
 }

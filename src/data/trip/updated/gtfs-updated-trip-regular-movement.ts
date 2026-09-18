@@ -1,3 +1,4 @@
+import type { ServiceRegularMovementFields } from "../../../corequery-types.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
 import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 
@@ -54,19 +55,56 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
   get type() {
     return "regular" as const;
   }
+
   get isServicing() {
     return true as const;
   }
+
   get isNonTerminal() {
     return true as const;
   }
+
   get timeRelevantToDeparturesAlgorithm() {
     return this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime;
   }
+
   get realtimeTimeRelevantToDeparturesAlgorithm() {
     return this.knownRealtimeDepartureTime;
   }
+
   get scheduledTimeRelevantToDeparturesAlgorithm() {
     return this.scheduledDepartureTime;
+  }
+
+  asCorequeryFields(): ServiceRegularMovementFields {
+    return {
+      stopId: this.stopId,
+      originalPositionId: this.originalPositionId,
+      updatedPositionId: this.updatedPositionId,
+
+      arrivalTimeType:
+        this.knownRealtimeArrivalTime !== null
+          ? "provided-live-time"
+          : "scheduled-time",
+      arrivalTime: this.knownRealtimeArrivalTime ?? this.scheduledArrivalTime,
+      formerArrivalTime:
+        this.knownRealtimeArrivalTime !== null
+          ? this.scheduledArrivalTime
+          : null,
+
+      departureTimeType:
+        this.knownRealtimeDepartureTime !== null
+          ? "provided-live-time"
+          : "scheduled-time",
+      departureTime:
+        this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime,
+      formerDepartureTime:
+        this.knownRealtimeDepartureTime !== null
+          ? this.scheduledDepartureTime
+          : null,
+
+      picksUp: this.picksUp,
+      dropsOff: this.dropsOff,
+    };
   }
 }

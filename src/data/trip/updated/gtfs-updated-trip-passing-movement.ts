@@ -1,3 +1,4 @@
+import type { ServicePassingMovementFields } from "../../../corequery-types.js";
 import type { IGtfsUpdatedTripMovement } from "./types.js";
 
 export type GtfsUpdatedTripPassingMovementFields = {
@@ -20,10 +21,18 @@ export class GtfsUpdatedTripPassingMovement implements IGtfsUpdatedTripMovement 
   get type() {
     return "passing" as const;
   }
+
   get isServicing() {
     return false as const;
   }
+
   get isNonTerminal() {
     return true as const;
+  }
+
+  asCorequeryFields(): ServicePassingMovementFields {
+    return {
+      stopId: this.stopId,
+    };
   }
 }

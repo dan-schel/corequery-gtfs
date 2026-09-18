@@ -1,3 +1,4 @@
+import type { ServiceOriginatingMovementFields } from "../../../corequery-types.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
 import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 
@@ -42,19 +43,43 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
   get type() {
     return "originating" as const;
   }
+
   get isServicing() {
     return true as const;
   }
+
   get isNonTerminal() {
     return false as const;
   }
+
   get timeRelevantToDeparturesAlgorithm() {
     return this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime;
   }
+
   get realtimeTimeRelevantToDeparturesAlgorithm() {
     return this.knownRealtimeDepartureTime;
   }
+
   get scheduledTimeRelevantToDeparturesAlgorithm() {
     return this.scheduledDepartureTime;
+  }
+
+  asCorequeryFields(): ServiceOriginatingMovementFields {
+    return {
+      stopId: this.stopId,
+      originalPositionId: this.originalPositionId,
+      updatedPositionId: this.updatedPositionId,
+
+      departureTimeType:
+        this.knownRealtimeDepartureTime !== null
+          ? "provided-live-time"
+          : "scheduled-time",
+      departureTime:
+        this.knownRealtimeDepartureTime ?? this.scheduledDepartureTime,
+      formerDepartureTime:
+        this.knownRealtimeDepartureTime !== null
+          ? this.scheduledDepartureTime
+          : null,
+    };
   }
 }
