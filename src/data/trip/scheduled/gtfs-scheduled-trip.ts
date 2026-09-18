@@ -1,12 +1,12 @@
-import type { Color } from "../corequery-types.js";
-import { GtfsCalendar } from "./gtfs-calendar.js";
+import type { Color } from "../../../corequery-types.js";
+import { GtfsCalendar } from "../../gtfs-calendar.js";
 import { itsOk } from "@dan-schel/js-utils";
 import {
   GtfsScheduledTripOriginatingMovement,
   GtfsScheduledTripTerminatingMovement,
   type GtfsScheduledTripMovement,
 } from "./gtfs-scheduled-trip-movements.js";
-import type { GtfsStopTime } from "./gtfs-stop-time.js";
+import type { GtfsStopTime } from "../../gtfs-stop-time.js";
 
 export type GtfsScheduledTripFields = {
   readonly gtfsTripId: string;

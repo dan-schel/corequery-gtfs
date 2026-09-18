@@ -4,7 +4,7 @@ import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
 import { GtfsFeed } from "../../src/data/gtfs-feed.js";
 import { GtfsRealtimeData } from "../../src/data/gtfs-realtime-data.js";
 import { GtfsScheduleData } from "../../src/data/gtfs-schedule-data.js";
-import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../../src/data/gtfs-transfer.js";
 

@@ -1,5 +1,5 @@
 import type { GtfsCalendar } from "./gtfs-calendar.js";
-import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
+import type { GtfsScheduledTrip } from "./trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsTransferMapping } from "./gtfs-transfer-mapping.js";
 import type { GtfsTransfer } from "./gtfs-transfer.js";
 

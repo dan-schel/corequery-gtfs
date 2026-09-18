@@ -13,9 +13,9 @@ import type {
 } from "./corequery-types.js";
 import { CorequeryIntrasourceId } from "./conversion/corequery-intrasource-id.js";
 import { ServiceConverter } from "./conversion/service-converter.js";
-import { GtfsScheduledTrip } from "./data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "./data/trip/scheduled/gtfs-scheduled-trip.js";
 import type { GtfsSystem } from "./gtfs-system.js";
-import { GtfsUpdatedTrip } from "./data/gtfs-updated-trip.js";
+import { GtfsUpdatedTrip } from "./data/trip/updated/gtfs-updated-trip.js";
 import { ServiceConversionIterator } from "./conversion/service-conversion-iterator.js";
 
 type GtfsServiceSourceFields<

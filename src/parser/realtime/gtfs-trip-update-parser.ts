@@ -1,6 +1,6 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
-import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
-import { GtfsUpdatedTrip } from "../../data/gtfs-updated-trip.js";
+import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
+import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type {
   StopTimeUpdateJson,
   TripUpdateJson,
@@ -13,7 +13,7 @@ import {
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { GtfsStopTime } from "../../data/gtfs-stop-time.js";
 import { itsOk } from "@dan-schel/js-utils";
-import type { GtfsUpdatedTripMovement } from "../../data/gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/gtfs-updated-trip-movements.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";

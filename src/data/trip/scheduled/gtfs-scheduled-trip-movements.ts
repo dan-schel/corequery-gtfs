@@ -1,12 +1,12 @@
-import type { GtfsStopTime } from "./gtfs-stop-time.js";
+import type { GtfsStopTime } from "../../gtfs-stop-time.js";
 import {
   GtfsUpdatedTripOriginatingMovement,
   GtfsUpdatedTripPassingMovement,
   GtfsUpdatedTripRegularMovement,
   GtfsUpdatedTripTerminatingMovement,
   type GtfsUpdatedTripMovement,
-} from "./gtfs-updated-trip-movements.js";
-import type { StopGtfsIdMetadata } from "./ids/stop-gtfs-id-metadata.js";
+} from "../updated/gtfs-updated-trip-movements.js";
+import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
 
 export type GtfsScheduledTripMovement =
   | GtfsScheduledTripOriginatingMovement

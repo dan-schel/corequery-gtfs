@@ -2,7 +2,7 @@ import type {
   TransfersCsv,
   TransfersCsvRow,
 } from "../../data/raw/schedule-csvs.js";
-import { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import {
   GtfsEntireVehicleFormsServiceTransfer,
   type GtfsTransfer,

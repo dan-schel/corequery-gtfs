@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
-import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import {
   type GtfsTransferParsingError,

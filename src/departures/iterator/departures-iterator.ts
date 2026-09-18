@@ -1,6 +1,6 @@
 import type { DeparturesIterationDirection } from "../../corequery-types.js";
-import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
-import type { GtfsUpdatedTrip } from "../../data/gtfs-updated-trip.js";
+import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
+import type { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsTripServicingMovement } from "../../data/utils.js";
 
 export class DeparturesIteratorResult {

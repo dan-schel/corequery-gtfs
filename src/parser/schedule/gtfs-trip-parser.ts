@@ -8,7 +8,7 @@ import type {
   TripsCsvRow,
 } from "../../data/raw/schedule-csvs.js";
 import type { GtfsCalendar } from "../../data/gtfs-calendar.js";
-import { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import {
   GtfsStopTimeNormaliser,
   type GtfsStopTimeNormalisationError,

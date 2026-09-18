@@ -5,9 +5,9 @@ import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-moveme
 import { ZipperDeparturesIterator } from "../departures/iterator/zipper-departures-iterator.js";
 import { GtfsRealtimeData } from "./gtfs-realtime-data.js";
 import { GtfsScheduleData } from "./gtfs-schedule-data.js";
-import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
+import type { GtfsScheduledTrip } from "./trip/scheduled/gtfs-scheduled-trip.js";
 import type { GtfsTransfer } from "./gtfs-transfer.js";
-import type { GtfsUpdatedTrip } from "./gtfs-updated-trip.js";
+import type { GtfsUpdatedTrip } from "./trip/updated/gtfs-updated-trip.js";
 
 export class GtfsFeed {
   static readonly empty = new GtfsFeed(

@@ -1,7 +1,7 @@
 import { itsOk } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
 import { BoundedInstantRange } from "../../src/data/bounded-instant-range.js";
-import { GtfsScheduledTrip } from "../../src/data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import { PlainDateRange } from "../../src/data/plain-date-range.js";
 import type { GtfsScheduledMovementsIndexEntry } from "../../src/departures/gtfs-scheduled-movements-index.js";

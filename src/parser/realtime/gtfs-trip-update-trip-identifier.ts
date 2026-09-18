@@ -1,5 +1,5 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
-import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
+import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import type { TripDescriptorJson } from "../../data/raw/realtime-data-json.js";
 
 export type GtfsTripUpdateTripIdentifierFields = {

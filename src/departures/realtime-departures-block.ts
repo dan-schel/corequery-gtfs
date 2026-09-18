@@ -1,7 +1,7 @@
 import { itsOk } from "@dan-schel/js-utils";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import type { GtfsUpdatedTripServicingMovement } from "../data/gtfs-updated-trip-movements.js";
-import type { GtfsUpdatedTrip } from "../data/gtfs-updated-trip.js";
+import type { GtfsUpdatedTripServicingMovement } from "../data/trip/updated/gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { DeparturesBlock } from "./departures-block.js";
 
 export type RealtimeDeparturesBlockEntry = {

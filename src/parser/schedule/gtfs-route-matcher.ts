@@ -12,7 +12,7 @@ import {
   GtfsScheduledTripTerminatingMovement,
   type GtfsScheduledTripMovement,
   type GtfsScheduledTripServicingMovement,
-} from "../../data/gtfs-scheduled-trip-movements.js";
+} from "../../data/trip/scheduled/gtfs-scheduled-trip-movements.js";
 import { itsOk } from "@dan-schel/js-utils";
 
 const STOP_TIME_PICKUP_TYPE_REGULAR = 0;
