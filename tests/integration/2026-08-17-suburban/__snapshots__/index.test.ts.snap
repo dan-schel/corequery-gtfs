@@ -2,16 +2,16 @@
 
 exports[`2026-08-17-suburban > Clayton, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:26 pm   Town Hall -> Sunbury        No realtime data at this stop
-17/8/26, 12:32 pm   Cranbourne                  On time                      
-17/8/26, 12:36 pm   Town Hall -> Watergardens   No realtime data at this stop
-17/8/26, 12:42 pm   East Pakenham               No realtime data at this stop
-17/8/26, 12:46 pm   Town Hall -> Sunbury        No realtime data at this stop
-17/8/26, 12:52 pm   Cranbourne                  No realtime data at this stop
-17/8/26, 12:56 pm   Town Hall -> Watergardens   No realtime data at this stop
-17/8/26, 1:02 pm    East Pakenham               No realtime data at this stop
-17/8/26, 1:06 pm    Town Hall -> Sunbury        No realtime data at this stop
-17/8/26, 1:12 pm    Cranbourne                  No realtime data at this stop
+17/8/26, 12:27 pm   Town Hall -> Sunbury        1 mins delayed (*)
+17/8/26, 12:32 pm   Cranbourne                  On time           
+17/8/26, 12:36 pm   Town Hall -> Watergardens   On time           
+17/8/26, 12:42 pm   East Pakenham               On time           
+17/8/26, 12:46 pm   Town Hall -> Sunbury        On time           
+17/8/26, 12:52 pm   Cranbourne                  On time           
+17/8/26, 12:56 pm   Town Hall -> Watergardens   On time           
+17/8/26, 1:02 pm    East Pakenham               On time           
+17/8/26, 1:06 pm    Town Hall -> Sunbury        On time           
+17/8/26, 1:12 pm    Cranbourne                  On time           
 "
 `;
 
