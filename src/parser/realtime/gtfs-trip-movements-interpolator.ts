@@ -27,29 +27,6 @@ import type {
 // Interpolated times are stored in the `assumedRealtime...` times, rather than
 // `knownRealtime...` times to distinguish them.
 
-// TODO: On the above case, there's an argument to be made that we should do...
-//
-// - East Pakenham   7 mins late   <-- extrapolated
-// - Pakenham        7 mins late   <-- extrapolated
-// - Cardinia Road   7 mins late   <-------------------- known
-// - Officer         3 mins late   <-- interpolated
-// - Beaconsfield    3 mins late   <-- interpolated
-// - Berwick         3 mins late   <-- interpolated
-// - Narre Warren    3 mins late   <-------------------- known
-// - Hallam          3 mins late   <-- extrapolated
-// - Dandenong       3 mins late   <-- extrapolated
-//
-// ...so that no-one misses their train. In other words, be as optimistic as
-// possible (except when it would cause time travel - ensure the snapping
-// doesn't make Officer's departure time before Cardinia Road's), and assume if
-// the train will be only 3 mins late at Narre Warren, it makes up that time
-// ASAP.
-//
-// By the same argument though, we should drop all delays after Narre Warren, as
-// the train _might_ be on time again by Hallam. I don't think Google does that.
-// That wouldn't fix the bug in TrainQuery v3 that I set out to, and given that,
-// I think I'll do the interpolation as originally planned.
-
 export class GtfsTripMovementsInterpolator {
   interpolate(
     movements: readonly GtfsUpdatedTripMovement[],
