@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GtfsTripMovementsInterpolator > interpolates missing delays between known realtime values 1`] = `
+"
+
+S-ARR S-DEP   K-ARR K-DEP   A-ARR A-DEP
+--:-- 08:00   --:-- 08:05   --:-- --:--
+08:10 08:15   08:12 08:17   --:-- --:--
+08:20 --:--   08:25 --:--   --:-- --:--
+
+"
+`;
