@@ -35,4 +35,8 @@ export class GtfsUpdatedTripPassingMovement implements IGtfsUpdatedTripMovement 
       stopId: this.stopId,
     };
   }
+
+  get effectiveTimes() {
+    return [];
+  }
 }

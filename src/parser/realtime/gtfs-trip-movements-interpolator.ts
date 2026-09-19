@@ -66,74 +66,60 @@ export class GtfsTripMovementsInterpolator {
     if (knownDelays.length === 0) return [...movements];
 
     const delayByIndex = new Map<number, number>();
-    for (let index = 0; index < servicingMovements.length; index += 1) {
-      const currentMovement = servicingMovements[index];
-      if (currentMovement == null) continue;
+    const knownIndices = servicingMovements
+      .map((movement, index) => ({ movement, index }))
+      .filter(({ movement }) => this._knownDelaySeconds(movement) != null)
+      .map(({ index }) => index);
 
-      const knownDelay = this._knownDelaySeconds(currentMovement);
-      if (knownDelay != null) {
-        delayByIndex.set(index, knownDelay);
-        continue;
-      }
+    for (const index of knownIndices) {
+      const movement = servicingMovements[index];
+      if (movement == null) continue;
+      const knownDelay = this._knownDelaySeconds(movement);
+      if (knownDelay != null) delayByIndex.set(index, knownDelay);
+    }
 
-      let previousKnownIndex: number | null = null;
-      let nextKnownIndex: number | null = null;
+    for (let i = 0; i < knownIndices.length - 1; i += 1) {
+      const previousIndex = knownIndices[i];
+      const nextIndex = knownIndices[i + 1];
+      if (previousIndex == null || nextIndex == null) continue;
 
-      for (let i = index - 1; i >= 0; i -= 1) {
-        const candidate = servicingMovements[i];
-        if (candidate == null) continue;
-        if (this._knownDelaySeconds(candidate) != null) {
-          previousKnownIndex = i;
-          break;
-        }
-      }
-
-      for (let i = index + 1; i < servicingMovements.length; i += 1) {
-        const candidate = servicingMovements[i];
-        if (candidate == null) continue;
-        if (this._knownDelaySeconds(candidate) != null) {
-          nextKnownIndex = i;
-          break;
-        }
-      }
-
-      if (previousKnownIndex == null && nextKnownIndex == null) {
-        continue;
-      }
-
-      if (previousKnownIndex == null) {
-        if (nextKnownIndex == null) continue;
-
-        const nextMovement = servicingMovements[nextKnownIndex];
-        const nextDelay =
-          nextMovement == null ? null : this._knownDelaySeconds(nextMovement);
-        if (nextDelay != null) delayByIndex.set(index, nextDelay);
-        continue;
-      }
-
-      if (nextKnownIndex == null) {
-        const previousMovement = servicingMovements[previousKnownIndex];
-        const previousDelay =
-          previousMovement == null
-            ? null
-            : this._knownDelaySeconds(previousMovement);
-        if (previousDelay != null) delayByIndex.set(index, previousDelay);
-        continue;
-      }
-
-      const previousMovement = servicingMovements[previousKnownIndex];
-      const nextMovement = servicingMovements[nextKnownIndex];
-      if (previousMovement == null || nextMovement == null) continue;
-
-      const previousDelay = this._knownDelaySeconds(previousMovement);
-      const nextDelay = this._knownDelaySeconds(nextMovement);
+      const previousDelay = delayByIndex.get(previousIndex);
+      const nextDelay = delayByIndex.get(nextIndex);
       if (previousDelay == null || nextDelay == null) continue;
 
-      const fraction =
-        (index - previousKnownIndex) / (nextKnownIndex - previousKnownIndex);
-      const interpolatedDelay =
-        previousDelay + (nextDelay - previousDelay) * fraction;
-      delayByIndex.set(index, Math.round(interpolatedDelay));
+      const totalGap = nextIndex - previousIndex;
+      if (totalGap <= 1) continue;
+
+      const deltaPerStep = (nextDelay - previousDelay) / totalGap;
+      for (let index = previousIndex + 1; index < nextIndex; index += 1) {
+        const fraction = index - previousIndex;
+        const interpolatedDelay = previousDelay + deltaPerStep * fraction;
+        delayByIndex.set(index, Math.round(interpolatedDelay));
+      }
+    }
+
+    const firstKnownIndex = knownIndices[0];
+    if (firstKnownIndex != null) {
+      const firstDelay = delayByIndex.get(firstKnownIndex);
+      if (firstDelay != null) {
+        for (let index = 0; index < firstKnownIndex; index += 1) {
+          delayByIndex.set(index, firstDelay);
+        }
+      }
+    }
+
+    const lastKnownIndex = knownIndices[knownIndices.length - 1];
+    if (lastKnownIndex != null) {
+      const lastDelay = delayByIndex.get(lastKnownIndex);
+      if (lastDelay != null) {
+        for (
+          let index = lastKnownIndex + 1;
+          index < servicingMovements.length;
+          index += 1
+        ) {
+          delayByIndex.set(index, lastDelay);
+        }
+      }
     }
 
     const serviceIndexByMovement = new Map<
@@ -276,21 +262,9 @@ export class GtfsTripMovementsInterpolator {
             })
           : null;
 
-      const finalArrivalTime =
-        assumedArrivalTime == null ? null : assumedArrivalTime;
-      const finalDepartureTime =
-        assumedDepartureTime == null
-          ? null
-          : Temporal.Instant.compare(
-                assumedDepartureTime,
-                finalArrivalTime ?? assumedDepartureTime,
-              ) < 0
-            ? (finalArrivalTime ?? assumedDepartureTime)
-            : assumedDepartureTime;
-
       return movement.with({
-        assumedRealtimeArrivalTime: finalArrivalTime,
-        assumedRealtimeDepartureTime: finalDepartureTime,
+        assumedRealtimeArrivalTime: assumedArrivalTime,
+        assumedRealtimeDepartureTime: assumedDepartureTime,
       });
     }
 

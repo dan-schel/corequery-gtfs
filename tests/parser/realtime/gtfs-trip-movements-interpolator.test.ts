@@ -5,13 +5,15 @@ import { GtfsUpdatedTripTerminatingMovement } from "../../../src/data/trip/updat
 import { GtfsUpdatedTripRegularMovement } from "../../../src/data/trip/updated/gtfs-updated-trip-regular-movement.js";
 import type { GtfsUpdatedTripMovement } from "../../../src/data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "../../../src/parser/realtime/gtfs-trip-movements-interpolator.js";
+import { itsOk } from "@dan-schel/js-utils";
 
 const nullTime = "--:--" as const;
 type NullTime = typeof nullTime;
 
 describe("GtfsTripMovementsInterpolator", () => {
   it("01: works, when the delay increases over time", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -23,10 +25,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:35", "--:--", "--:--"),
       term("08:40", "--:--", "--:--", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("02: works, when the delay decreases over time", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -38,10 +44,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:35", "--:--", "--:--"),
       term("08:40", "--:--", "--:--", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("03: works, when the service goes from late to early", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -53,10 +63,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:35", "--:--", "--:--"),
       term("08:40", "--:--", "--:--", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("04: works, when only the termination time is given", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -68,10 +82,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:35", "--:--", "--:--"),
       term("08:40", "--:--", "08:45", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("05: works, when only the origination time is given", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:30"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -83,10 +101,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:35", "--:--", "--:--"),
       term("08:40", "--:--", "--:--", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("06: works, when arrival times differ from departure times, and delay decreases over time", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:30"),
       rglr("08:10", "08:25", "--:--", "--:--"),
@@ -94,10 +116,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:50", "--:--", "--:--"),
       term("09:00", "--:--", "09:00", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("07: works, when arrival times differ from departure times, and delay increases over time", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:00"),
       rglr("08:10", "08:25", "--:--", "--:--"),
@@ -105,10 +131,14 @@ describe("GtfsTripMovementsInterpolator", () => {
       rglr("08:35", "08:50", "--:--", "--:--"),
       term("09:00", "--:--", "09:30", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 
   it("08: works, when passing movements are included", () => {
-    expectInterpolationToMatchSnapshot([
+    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
       rglr("08:05", "08:05", "--:--", "--:--"),
@@ -126,35 +156,43 @@ describe("GtfsTripMovementsInterpolator", () => {
       pass(),
       term("08:40", "--:--", "--:--", "--:--"),
     ]);
+
+    expectMovementsToMatchSnapshot(interpolated);
+    ensureNoTimeTravel(interpolated);
   });
 });
 
-function expectInterpolationToMatchSnapshot(
-  movements: GtfsUpdatedTripMovement[],
-) {
-  const interpolator = new GtfsTripMovementsInterpolator();
-  const interpolated = interpolator.interpolate(movements);
+function expectMovementsToMatchSnapshot(movements: GtfsUpdatedTripMovement[]) {
+  const str = movements.map((m) => {
+    function getTime(obj: object, key: keyof GtfsUpdatedTripRegularMovement) {
+      return (obj as Record<string, Temporal.Instant | null>)[key] ?? null;
+    }
 
-  const str = interpolated
-    .map((m) => {
-      function getTime(obj: object, key: keyof GtfsUpdatedTripRegularMovement) {
-        return (obj as Record<string, Temporal.Instant | null>)[key] ?? null;
-      }
+    const sArr = getTime(m, "scheduledArrivalTime");
+    const sDep = getTime(m, "scheduledDepartureTime");
+    const kArr = getTime(m, "knownRealtimeArrivalTime");
+    const kDep = getTime(m, "knownRealtimeDepartureTime");
+    const aArr = getTime(m, "assumedRealtimeArrivalTime");
+    const aDep = getTime(m, "assumedRealtimeDepartureTime");
 
-      const sArr = getTime(m, "scheduledArrivalTime");
-      const sDep = getTime(m, "scheduledDepartureTime");
-      const kArr = getTime(m, "knownRealtimeArrivalTime");
-      const kDep = getTime(m, "knownRealtimeDepartureTime");
-      const aArr = getTime(m, "assumedRealtimeArrivalTime");
-      const aDep = getTime(m, "assumedRealtimeDepartureTime");
-
-      return `${timeStr(sArr)} ${timeStr(sDep)} | ${timeStr(kArr, sArr)} ${timeStr(kDep, sDep)} | ${timeStr(aArr, sArr)} ${timeStr(aDep, sDep)}`;
-    })
-    .join("\n");
+    return `${timeStr(sArr)} ${timeStr(sDep)} | ${timeStr(kArr, sArr)} ${timeStr(kDep, sDep)} | ${timeStr(aArr, sArr)} ${timeStr(aDep, sDep)}`;
+  });
 
   expect(
-    `\n\nS-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP\n${str}\n\n`,
+    `\n\nS-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP\n${str.join("\n")}\n\n`,
   ).toMatchSnapshot();
+}
+
+function ensureNoTimeTravel(movements: GtfsUpdatedTripMovement[]) {
+  const times = movements.flatMap((m) => m.effectiveTimes);
+
+  for (let i = 1; i < times.length; i++) {
+    const me = itsOk(times[i]);
+    const prev = itsOk(times[i - 1]);
+    if (Temporal.Instant.compare(me, prev) < 0) {
+      throw new Error(`Has time travel: ${timeStr(prev)} -> ${timeStr(me)}`);
+    }
+  }
 }
 
 function orig(

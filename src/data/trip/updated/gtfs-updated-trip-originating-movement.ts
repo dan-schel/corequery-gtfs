@@ -62,11 +62,7 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return (
-      this.knownRealtimeDepartureTime ??
-      this.assumedRealtimeDepartureTime ??
-      this.scheduledDepartureTime
-    );
+    return this.effectiveDepartureTime;
   }
 
   asCorequeryFields(): ServiceOriginatingMovementFields {
@@ -99,5 +95,17 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
         formerDepartureTime: null,
       };
     }
+  }
+
+  get effectiveDepartureTime() {
+    return (
+      this.knownRealtimeDepartureTime ??
+      this.assumedRealtimeDepartureTime ??
+      this.scheduledDepartureTime
+    );
+  }
+
+  get effectiveTimes() {
+    return [this.effectiveDepartureTime];
   }
 }

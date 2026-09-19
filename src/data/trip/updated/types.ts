@@ -21,6 +21,8 @@ export type IGtfsUpdatedTripMovement = {
   get type(): string;
   get isServicing(): boolean;
   get isNonTerminal(): boolean;
+
+  get effectiveTimes(): Temporal.Instant[];
 };
 
 export type IGtfsUpdatedTripServicingMovement = IGtfsUpdatedTripMovement & {
