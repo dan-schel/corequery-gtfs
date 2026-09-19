@@ -10,12 +10,121 @@ const nullTime = "--:--" as const;
 type NullTime = typeof nullTime;
 
 describe("GtfsTripMovementsInterpolator", () => {
-  it("interpolates missing delays between known realtime values", () => {
+  it("01: works, when the delay increases over time", () => {
     expectInterpolationToMatchSnapshot([
       //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "08:05"),
-      rglr("08:10", "08:15", "08:12", "08:17"),
-      term("08:20", "--:--", "08:25", "--:--"),
+      orig("--:--", "08:00", "--:--", "--:--"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      rglr("08:10", "08:10", "08:12", "08:12"),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "08:54", "08:54"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      term("08:40", "--:--", "--:--", "--:--"),
+    ]);
+  });
+
+  it("02: works, when the delay decreases over time", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "--:--"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      rglr("08:10", "08:10", "08:12", "08:12"),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "08:30", "08:30"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      term("08:40", "--:--", "--:--", "--:--"),
+    ]);
+  });
+
+  it("03: works, when the service goes from late to early", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "--:--"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      rglr("08:10", "08:10", "08:12", "08:12"),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "08:24", "08:24"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      term("08:40", "--:--", "--:--", "--:--"),
+    ]);
+  });
+
+  it("04: works, when only the termination time is given", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "--:--"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      rglr("08:10", "08:10", "--:--", "--:--"),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "--:--", "--:--"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      term("08:40", "--:--", "08:45", "--:--"),
+    ]);
+  });
+
+  it("05: works, when only the origination time is given", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "08:30"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      rglr("08:10", "08:10", "--:--", "--:--"),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "--:--", "--:--"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      term("08:40", "--:--", "--:--", "--:--"),
+    ]);
+  });
+
+  it("06: works, when arrival times differ from departure times, and delay decreases over time", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "08:30"),
+      rglr("08:10", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "--:--", "--:--"),
+      rglr("08:35", "08:50", "--:--", "--:--"),
+      term("09:00", "--:--", "09:00", "--:--"),
+    ]);
+  });
+
+  it("07: works, when arrival times differ from departure times, and delay increases over time", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "08:00"),
+      rglr("08:10", "08:25", "--:--", "--:--"),
+      rglr("08:30", "08:30", "--:--", "--:--"),
+      rglr("08:35", "08:50", "--:--", "--:--"),
+      term("09:00", "--:--", "09:30", "--:--"),
+    ]);
+  });
+
+  it("08: works, when passing movements are included", () => {
+    expectInterpolationToMatchSnapshot([
+      //   Scheduled:        Realtime:
+      orig("--:--", "08:00", "--:--", "--:--"),
+      rglr("08:05", "08:05", "--:--", "--:--"),
+      pass(),
+      rglr("08:10", "08:10", "08:12", "08:12"),
+      pass(),
+      rglr("08:15", "08:15", "--:--", "--:--"),
+      rglr("08:20", "08:20", "--:--", "--:--"),
+      rglr("08:25", "08:25", "--:--", "--:--"),
+      pass(),
+      pass(),
+      pass(),
+      rglr("08:30", "08:30", "08:54", "08:54"),
+      rglr("08:35", "08:35", "--:--", "--:--"),
+      pass(),
+      term("08:40", "--:--", "--:--", "--:--"),
     ]);
   });
 });
@@ -28,26 +137,23 @@ function expectInterpolationToMatchSnapshot(
 
   const str = interpolated
     .map((m) => {
-      const sArr = "scheduledArrivalTime" in m ? m.scheduledArrivalTime : null;
-      const sDep =
-        "scheduledDepartureTime" in m ? m.scheduledDepartureTime : null;
-      const kArr =
-        "knownRealtimeArrivalTime" in m ? m.knownRealtimeArrivalTime : null;
-      const kDep =
-        "knownRealtimeDepartureTime" in m ? m.knownRealtimeDepartureTime : null;
-      const aArr =
-        "assumedRealtimeArrivalTime" in m ? m.assumedRealtimeArrivalTime : null;
-      const aDep =
-        "assumedRealtimeDepartureTime" in m
-          ? m.assumedRealtimeDepartureTime
-          : null;
+      function getTime(obj: object, key: keyof GtfsUpdatedTripRegularMovement) {
+        return (obj as Record<string, Temporal.Instant | null>)[key] ?? null;
+      }
 
-      return `${timeStr(sArr)} ${timeStr(sDep)}   ${timeStr(kArr)} ${timeStr(kDep)}   ${timeStr(aArr)} ${timeStr(aDep)}`;
+      const sArr = getTime(m, "scheduledArrivalTime");
+      const sDep = getTime(m, "scheduledDepartureTime");
+      const kArr = getTime(m, "knownRealtimeArrivalTime");
+      const kDep = getTime(m, "knownRealtimeDepartureTime");
+      const aArr = getTime(m, "assumedRealtimeArrivalTime");
+      const aDep = getTime(m, "assumedRealtimeDepartureTime");
+
+      return `${timeStr(sArr)} ${timeStr(sDep)} | ${timeStr(kArr, sArr)} ${timeStr(kDep, sDep)} | ${timeStr(aArr, sArr)} ${timeStr(aDep, sDep)}`;
     })
     .join("\n");
 
   expect(
-    `\n\nS-ARR S-DEP   K-ARR K-DEP   A-ARR A-DEP\n${str}\n\n`,
+    `\n\nS-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP\n${str}\n\n`,
   ).toMatchSnapshot();
 }
 
@@ -157,6 +263,16 @@ function optionalTime(hhmm: string) {
   return hhmm === nullTime ? null : time(hhmm);
 }
 
-function timeStr(instant: Temporal.Instant | null) {
-  return instant == null ? nullTime : instant.toString().slice(11, 16);
+function timeStr(
+  instant: Temporal.Instant | null,
+  comparisonInstant?: Temporal.Instant | null,
+) {
+  if (instant == null) return `${nullTime}      `;
+
+  const str = instant.toString().slice(11, 16);
+  const comparison =
+    comparisonInstant != null
+      ? `(${Math.floor(instant.since(comparisonInstant).total("minutes"))})`
+      : "";
+  return `${str} ${comparison.padEnd(5, " ")}`;
 }
