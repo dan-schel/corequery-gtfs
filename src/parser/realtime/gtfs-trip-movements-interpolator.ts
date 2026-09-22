@@ -63,13 +63,24 @@ export class GtfsTripMovementsInterpolator {
       const next = delayValues[iNext] ?? null;
 
       if (prev != null && next != null) {
+        // Even at the nanosecond level, avoiding Math.round is impossible,
+        // since Temporal.Duration requires integer nanoseconds, but
+        // interpolation can always produce fractional nanoseconds (just like
+        // how dividing by 3 = 0.333333333...).
+        //
+        // I suspect rounding to the nearest nanosecond is probably precise
+        // enough for public transport services, but who can truly say?
+        // (CoreQuery will probably floor to the nearest minute for display
+        // purposes anyway).
         return Temporal.Duration.from({
-          nanoseconds: map(
-            i,
-            iPrev,
-            iNext,
-            prev.total("nanoseconds"),
-            next.total("nanoseconds"),
+          nanoseconds: Math.round(
+            map(
+              i,
+              iPrev,
+              iNext,
+              prev.total("nanoseconds"),
+              next.total("nanoseconds"),
+            ),
           ),
         });
       } else if (prev != null) {
