@@ -187,10 +187,23 @@ export class GtfsTripUpdateParser {
       );
     });
 
+    const interpolated = this._movementsInterpolator.interpolate(rawMovements);
+    if (interpolated == null) {
+      // TODO: This keeps happening in the PTV feed. In all the cases I've seen
+      // so far, the arrival times are one minute later than the departure times
+      // (for whatever reason). I think I should apply a patch for it, rather
+      // than "fixing" it in corequery-gtfs.
+      //
+      // TODO: Add a test for this.
+      const Err = KnownDepartureTimesEntailTimeTravel;
+      this._onError(new Err(tripUpdate, rawMovements));
+      return null;
+    }
+
     return new GtfsUpdatedTrip({
       scheduledTrip: trip,
       serviceDay,
-      movements: this._movementsInterpolator.interpolate(rawMovements),
+      movements: interpolated,
       isCancelled: false,
     });
   }
@@ -284,7 +297,8 @@ export type GtfsTripUpdateParsingError =
   | StopTimeUpdateEntryChangesStopError
   | NeitherTimeNorDelayGivenError
   | TimeAndDelayDisagreeWithEachOtherError
-  | NeitherArrivalNorDepartureGivenError;
+  | NeitherArrivalNorDepartureGivenError
+  | KnownDepartureTimesEntailTimeTravel;
 
 export class UnsupportedTripUpdateScheduleRelationshipError {
   readonly type = "unsupported-trip-update-schedule-relationship";
@@ -379,5 +393,13 @@ export class NeitherArrivalNorDepartureGivenError {
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
+  ) {}
+}
+
+class KnownDepartureTimesEntailTimeTravel {
+  readonly type = "known-departure-times-entail-time-travel";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly movements: readonly GtfsUpdatedTripMovement[],
   ) {}
 }

@@ -51,8 +51,14 @@ Schedule parsing errors:
 <none>
 
 Realtime parsing errors:
+- known-departure-times-entail-time-travel
+- known-departure-times-entail-time-travel
+- unsupported-trip-update-schedule-relationship
+- known-departure-times-entail-time-travel
 - unsupported-trip-update-schedule-relationship
 - unsupported-trip-update-schedule-relationship
-- unsupported-trip-update-schedule-relationship
+- known-departure-times-entail-time-travel
+- known-departure-times-entail-time-travel
+- known-departure-times-entail-time-travel
 "
 `;

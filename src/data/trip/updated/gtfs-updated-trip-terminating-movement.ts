@@ -113,12 +113,4 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
     if (this.knownRealtimeArrivalTime == null) return null;
     return this.knownRealtimeArrivalTime.since(this.scheduledArrivalTime);
   }
-
-  withAssumedDelaySeconds(seconds: number): GtfsUpdatedTripTerminatingMovement {
-    if (this.knownRealtimeArrivalTime != null) return this;
-
-    return this.with({
-      assumedRealtimeArrivalTime: this.scheduledArrivalTime.add({ seconds }),
-    });
-  }
 }

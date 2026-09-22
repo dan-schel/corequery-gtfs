@@ -169,17 +169,4 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
       return null;
     }
   }
-
-  withAssumedDelaySeconds(delay: number): GtfsUpdatedTripRegularMovement {
-    const assumeArrivalTime = this.knownRealtimeArrivalTime == null;
-    const assumeDepartureTime = this.knownRealtimeDepartureTime == null;
-
-    const arrivalTime = this.scheduledArrivalTime.add({ seconds: delay });
-    const departureTime = this.scheduledDepartureTime.add({ seconds: delay });
-
-    return this.with({
-      assumedRealtimeArrivalTime: assumeArrivalTime ? arrivalTime : null,
-      assumedRealtimeDepartureTime: assumeDepartureTime ? departureTime : null,
-    });
-  }
 }

@@ -114,11 +114,4 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
 
     return this.knownRealtimeDepartureTime.since(this.scheduledDepartureTime);
   }
-
-  withAssumedDelaySeconds(seconds: number): GtfsUpdatedTripOriginatingMovement {
-    if (this.knownRealtimeDepartureTime != null) return this;
-
-    const time = this.scheduledDepartureTime.add({ seconds });
-    return this.with({ assumedRealtimeDepartureTime: time });
-  }
 }
