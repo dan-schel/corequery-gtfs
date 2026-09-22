@@ -113,6 +113,9 @@ export class GtfsTripMovementsInterpolator {
   private _eliminateTimeTravel(movements: readonly GtfsUpdatedTripMovement[]) {
     const result: GtfsUpdatedTripMovement[] = [...movements];
 
+    // Step 1: Shift prior departure times to be earlier if they are after a
+    // subsequent departure time. Loop in reverse order to avoid cascading
+    // issues.
     for (let i = result.length - 2; i >= 0; i--) {
       const me = itsOk(result[i]);
       if (!me.isServicing) continue;
@@ -143,8 +146,8 @@ export class GtfsTripMovementsInterpolator {
       if (Temporal.Instant.compare(myDepartureTime, nextDepartureTime) > 0) {
         // GtfsTripMovementsInterpolator makes no attempt to repair time travel
         // issues caused by `knownRealtimeDepartureTime` values. Those have come
-        // from the GTFS-RT feed! If it happens, we'll throw out the trip
-        // update.
+        // from the GTFS-RT feed! If it happens, we'll throw out the trip update
+        // and report a parsing error.
         if (me.knownRealtimeDepartureTime != null) return null;
 
         result[i] = me.with({
@@ -153,6 +156,8 @@ export class GtfsTripMovementsInterpolator {
       }
     }
 
+    // Step 2: Now that departures are in time order, adjust arrival times to
+    // ensure they're always between the neighbouring departure times.
     for (let i = 1; i < result.length; i++) {
       const me = itsOk(result[i]);
 
@@ -161,8 +166,8 @@ export class GtfsTripMovementsInterpolator {
       // as the anchor of the entire algorithm, so it "can't be wrong".
       if (!me.isServicing || me.type === "terminating") continue;
 
-      // We start from the second movement. A movement is originating if
-      // and only if it is the first movement, so this should never happen.
+      // We start from the second movement. A movement is originating if and
+      // only if it is the first movement, so this should never happen.
       if (me.type === "originating") throw new Error();
 
       const prev = result.find(
