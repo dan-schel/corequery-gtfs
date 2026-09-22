@@ -34,4 +34,5 @@ export type IGtfsUpdatedTripServicingMovement = IGtfsUpdatedTripMovement & {
 
   get isServicing(): true;
   get timeRelevantToDeparturesAlgorithm(): Temporal.Instant;
+  get knownRealtimeDelay(): Temporal.Duration | null;
 };

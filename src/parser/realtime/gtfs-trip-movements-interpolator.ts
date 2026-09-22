@@ -1,4 +1,3 @@
-import type { GtfsUpdatedTripRegularMovement } from "../../data/trip/updated/gtfs-updated-trip-regular-movement.js";
 import type {
   GtfsUpdatedTripMovement,
   GtfsUpdatedTripServicingMovement,
@@ -43,7 +42,74 @@ export class GtfsTripMovementsInterpolator {
       .map(({ index }) => index);
     if (knownIndices.length === 0) return [...movements];
 
+    const delayByIndex = this._delayByIndex(servicingMovements, knownIndices);
+
+    const serviceIndexByMovement = new Map<
+      GtfsUpdatedTripServicingMovement,
+      number
+    >();
+    for (const [index, movement] of servicingMovements.entries()) {
+      serviceIndexByMovement.set(movement, index);
+    }
+
+    const { previousDepartureByIndex, previousScheduledDepartureByIndex } =
+      this._departureContextByIndex(servicingMovements, delayByIndex);
+
+    return movements.map((movement) => {
+      if (!movement.isServicing) return movement;
+
+      const index = serviceIndexByMovement.get(movement);
+      if (index == null) return movement;
+
+      const delaySeconds = delayByIndex.get(index);
+      if (delaySeconds == null) return movement;
+
+      if (movement.type === "originating") {
+        return movement.withAssumedDelaySeconds(delaySeconds);
+      }
+
+      if (movement.type === "regular") {
+        const baseMovement = movement.withAssumedDelaySeconds(delaySeconds);
+        const previousDepartureTime =
+          previousDepartureByIndex.get(index) ?? null;
+
+        const assumedDepartureTime = this._boundedAssumedDepartureTime(
+          movement,
+          baseMovement,
+          previousDepartureTime,
+        );
+
+        const assumedArrivalTime = this._assumedArrivalTime({
+          movement,
+          delaySeconds,
+          assumedDepartureTime,
+          previousDepartureTime,
+          previousScheduledDepartureTime:
+            previousScheduledDepartureByIndex.get(index) ?? null,
+        });
+
+        return movement.with({
+          assumedRealtimeDepartureTime:
+            movement.knownRealtimeDepartureTime == null
+              ? assumedDepartureTime
+              : null,
+          assumedRealtimeArrivalTime:
+            movement.knownRealtimeArrivalTime == null
+              ? assumedArrivalTime
+              : null,
+        });
+      }
+
+      return movement.withAssumedDelaySeconds(delaySeconds);
+    });
+  }
+
+  private _delayByIndex(
+    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
+    knownIndices: readonly number[],
+  ): Map<number, number> {
     const delayByIndex = new Map<number, number>();
+
     for (const index of knownIndices) {
       const movement = servicingMovements[index];
       if (movement == null) continue;
@@ -52,6 +118,29 @@ export class GtfsTripMovementsInterpolator {
       if (delay != null) delayByIndex.set(index, delay);
     }
 
+    this._interpolateIntermediateDelays(knownIndices, delayByIndex);
+    this._extrapolateEdgeDelays(
+      knownIndices,
+      delayByIndex,
+      servicingMovements.length,
+    );
+
+    return delayByIndex;
+  }
+
+  private _knownDelaySeconds(
+    movement: GtfsUpdatedTripServicingMovement,
+  ): number | null {
+    const knownDelay = movement.knownRealtimeDelay;
+    if (knownDelay == null) return null;
+
+    return Math.round(knownDelay.total("seconds"));
+  }
+
+  private _interpolateIntermediateDelays(
+    knownIndices: readonly number[],
+    delayByIndex: Map<number, number>,
+  ) {
     for (let i = 0; i < knownIndices.length - 1; i += 1) {
       const previousIndex = knownIndices[i];
       const nextIndex = knownIndices[i + 1];
@@ -71,7 +160,13 @@ export class GtfsTripMovementsInterpolator {
         delayByIndex.set(index, Math.round(interpolatedDelay));
       }
     }
+  }
 
+  private _extrapolateEdgeDelays(
+    knownIndices: readonly number[],
+    delayByIndex: Map<number, number>,
+    servicingMovementsLength: number,
+  ) {
     const firstKnownIndex = knownIndices[0];
     if (firstKnownIndex != null) {
       const firstDelay = delayByIndex.get(firstKnownIndex);
@@ -88,25 +183,41 @@ export class GtfsTripMovementsInterpolator {
       if (lastDelay != null) {
         for (
           let index = lastKnownIndex + 1;
-          index < servicingMovements.length;
+          index < servicingMovementsLength;
           index += 1
         ) {
           delayByIndex.set(index, lastDelay);
         }
       }
     }
+  }
 
-    const serviceIndexByMovement = new Map<
-      GtfsUpdatedTripServicingMovement,
-      number
+  private _departureContextByIndex(
+    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
+    delayByIndex: ReadonlyMap<number, number>,
+  ): {
+    readonly previousDepartureByIndex: ReadonlyMap<
+      number,
+      Temporal.Instant | null
+    >;
+    readonly previousScheduledDepartureByIndex: ReadonlyMap<
+      number,
+      Temporal.Instant | null
+    >;
+  } {
+    const previousDepartureByIndex = new Map<number, Temporal.Instant | null>();
+    const previousScheduledDepartureByIndex = new Map<
+      number,
+      Temporal.Instant | null
     >();
-    for (const [index, movement] of servicingMovements.entries()) {
-      serviceIndexByMovement.set(movement, index);
-    }
 
-    const effectiveDepartureByIndex = new Map<number, Temporal.Instant>();
     let lastEffectiveDepartureTime: Temporal.Instant | null = null;
+    let lastScheduledDepartureTime: Temporal.Instant | null = null;
+
     for (const [index, movement] of servicingMovements.entries()) {
+      previousDepartureByIndex.set(index, lastEffectiveDepartureTime);
+      previousScheduledDepartureByIndex.set(index, lastScheduledDepartureTime);
+
       if (movement.type !== "originating" && movement.type !== "regular") {
         continue;
       }
@@ -124,190 +235,56 @@ export class GtfsTripMovementsInterpolator {
           ? departureTime
           : lastEffectiveDepartureTime;
 
-      effectiveDepartureByIndex.set(index, boundedDepartureTime);
       lastEffectiveDepartureTime = boundedDepartureTime;
+      lastScheduledDepartureTime = movement.scheduledDepartureTime;
     }
 
-    return movements.map((movement) => {
-      if (!movement.isServicing) return movement;
-
-      const index = serviceIndexByMovement.get(movement);
-      if (index == null) return movement;
-
-      const delaySeconds = delayByIndex.get(index);
-      if (delaySeconds == null) return movement;
-
-      return this._applyAssumedDelay(
-        movement,
-        delaySeconds,
-        servicingMovements,
-        index,
-        effectiveDepartureByIndex,
-      );
-    });
+    return {
+      previousDepartureByIndex,
+      previousScheduledDepartureByIndex,
+    };
   }
 
-  private _knownDelaySeconds(
-    movement: GtfsUpdatedTripServicingMovement,
-  ): number | null {
-    if (movement.type === "originating") {
-      return movement.knownRealtimeDepartureTime == null
-        ? null
-        : this._delaySeconds(
-            movement.scheduledDepartureTime,
-            movement.knownRealtimeDepartureTime,
-          );
-    }
-
-    if (movement.type === "regular") {
-      if (movement.knownRealtimeDepartureTime != null) {
-        return this._delaySeconds(
-          movement.scheduledDepartureTime,
-          movement.knownRealtimeDepartureTime,
-        );
-      }
-
-      return movement.knownRealtimeArrivalTime == null
-        ? null
-        : this._delaySeconds(
-            movement.scheduledArrivalTime,
-            movement.knownRealtimeArrivalTime,
-          );
-    }
-
-    return movement.knownRealtimeArrivalTime == null
-      ? null
-      : this._delaySeconds(
-          movement.scheduledArrivalTime,
-          movement.knownRealtimeArrivalTime,
-        );
-  }
-
-  private _delaySeconds(
-    scheduledTime: Temporal.Instant,
-    realtimeTime: Temporal.Instant,
-  ): number {
-    return Math.round(
-      (realtimeTime.epochMilliseconds - scheduledTime.epochMilliseconds) / 1000,
-    );
-  }
-
-  private _applyAssumedDelay(
-    movement: GtfsUpdatedTripServicingMovement,
-    delaySeconds: number,
-    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
-    index: number,
-    effectiveDepartureByIndex: ReadonlyMap<number, Temporal.Instant>,
-  ): GtfsUpdatedTripServicingMovement {
-    if (movement.type === "originating") {
-      if (movement.knownRealtimeDepartureTime != null) return movement;
-      return movement.with({
-        assumedRealtimeDepartureTime: movement.scheduledDepartureTime.add({
-          seconds: delaySeconds,
-        }),
-      });
-    }
-
-    if (movement.type === "regular") {
-      let assumedDepartureTime =
-        movement.knownRealtimeDepartureTime == null
-          ? movement.scheduledDepartureTime.add({
-              seconds: delaySeconds,
-            })
-          : movement.knownRealtimeDepartureTime;
-
-      const priorDepartureTime = this._previousDepartureTime(
-        servicingMovements,
-        index,
-        effectiveDepartureByIndex,
-      );
-      if (
-        priorDepartureTime != null &&
-        Temporal.Instant.compare(assumedDepartureTime, priorDepartureTime) < 0
-      ) {
-        assumedDepartureTime = priorDepartureTime;
-      }
-
-      const priorScheduledDepartureTime = this._previousScheduledDepartureTime(
-        servicingMovements,
-        index,
-      );
-
-      const assumedArrivalTime =
-        movement.knownRealtimeArrivalTime == null
-          ? this._assumedArrivalTime(
-              movement,
-              assumedDepartureTime,
-              priorDepartureTime,
-              priorScheduledDepartureTime,
-              delaySeconds,
-            )
-          : null;
-
-      return movement.with({
-        assumedRealtimeArrivalTime: assumedArrivalTime,
-        assumedRealtimeDepartureTime:
-          movement.knownRealtimeDepartureTime == null
-            ? assumedDepartureTime
-            : null,
-      });
-    }
-
-    if (movement.knownRealtimeArrivalTime == null) {
-      return movement.with({
-        assumedRealtimeArrivalTime: movement.scheduledArrivalTime.add({
-          seconds: delaySeconds,
-        }),
-      });
-    }
-
-    return movement;
-  }
-
-  private _previousDepartureTime(
-    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
-    index: number,
-    effectiveDepartureByIndex: ReadonlyMap<number, Temporal.Instant>,
-  ): Temporal.Instant | null {
-    for (let i = index - 1; i >= 0; i -= 1) {
-      const movement = servicingMovements[i];
-      if (movement == null) continue;
-
-      if (movement.type === "originating" || movement.type === "regular") {
-        const departureTime =
-          movement.knownRealtimeDepartureTime ??
-          effectiveDepartureByIndex.get(i) ??
-          movement.scheduledDepartureTime;
-        return departureTime;
-      }
-    }
-
-    return null;
-  }
-
-  private _previousScheduledDepartureTime(
-    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
-    index: number,
-  ): Temporal.Instant | null {
-    for (let i = index - 1; i >= 0; i -= 1) {
-      const movement = servicingMovements[i];
-      if (movement == null) continue;
-
-      if (movement.type === "originating" || movement.type === "regular") {
-        return movement.scheduledDepartureTime;
-      }
-    }
-
-    return null;
-  }
-
-  private _assumedArrivalTime(
-    movement: GtfsUpdatedTripRegularMovement,
-    assumedDepartureTime: Temporal.Instant,
+  private _boundedAssumedDepartureTime(
+    movement: Extract<GtfsUpdatedTripServicingMovement, { type: "regular" }>,
+    baseMovement: Extract<
+      GtfsUpdatedTripServicingMovement,
+      { type: "regular" }
+    >,
     previousDepartureTime: Temporal.Instant | null,
-    previousScheduledDepartureTime: Temporal.Instant | null,
-    delaySeconds: number,
   ): Temporal.Instant {
+    const assumedDepartureTime =
+      movement.knownRealtimeDepartureTime ??
+      baseMovement.effectiveDepartureTime;
+
+    if (
+      previousDepartureTime != null &&
+      Temporal.Instant.compare(assumedDepartureTime, previousDepartureTime) < 0
+    ) {
+      return previousDepartureTime;
+    }
+
+    return assumedDepartureTime;
+  }
+
+  private _assumedArrivalTime(fields: {
+    readonly movement: Extract<
+      GtfsUpdatedTripServicingMovement,
+      { type: "regular" }
+    >;
+    readonly delaySeconds: number;
+    readonly assumedDepartureTime: Temporal.Instant;
+    readonly previousDepartureTime: Temporal.Instant | null;
+    readonly previousScheduledDepartureTime: Temporal.Instant | null;
+  }): Temporal.Instant {
+    const {
+      movement,
+      delaySeconds,
+      assumedDepartureTime,
+      previousDepartureTime,
+      previousScheduledDepartureTime,
+    } = fields;
+
     if (
       previousDepartureTime != null &&
       previousScheduledDepartureTime != null

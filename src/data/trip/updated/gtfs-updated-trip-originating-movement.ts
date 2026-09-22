@@ -108,4 +108,17 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
   get effectiveTimes() {
     return [this.effectiveDepartureTime];
   }
+
+  get knownRealtimeDelay(): Temporal.Duration | null {
+    if (this.knownRealtimeDepartureTime == null) return null;
+
+    return this.knownRealtimeDepartureTime.since(this.scheduledDepartureTime);
+  }
+
+  withAssumedDelaySeconds(seconds: number): GtfsUpdatedTripOriginatingMovement {
+    if (this.knownRealtimeDepartureTime != null) return this;
+
+    const time = this.scheduledDepartureTime.add({ seconds });
+    return this.with({ assumedRealtimeDepartureTime: time });
+  }
 }
