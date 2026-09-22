@@ -1,3 +1,4 @@
+import { map } from "@dan-schel/js-utils";
 import type {
   GtfsUpdatedTripMovement,
   GtfsUpdatedTripServicingMovement,
@@ -31,15 +32,12 @@ export class GtfsTripMovementsInterpolator {
     movements: readonly GtfsUpdatedTripMovement[],
   ): readonly GtfsUpdatedTripMovement[] {
     const servicingMovements = movements.filter((m) => m.isServicing);
-    if (servicingMovements.length === 0) return movements;
+    const delayValues = servicingMovements.map(
+      (x) => x.knownRealtimeDelay?.total("seconds") ?? null,
+    );
+    if (delayValues.every((x) => x == null)) return movements;
 
-    const knownIndices = servicingMovements
-      .map((movement, index) => ({ movement, index }))
-      .filter(({ movement }) => movement.knownRealtimeDelay != null)
-      .map(({ index }) => index);
-    if (knownIndices.length === 0) return movements;
-
-    const delayByIndex = this._delayByIndex(servicingMovements, knownIndices);
+    const delayByIndex = this._interpolate(delayValues);
 
     const indexByMovement = new Map<GtfsUpdatedTripServicingMovement, number>();
     for (const [index, movement] of servicingMovements.entries()) {
@@ -94,28 +92,28 @@ export class GtfsTripMovementsInterpolator {
     });
   }
 
-  private _delayByIndex(
-    servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
-    knownIndices: readonly number[],
-  ) {
-    const delayByIndex = new Map<number, number>();
+  private _interpolate(delayValues: (number | null)[]) {
+    return delayValues.map((knownDelay, i) => {
+      if (knownDelay != null) return knownDelay;
 
-    for (const index of knownIndices) {
-      const movement = servicingMovements[index];
-      if (movement == null) continue;
+      const iPrev = delayValues.findLastIndex((x, idx) => idx < i && x != null);
+      const iNext = delayValues.findIndex((x, idx) => idx > i && x != null);
+      const prev = delayValues[iPrev] ?? null;
+      const next = delayValues[iNext] ?? null;
 
-      const delay = this._knownDelaySeconds(movement);
-      if (delay != null) delayByIndex.set(index, delay);
-    }
-
-    this._interpolateIntermediateDelays(knownIndices, delayByIndex);
-    this._extrapolateEdgeDelays(
-      knownIndices,
-      delayByIndex,
-      servicingMovements.length,
-    );
-
-    return toArray(delayByIndex);
+      if (prev != null && next != null) {
+        // TODO: Why Math.round?
+        return Math.round(map(i, iPrev, iNext, prev, next));
+      } else if (prev != null) {
+        return prev;
+      } else if (next != null) {
+        return next;
+      } else {
+        // Would only happen if all `delayValues` are null, but we check that in
+        // #interpolate.
+        throw new Error();
+      }
+    });
   }
 
   private _knownDelaySeconds(
@@ -129,15 +127,15 @@ export class GtfsTripMovementsInterpolator {
 
   private _interpolateIntermediateDelays(
     knownIndices: readonly number[],
-    delayByIndex: Map<number, number>,
+    delayByIndex: number[],
   ) {
     for (let i = 0; i < knownIndices.length - 1; i += 1) {
       const previousIndex = knownIndices[i];
       const nextIndex = knownIndices[i + 1];
       if (previousIndex == null || nextIndex == null) continue;
 
-      const previousDelay = delayByIndex.get(previousIndex);
-      const nextDelay = delayByIndex.get(nextIndex);
+      const previousDelay = delayByIndex[previousIndex];
+      const nextDelay = delayByIndex[nextIndex];
       if (previousDelay == null || nextDelay == null) continue;
 
       const gap = nextIndex - previousIndex;
@@ -147,36 +145,36 @@ export class GtfsTripMovementsInterpolator {
       for (let index = previousIndex + 1; index < nextIndex; index += 1) {
         const fraction = index - previousIndex;
         const interpolatedDelay = previousDelay + deltaPerStep * fraction;
-        delayByIndex.set(index, Math.round(interpolatedDelay));
+        delayByIndex[index] = Math.round(interpolatedDelay);
       }
     }
   }
 
   private _extrapolateEdgeDelays(
     knownIndices: readonly number[],
-    delayByIndex: Map<number, number>,
+    delayByIndex: number[],
     servicingMovementsLength: number,
   ) {
     const firstKnownIndex = knownIndices[0];
     if (firstKnownIndex != null) {
-      const firstDelay = delayByIndex.get(firstKnownIndex);
+      const firstDelay = delayByIndex[firstKnownIndex];
       if (firstDelay != null) {
         for (let index = 0; index < firstKnownIndex; index += 1) {
-          delayByIndex.set(index, firstDelay);
+          delayByIndex[index] = firstDelay;
         }
       }
     }
 
     const lastKnownIndex = knownIndices[knownIndices.length - 1];
     if (lastKnownIndex != null) {
-      const lastDelay = delayByIndex.get(lastKnownIndex);
+      const lastDelay = delayByIndex[lastKnownIndex];
       if (lastDelay != null) {
         for (
           let index = lastKnownIndex + 1;
           index < servicingMovementsLength;
           index += 1
         ) {
-          delayByIndex.set(index, lastDelay);
+          delayByIndex[index] = lastDelay;
         }
       }
     }
@@ -306,14 +304,6 @@ export class GtfsTripMovementsInterpolator {
       seconds: delaySeconds,
     });
   }
-}
-
-function toArray(delayByIndex: Map<number, number>): number[] {
-  const result: number[] = [];
-  for (const [index, delay] of delayByIndex) {
-    result[index] = delay;
-  }
-  return result;
 }
 
 // TODO: On the CoreQuery service page, add:
