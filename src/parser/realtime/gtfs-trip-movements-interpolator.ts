@@ -55,12 +55,8 @@ export class GtfsTripMovementsInterpolator {
       const index = indexByMovement.get(movement);
       if (index == null) return movement;
 
-      const delaySeconds = delayByIndex.get(index);
+      const delaySeconds = delayByIndex[index];
       if (delaySeconds == null) return movement;
-
-      if (movement.type === "originating") {
-        return movement.withAssumedDelaySeconds(delaySeconds);
-      }
 
       if (movement.type === "regular") {
         const baseMovement = movement.withAssumedDelaySeconds(delaySeconds);
@@ -92,16 +88,16 @@ export class GtfsTripMovementsInterpolator {
               ? assumedArrivalTime
               : null,
         });
+      } else {
+        return movement.withAssumedDelaySeconds(delaySeconds);
       }
-
-      return movement.withAssumedDelaySeconds(delaySeconds);
     });
   }
 
   private _delayByIndex(
     servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
     knownIndices: readonly number[],
-  ): Map<number, number> {
+  ) {
     const delayByIndex = new Map<number, number>();
 
     for (const index of knownIndices) {
@@ -119,7 +115,7 @@ export class GtfsTripMovementsInterpolator {
       servicingMovements.length,
     );
 
-    return delayByIndex;
+    return toArray(delayByIndex);
   }
 
   private _knownDelaySeconds(
@@ -188,7 +184,7 @@ export class GtfsTripMovementsInterpolator {
 
   private _departureContextByIndex(
     servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
-    delayByIndex: ReadonlyMap<number, number>,
+    delayByIndex: number[],
   ): {
     readonly previousDepartureByIndex: ReadonlyMap<
       number,
@@ -216,7 +212,7 @@ export class GtfsTripMovementsInterpolator {
         continue;
       }
 
-      const delay = delayByIndex.get(index);
+      const delay = delayByIndex[index];
       const departureTime =
         movement.knownRealtimeDepartureTime ??
         (delay == null
@@ -310,6 +306,14 @@ export class GtfsTripMovementsInterpolator {
       seconds: delaySeconds,
     });
   }
+}
+
+function toArray(delayByIndex: Map<number, number>): number[] {
+  const result: number[] = [];
+  for (const [index, delay] of delayByIndex) {
+    result[index] = delay;
+  }
+  return result;
 }
 
 // TODO: On the CoreQuery service page, add:
