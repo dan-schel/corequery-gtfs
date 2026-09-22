@@ -32,9 +32,7 @@ export class GtfsTripMovementsInterpolator {
     movements: readonly GtfsUpdatedTripMovement[],
   ): readonly GtfsUpdatedTripMovement[] | null {
     const servicingMovements = movements.filter((m) => m.isServicing);
-    const delayValues = servicingMovements.map(
-      (x) => x.knownRealtimeDelay?.total("seconds") ?? null,
-    );
+    const delayValues = servicingMovements.map((x) => x.knownRealtimeDelay);
     if (delayValues.every((x) => x == null)) return movements;
 
     const allDelayValues = this._interpolateDelayValues(delayValues);
@@ -46,7 +44,8 @@ export class GtfsTripMovementsInterpolator {
       const departureDelay = allDelayValues[index];
       if (departureDelay == null) throw new Error();
 
-      const arrivalDelay = allDelayValues[index - 1] ?? 0;
+      const zeroDuration = Temporal.Duration.from({ nanoseconds: 0 });
+      const arrivalDelay = allDelayValues[index - 1] ?? zeroDuration;
 
       return this._applyDelays(m, arrivalDelay, departureDelay);
     });
@@ -54,7 +53,7 @@ export class GtfsTripMovementsInterpolator {
     return this._eliminateTimeTravel(proposedMovements);
   }
 
-  private _interpolateDelayValues(delayValues: (number | null)[]) {
+  private _interpolateDelayValues(delayValues: (Temporal.Duration | null)[]) {
     return delayValues.map((knownDelay, i) => {
       if (knownDelay != null) return knownDelay;
 
@@ -64,8 +63,15 @@ export class GtfsTripMovementsInterpolator {
       const next = delayValues[iNext] ?? null;
 
       if (prev != null && next != null) {
-        // TODO: Why Math.round?
-        return Math.round(map(i, iPrev, iNext, prev, next));
+        return Temporal.Duration.from({
+          nanoseconds: map(
+            i,
+            iPrev,
+            iNext,
+            prev.total("nanoseconds"),
+            next.total("nanoseconds"),
+          ),
+        });
       } else if (prev != null) {
         return prev;
       } else if (next != null) {
@@ -80,8 +86,8 @@ export class GtfsTripMovementsInterpolator {
 
   private _applyDelays(
     movement: GtfsUpdatedTripServicingMovement,
-    arrivalDelay: number,
-    departureDelay: number,
+    arrivalDelay: Temporal.Duration,
+    departureDelay: Temporal.Duration,
   ) {
     let result = movement;
 
@@ -90,9 +96,8 @@ export class GtfsTripMovementsInterpolator {
       movement.knownRealtimeArrivalTime == null
     ) {
       result = result.with({
-        assumedRealtimeArrivalTime: movement.scheduledArrivalTime.add({
-          seconds: arrivalDelay,
-        }),
+        assumedRealtimeArrivalTime:
+          movement.scheduledArrivalTime.add(arrivalDelay),
       });
     }
 
@@ -101,9 +106,8 @@ export class GtfsTripMovementsInterpolator {
       movement.knownRealtimeDepartureTime == null
     ) {
       result = result.with({
-        assumedRealtimeDepartureTime: movement.scheduledDepartureTime.add({
-          seconds: departureDelay,
-        }),
+        assumedRealtimeDepartureTime:
+          movement.scheduledDepartureTime.add(departureDelay),
       });
     }
 
