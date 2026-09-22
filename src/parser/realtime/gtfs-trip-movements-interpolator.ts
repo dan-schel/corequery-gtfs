@@ -37,7 +37,7 @@ export class GtfsTripMovementsInterpolator {
     );
     if (delayValues.every((x) => x == null)) return movements;
 
-    const delayByIndex = this._interpolate(delayValues);
+    const allDelayValues = this._interpolateDelayValues(delayValues);
 
     const indexByMovement = new Map<GtfsUpdatedTripServicingMovement, number>();
     for (const [index, movement] of servicingMovements.entries()) {
@@ -45,7 +45,7 @@ export class GtfsTripMovementsInterpolator {
     }
 
     const { previousDepartureByIndex, previousScheduledDepartureByIndex } =
-      this._departureContextByIndex(servicingMovements, delayByIndex);
+      this._departureContextByIndex(servicingMovements, allDelayValues);
 
     return movements.map((movement) => {
       if (!movement.isServicing) return movement;
@@ -53,7 +53,7 @@ export class GtfsTripMovementsInterpolator {
       const index = indexByMovement.get(movement);
       if (index == null) return movement;
 
-      const delaySeconds = delayByIndex[index];
+      const delaySeconds = allDelayValues[index];
       if (delaySeconds == null) return movement;
 
       if (movement.type === "regular") {
@@ -92,7 +92,7 @@ export class GtfsTripMovementsInterpolator {
     });
   }
 
-  private _interpolate(delayValues: (number | null)[]) {
+  private _interpolateDelayValues(delayValues: (number | null)[]) {
     return delayValues.map((knownDelay, i) => {
       if (knownDelay != null) return knownDelay;
 
@@ -110,89 +110,16 @@ export class GtfsTripMovementsInterpolator {
         return next;
       } else {
         // Would only happen if all `delayValues` are null, but we check that in
-        // #interpolate.
+        // `interpolate`.
         throw new Error();
       }
     });
   }
 
-  private _knownDelaySeconds(
-    movement: GtfsUpdatedTripServicingMovement,
-  ): number | null {
-    const knownDelay = movement.knownRealtimeDelay;
-    if (knownDelay == null) return null;
-
-    return Math.round(knownDelay.total("seconds"));
-  }
-
-  private _interpolateIntermediateDelays(
-    knownIndices: readonly number[],
-    delayByIndex: number[],
-  ) {
-    for (let i = 0; i < knownIndices.length - 1; i += 1) {
-      const previousIndex = knownIndices[i];
-      const nextIndex = knownIndices[i + 1];
-      if (previousIndex == null || nextIndex == null) continue;
-
-      const previousDelay = delayByIndex[previousIndex];
-      const nextDelay = delayByIndex[nextIndex];
-      if (previousDelay == null || nextDelay == null) continue;
-
-      const gap = nextIndex - previousIndex;
-      if (gap <= 1) continue;
-
-      const deltaPerStep = (nextDelay - previousDelay) / gap;
-      for (let index = previousIndex + 1; index < nextIndex; index += 1) {
-        const fraction = index - previousIndex;
-        const interpolatedDelay = previousDelay + deltaPerStep * fraction;
-        delayByIndex[index] = Math.round(interpolatedDelay);
-      }
-    }
-  }
-
-  private _extrapolateEdgeDelays(
-    knownIndices: readonly number[],
-    delayByIndex: number[],
-    servicingMovementsLength: number,
-  ) {
-    const firstKnownIndex = knownIndices[0];
-    if (firstKnownIndex != null) {
-      const firstDelay = delayByIndex[firstKnownIndex];
-      if (firstDelay != null) {
-        for (let index = 0; index < firstKnownIndex; index += 1) {
-          delayByIndex[index] = firstDelay;
-        }
-      }
-    }
-
-    const lastKnownIndex = knownIndices[knownIndices.length - 1];
-    if (lastKnownIndex != null) {
-      const lastDelay = delayByIndex[lastKnownIndex];
-      if (lastDelay != null) {
-        for (
-          let index = lastKnownIndex + 1;
-          index < servicingMovementsLength;
-          index += 1
-        ) {
-          delayByIndex[index] = lastDelay;
-        }
-      }
-    }
-  }
-
   private _departureContextByIndex(
     servicingMovements: readonly GtfsUpdatedTripServicingMovement[],
     delayByIndex: number[],
-  ): {
-    readonly previousDepartureByIndex: ReadonlyMap<
-      number,
-      Temporal.Instant | null
-    >;
-    readonly previousScheduledDepartureByIndex: ReadonlyMap<
-      number,
-      Temporal.Instant | null
-    >;
-  } {
+  ) {
     const previousDepartureByIndex = new Map<number, Temporal.Instant | null>();
     const previousScheduledDepartureByIndex = new Map<
       number,
