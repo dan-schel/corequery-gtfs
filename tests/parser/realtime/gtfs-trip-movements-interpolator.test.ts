@@ -162,7 +162,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 });
 
-function expectMovementsToMatchSnapshot(movements: GtfsUpdatedTripMovement[]) {
+function expectMovementsToMatchSnapshot(
+  movements: readonly GtfsUpdatedTripMovement[],
+) {
   const str = movements.map((m) => {
     function getTime(obj: object, key: keyof GtfsUpdatedTripRegularMovement) {
       return (obj as Record<string, Temporal.Instant | null>)[key] ?? null;
@@ -183,7 +185,7 @@ function expectMovementsToMatchSnapshot(movements: GtfsUpdatedTripMovement[]) {
   ).toMatchSnapshot();
 }
 
-function ensureNoTimeTravel(movements: GtfsUpdatedTripMovement[]) {
+function ensureNoTimeTravel(movements: readonly GtfsUpdatedTripMovement[]) {
   const times = movements.flatMap((m) => m.effectiveTimes);
 
   for (let i = 1; i < times.length; i++) {

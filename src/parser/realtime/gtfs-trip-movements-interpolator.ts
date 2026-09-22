@@ -29,27 +29,21 @@ import type {
 export class GtfsTripMovementsInterpolator {
   interpolate(
     movements: readonly GtfsUpdatedTripMovement[],
-  ): GtfsUpdatedTripMovement[] {
-    const servicingMovements = movements.filter(
-      (movement): movement is GtfsUpdatedTripServicingMovement =>
-        movement.isServicing,
-    );
-    if (servicingMovements.length === 0) return [...movements];
+  ): readonly GtfsUpdatedTripMovement[] {
+    const servicingMovements = movements.filter((m) => m.isServicing);
+    if (servicingMovements.length === 0) return movements;
 
     const knownIndices = servicingMovements
       .map((movement, index) => ({ movement, index }))
-      .filter(({ movement }) => this._knownDelaySeconds(movement) != null)
+      .filter(({ movement }) => movement.knownRealtimeDelay != null)
       .map(({ index }) => index);
-    if (knownIndices.length === 0) return [...movements];
+    if (knownIndices.length === 0) return movements;
 
     const delayByIndex = this._delayByIndex(servicingMovements, knownIndices);
 
-    const serviceIndexByMovement = new Map<
-      GtfsUpdatedTripServicingMovement,
-      number
-    >();
+    const indexByMovement = new Map<GtfsUpdatedTripServicingMovement, number>();
     for (const [index, movement] of servicingMovements.entries()) {
-      serviceIndexByMovement.set(movement, index);
+      indexByMovement.set(movement, index);
     }
 
     const { previousDepartureByIndex, previousScheduledDepartureByIndex } =
@@ -58,7 +52,7 @@ export class GtfsTripMovementsInterpolator {
     return movements.map((movement) => {
       if (!movement.isServicing) return movement;
 
-      const index = serviceIndexByMovement.get(movement);
+      const index = indexByMovement.get(movement);
       if (index == null) return movement;
 
       const delaySeconds = delayByIndex.get(index);

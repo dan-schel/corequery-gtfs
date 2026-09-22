@@ -180,20 +180,17 @@ export class GtfsTripUpdateParser {
       );
     }
 
-    let movements = trip.movements.map((m) =>
-      m.asHollowUpdatedTripMovement(serviceDay, this._timezone),
-    );
-    movements = movements.map((movement, i) => {
-      return updatedMovementsByIndex.get(i) ?? movement;
+    const rawMovements = trip.movements.map((m, i) => {
+      return (
+        updatedMovementsByIndex.get(i) ??
+        m.asHollowUpdatedTripMovement(serviceDay, this._timezone)
+      );
     });
-
-    const movementsAfterInterpolation =
-      this._movementsInterpolator.interpolate(movements);
 
     return new GtfsUpdatedTrip({
       scheduledTrip: trip,
       serviceDay,
-      movements: movementsAfterInterpolation,
+      movements: this._movementsInterpolator.interpolate(rawMovements),
       isCancelled: false,
     });
   }
