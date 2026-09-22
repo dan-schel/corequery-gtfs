@@ -1,11 +1,9 @@
 import { itsOk } from "@dan-schel/js-utils";
-import type { GtfsScheduledTrip } from "./gtfs-scheduled-trip.js";
-import type {
-  GtfsUpdatedTripMovement,
-  GtfsUpdatedTripOriginatingMovement,
-  GtfsUpdatedTripTerminatingMovement,
-} from "./gtfs-updated-trip-movements.js";
-import type { Color } from "../corequery-types.js";
+import type { GtfsScheduledTrip } from "../scheduled/gtfs-scheduled-trip.js";
+import type { GtfsUpdatedTripMovement } from "./types.js";
+import type { GtfsUpdatedTripOriginatingMovement } from "./gtfs-updated-trip-originating-movement.js";
+import type { GtfsUpdatedTripTerminatingMovement } from "./gtfs-updated-trip-terminating-movement.js";
+import type { Color } from "../../../corequery-types.js";
 
 type GtfsUpdatedTripFields = {
   readonly scheduledTrip: GtfsScheduledTrip;

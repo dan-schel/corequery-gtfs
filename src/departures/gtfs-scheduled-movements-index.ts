@@ -1,8 +1,8 @@
 import { itsOk } from "@dan-schel/js-utils";
 import { GtfsScheduleData } from "../data/gtfs-schedule-data.js";
 import { GtfsStopTime } from "../data/gtfs-stop-time.js";
-import type { GtfsScheduledTrip } from "../data/gtfs-scheduled-trip.js";
-import type { GtfsScheduledTripServicingMovement } from "../data/gtfs-scheduled-trip-movements.js";
+import type { GtfsScheduledTrip } from "../data/trip/scheduled/gtfs-scheduled-trip.js";
+import type { GtfsScheduledTripServicingMovement } from "../data/trip/scheduled/types.js";
 import { PlainDateRange } from "../data/plain-date-range.js";
 
 export type GtfsScheduledMovementsIndexEntry = {

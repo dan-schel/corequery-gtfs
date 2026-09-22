@@ -1,7 +1,7 @@
 import { itsOk } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
 import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
-import { GtfsScheduledTrip } from "../../../src/data/gtfs-scheduled-trip.js";
+import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
@@ -87,7 +87,8 @@ describe("GtfsRealtimeDataParser", () => {
     const updatedTrip = itsOk(parsed.allTrips()[0]);
 
     expect(updatedTrip.scheduledTrip.gtfsTripId).toBe(TRIP_1.gtfsTripId);
-    const parsedDepartureTime = updatedTrip.origination.realtimeDepartureTime;
+    const parsedDepartureTime =
+      updatedTrip.origination.knownRealtimeDepartureTime;
     const expectedDepartureTime = TRIP_1.origination.departureTime
       .toInstant(TRIP_1_DESCRIPTOR.startDate, TIMEZONE)
       .add({ seconds: 120 });

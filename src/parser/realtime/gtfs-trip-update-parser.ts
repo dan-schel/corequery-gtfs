@@ -1,6 +1,6 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
-import type { GtfsScheduledTrip } from "../../data/gtfs-scheduled-trip.js";
-import { GtfsUpdatedTrip } from "../../data/gtfs-updated-trip.js";
+import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
+import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type {
   StopTimeUpdateJson,
   TripUpdateJson,
@@ -13,7 +13,8 @@ import {
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { GtfsStopTime } from "../../data/gtfs-stop-time.js";
 import { itsOk } from "@dan-schel/js-utils";
-import type { GtfsUpdatedTripMovement } from "../../data/gtfs-updated-trip-movements.js";
+import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
+import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
@@ -31,6 +32,7 @@ export class GtfsTripUpdateParser {
   private readonly _onError: (error: GtfsTripUpdateParsingError) => void;
 
   private readonly _tripIdentifier: GtfsTripUpdateTripIdentifier;
+  private readonly _movementsInterpolator: GtfsTripMovementsInterpolator;
 
   constructor(fields: GtfsTripUpdateParserFields) {
     this._timezone = fields.timezone;
@@ -40,6 +42,7 @@ export class GtfsTripUpdateParser {
     this._tripIdentifier = new GtfsTripUpdateTripIdentifier({
       onError: this._onError,
     });
+    this._movementsInterpolator = new GtfsTripMovementsInterpolator();
   }
 
   parse(tripUpdate: TripUpdateJson, scheduleData: GtfsScheduleData) {
@@ -177,17 +180,30 @@ export class GtfsTripUpdateParser {
       );
     }
 
-    let movements = trip.movements.map((m) =>
-      m.asHollowUpdatedTripMovement(serviceDay, this._timezone),
-    );
-    movements = movements.map((movement, i) => {
-      return updatedMovementsByIndex.get(i) ?? movement;
+    const rawMovements = trip.movements.map((m, i) => {
+      return (
+        updatedMovementsByIndex.get(i) ??
+        m.asHollowUpdatedTripMovement(serviceDay, this._timezone)
+      );
     });
+
+    const interpolated = this._movementsInterpolator.interpolate(rawMovements);
+    if (interpolated == null) {
+      // TODO: This keeps happening in the PTV feed. In all the cases I've seen
+      // so far, the arrival times are one minute later than the departure times
+      // (for whatever reason). I think I should apply a patch for it, rather
+      // than "fixing" it in corequery-gtfs.
+      //
+      // TODO: Add a test for this.
+      const Err = KnownDepartureTimesEntailTimeTravel;
+      this._onError(new Err(tripUpdate, rawMovements));
+      return null;
+    }
 
     return new GtfsUpdatedTrip({
       scheduledTrip: trip,
       serviceDay,
-      movements,
+      movements: interpolated,
       isCancelled: false,
     });
   }
@@ -281,7 +297,8 @@ export type GtfsTripUpdateParsingError =
   | StopTimeUpdateEntryChangesStopError
   | NeitherTimeNorDelayGivenError
   | TimeAndDelayDisagreeWithEachOtherError
-  | NeitherArrivalNorDepartureGivenError;
+  | NeitherArrivalNorDepartureGivenError
+  | KnownDepartureTimesEntailTimeTravel;
 
 export class UnsupportedTripUpdateScheduleRelationshipError {
   readonly type = "unsupported-trip-update-schedule-relationship";
@@ -376,5 +393,13 @@ export class NeitherArrivalNorDepartureGivenError {
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly stopTimeUpdateEntry: StopTimeUpdateJson,
+  ) {}
+}
+
+class KnownDepartureTimesEntailTimeTravel {
+  readonly type = "known-departure-times-entail-time-travel";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly movements: readonly GtfsUpdatedTripMovement[],
   ) {}
 }

@@ -2,7 +2,7 @@ import { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
 import { GtfsBrokenTransfer } from "../../data/gtfs-realtime-transfer.js";
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js";
-import type { GtfsUpdatedTrip } from "../../data/gtfs-updated-trip.js";
+import type { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { RealtimeDataJson } from "../../data/raw/realtime-data-json.js";
 import {

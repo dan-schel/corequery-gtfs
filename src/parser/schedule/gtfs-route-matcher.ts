@@ -5,14 +5,14 @@ import type {
 } from "../../data/raw/schedule-csvs.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { Route } from "../../data/route/route.js";
-import {
-  GtfsScheduledTripOriginatingMovement,
-  GtfsScheduledTripPassingMovement,
-  GtfsScheduledTripRegularMovement,
-  GtfsScheduledTripTerminatingMovement,
-  type GtfsScheduledTripMovement,
-  type GtfsScheduledTripServicingMovement,
-} from "../../data/gtfs-scheduled-trip-movements.js";
+import { GtfsScheduledTripOriginatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
+import { GtfsScheduledTripPassingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-passing-movement.js";
+import { GtfsScheduledTripRegularMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
+import { GtfsScheduledTripTerminatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
+import type {
+  GtfsScheduledTripMovement,
+  GtfsScheduledTripServicingMovement,
+} from "../../data/trip/scheduled/types.js";
 import { itsOk } from "@dan-schel/js-utils";
 
 const STOP_TIME_PICKUP_TYPE_REGULAR = 0;

@@ -3,7 +3,7 @@ import type {
   GtfsBrokenTransfer,
 } from "./gtfs-realtime-transfer.js";
 import { GtfsTransferMapping } from "./gtfs-transfer-mapping.js";
-import type { GtfsUpdatedTrip } from "./gtfs-updated-trip.js";
+import type { GtfsUpdatedTrip } from "./trip/updated/gtfs-updated-trip.js";
 
 export class GtfsRealtimeData {
   private readonly _tripsByScheduledTripId: Map<string, GtfsUpdatedTrip>;
