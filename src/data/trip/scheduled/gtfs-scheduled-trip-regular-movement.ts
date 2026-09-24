@@ -137,7 +137,7 @@ export class GtfsScheduledTripRegularMovement implements IGtfsScheduledTripServi
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: null,
+      updatedPositionId: this.positionId,
 
       arrivalTimeType: "scheduled-time",
       arrivalTime: this.arrivalTime.toInstant(serviceDay, timezone),

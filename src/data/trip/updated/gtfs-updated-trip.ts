@@ -71,24 +71,6 @@ export class GtfsUpdatedTrip {
   }
 
   get lineIds(): readonly number[] {
-    // TODO: I don't think we're gonna represent trips where the realtime data
-    // changes the stop list entirely as GtfsUpdatedTrip (they're probably gonna
-    // be GtfsReplacedTrip, GtfsAddedTrip, or something), but IF WE DID, this
-    // mightn't be correct all the time.
-    //
-    // e.g. if an East Pakenham service terminates early at Dandenong, the
-    // scheduled trip data will say "Pakenham line", but now the updated trip
-    // has effectively also become a Cranbourne line service. To support that,
-    // an updated trip might need to have its own `lineIds` property (and
-    // `serviceTags` property).
-    //
-    // The same goes for `color`, but only if it can represent cases where we
-    // ADD stops and therefore an updated trip could be on an entirely different
-    // line than the scheduled one, e.g. for a service diverted from the
-    // Pakenham line to the Cranbourne line or whatever. It's not a perfect
-    // example because they're the same color in that case, but while highly
-    // unlikely, it's not IMPOSSIBLE that this could happen across lines with
-    // different colors.
     return this.scheduledTrip.lineIds;
   }
 

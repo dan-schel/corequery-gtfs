@@ -112,7 +112,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: null,
+      updatedPositionId: this.positionId,
 
       departureTimeType: "scheduled-time",
       departureTime: this.departureTime.toInstant(serviceDay, timezone),
