@@ -40,11 +40,8 @@ export class ScheduledDeparturesBlockIterator extends DeparturesBlockIterator<
     // from the scheduled departures block (at the outdated departure time/order
     // too!).
     const tripId = entry.trip.gtfsTripId;
-    const realtimeTrip = this._realtimeData.getForScheduledTrip(
-      tripId,
-      this.block.serviceDay,
-    );
-    const isOverriddenByRealtimeTrip = realtimeTrip != null;
+    const rtTrip = this._realtimeData.getTrip(tripId, this.block.serviceDay);
+    const isOverriddenByRealtimeTrip = rtTrip != null;
     if (isOverriddenByRealtimeTrip) return true;
 
     return false;
