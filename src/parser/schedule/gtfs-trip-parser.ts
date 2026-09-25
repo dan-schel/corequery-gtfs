@@ -16,7 +16,7 @@ import {
 import {
   GtfsRouteMatcher,
   type GtfsRouteMatchingError,
-} from "./gtfs-route-matcher.js";
+} from "../gtfs-route-matcher.js";
 import {
   type GtfsTransferParsingError,
   GtfsTransferParser,

@@ -1,18 +1,18 @@
 import { arraysMatch } from "@dan-schel/js-utils";
 import { describe, expect, it } from "vitest";
-import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
-import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
-import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
-import { GtfsScheduledTripOriginatingMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
-import { GtfsScheduledTripPassingMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-passing-movement.js";
-import { GtfsScheduledTripRegularMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
-import { GtfsScheduledTripTerminatingMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
-import type { GtfsScheduledTripMovement } from "../../../src/data/trip/scheduled/types.js";
+import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
+import { BonusLinesMapping } from "../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../src/data/route/line-routes-mapping.js";
+import { GtfsScheduledTripOriginatingMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
+import { GtfsScheduledTripPassingMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-passing-movement.js";
+import { GtfsScheduledTripRegularMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
+import { GtfsScheduledTripTerminatingMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
+import type { GtfsScheduledTripMovement } from "../../src/data/trip/scheduled/types.js";
 import {
   type GtfsRouteMatchingError,
   GtfsRouteMatcher,
   NoMatchingRouteError,
-} from "../../../src/parser/schedule/gtfs-route-matcher.js";
+} from "../../src/parser/gtfs-route-matcher.js";
 
 describe("GtfsRouteMatcher", () => {
   const LINE_ID = 1;

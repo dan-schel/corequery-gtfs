@@ -1,8 +1,8 @@
-import type { Color } from "../../corequery-types.js";
-import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
-import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
-import type { Route } from "../../data/route/route.js";
-import type { GtfsTripMovement } from "../../data/trip/types.js";
+import type { Color } from "../corequery-types.js";
+import type { BonusLinesMapping } from "../data/route/bonus-lines-mapping.js";
+import type { LineRoutesMapping } from "../data/route/line-routes-mapping.js";
+import type { Route } from "../data/route/route.js";
+import type { GtfsTripMovement } from "../data/trip/types.js";
 
 export type MatchedRoute<T> = {
   movements: readonly T[];
