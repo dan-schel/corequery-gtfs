@@ -161,7 +161,8 @@ async function getDestination(
     output += " -> ...";
   }
 
-  return output;
+  const isAdded = departure.service.liveDataType === "added";
+  return isAdded ? `${output} (added)` : output;
 }
 
 function formatTable(rows: string[][]) {
