@@ -283,7 +283,7 @@ class AddedTripStopTimeUpdateMissingTimeError {
   ) {}
 }
 
-export class AddedTripReferencesUnmappedRouteIdError {
+class AddedTripReferencesUnmappedRouteIdError {
   readonly type = "trip-references-unmapped-route-id";
   constructor(
     readonly tripUpdate: TripUpdateJson,

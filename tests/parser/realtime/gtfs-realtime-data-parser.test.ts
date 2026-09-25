@@ -3,8 +3,11 @@ import { describe, expect, it } from "vitest";
 import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
 import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
+import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
 import { GtfsRealtimeDataParser } from "../../../src/parser/realtime/gtfs-realtime-data-parser.js";
 import {
   type GtfsTripUpdateParsingError,
@@ -48,12 +51,19 @@ const STOP_MAPPING = new StopGtfsIdMapping(
   ]),
 );
 
+const LINE_GTFS_ID_MAPPING = new LineGtfsIdMapping(new Map());
+const LINE_ROUTES_MAPPING = LineRoutesMapping.build({});
+const BONUS_LINES_MAPPING = BonusLinesMapping.build({});
+
 describe("GtfsRealtimeDataParser", () => {
   it("parses realtime feed into updated trips and drops invalid updates", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
     const parser = new GtfsRealtimeDataParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -107,6 +117,9 @@ describe("GtfsRealtimeDataParser", () => {
     const parser = new GtfsRealtimeDataParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
