@@ -259,7 +259,7 @@ export type GtfsAddedTripUpdateParsingError =
   | AddedTripReferencesUnmappedRouteIdError
   | GtfsRouteMatchingError;
 
-class NecessaryFieldNotSuppliedForAddedTripError {
+export class NecessaryFieldNotSuppliedForAddedTripError {
   readonly type = "necessary-field-not-supplied-for-added-trip";
   constructor(
     readonly tripUpdate: TripUpdateJson,
@@ -267,7 +267,7 @@ class NecessaryFieldNotSuppliedForAddedTripError {
   ) {}
 }
 
-class AddedTripIdDuplicatesScheduledTripIdError {
+export class AddedTripIdDuplicatesScheduledTripIdError {
   readonly type = "added-trip-id-duplicates-scheduled-trip-id";
   constructor(
     readonly tripUpdate: TripUpdateJson,
@@ -275,7 +275,7 @@ class AddedTripIdDuplicatesScheduledTripIdError {
   ) {}
 }
 
-class AddedTripStopTimeUpdateMissingTimeError {
+export class AddedTripStopTimeUpdateMissingTimeError {
   readonly type = "added-trip-stop-time-update-missing-time";
   constructor(
     readonly tripUpdate: TripUpdateJson,
@@ -283,7 +283,7 @@ class AddedTripStopTimeUpdateMissingTimeError {
   ) {}
 }
 
-class AddedTripReferencesUnmappedRouteIdError {
+export class AddedTripReferencesUnmappedRouteIdError {
   readonly type = "trip-references-unmapped-route-id";
   constructor(
     readonly tripUpdate: TripUpdateJson,
