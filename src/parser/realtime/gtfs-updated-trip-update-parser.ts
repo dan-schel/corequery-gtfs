@@ -65,7 +65,12 @@ export class GtfsUpdatedTripUpdateParser {
     const updatedMovementsByIndex = new Map<number, GtfsUpdatedTripMovement>();
 
     for (const entry of tripUpdate.stopTimeUpdate) {
-      // This `scheduleRelationship` field is probably how altered routes work.
+      // TODO: If the schedule relationship is `SKIPPED`, then build a
+      // GtfsReplacedTrip instead, and ensure the new list of movements is put
+      // through the GtfsRouteMatcher so that if bonus lines which previously
+      // didn't match now do, the trip gets them. (Consider how an East Pakenham
+      // bound train now terminating early at Dandenong would now be eligible to
+      // be considered a Cranbourne line service.)
       const sr = entry.scheduleRelationship;
       if (sr !== STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED) {
         const Err = UnsupportedStopTimeUpdateEntryScheduleRelationshipError;
