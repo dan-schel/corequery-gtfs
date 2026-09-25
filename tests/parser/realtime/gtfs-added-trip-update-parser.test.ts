@@ -20,12 +20,14 @@ import {
 import { NoStopTimeUpdateFieldGivenError } from "../../../src/parser/realtime/gtfs-trip-update-parser-common-error-types.js";
 
 const LINE_ID = 1;
+const BONUS_LINE_ID = 2;
 const SERVICE_DAY = Temporal.PlainDate.from("2026-07-14");
 
 const STOP_MAPPING = new StopGtfsIdMapping(
   new Map([
     [1, StopGtfsIdCollection.simple(1, "stop-1")],
     [2, StopGtfsIdCollection.simple(2, "stop-2")],
+    [3, StopGtfsIdCollection.simple(3, "stop-3")],
   ]),
 );
 
@@ -58,6 +60,7 @@ const TRIP_DESCRIPTOR = {
 
 const T1 = 1_790_326_800; // 2026-09-25T09:00:00Z
 const T2 = 1_790_328_600; // 2026-09-25T09:30:00Z
+const T3 = 1_790_330_400; // 2026-09-25T10:00:00Z
 
 const VALID_STOP_UPDATES = [
   {
@@ -225,5 +228,107 @@ describe("GtfsAddedTripUpdateParser", () => {
     expect(parsed).toBeNull();
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(AddedTripStopTimeUpdateMissingTimeError);
+  });
+
+  it("injects passing movements for stops not serviced on the route", () => {
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const lineRoutesMapping = LineRoutesMapping.build({
+      [LINE_ID]: [
+        {
+          color: "blue",
+          serviceTags: [],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+            { stopId: 3, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+    });
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      {
+        trip: TRIP_DESCRIPTOR,
+        stopTimeUpdate: [
+          {
+            stopSequence: 1,
+            stopId: "stop-1",
+            departure: { time: T1 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 3,
+            stopId: "stop-3",
+            arrival: { time: T3 },
+            scheduleRelationship: "SCHEDULED",
+          },
+        ],
+      },
+      SCHEDULE,
+    );
+
+    expect(errors).toEqual([]);
+    if (parsed == null) throw new Error("Expected an added trip.");
+    expect(parsed.movements.map((m) => m.type)).toEqual([
+      "originating",
+      "passing",
+      "terminating",
+    ]);
+    expect(parsed.movements.map((m) => m.stopId)).toEqual([1, 2, 3]);
+  });
+
+  it("applies bonus line IDs and service tags", () => {
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const lineRoutesMapping = LineRoutesMapping.build({
+      [LINE_ID]: [
+        {
+          color: "blue",
+          serviceTags: [10],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+      [BONUS_LINE_ID]: [
+        {
+          color: "red",
+          serviceTags: [20],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+    });
+    const bonusLinesMapping = BonusLinesMapping.build({
+      [LINE_ID]: { mode: "add", lines: [BONUS_LINE_ID] },
+    });
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping,
+      bonusLinesMapping,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      { trip: TRIP_DESCRIPTOR, stopTimeUpdate: VALID_STOP_UPDATES },
+      SCHEDULE,
+    );
+
+    expect(errors).toEqual([]);
+    if (parsed == null) throw new Error("Expected an added trip.");
+    expect(parsed.lineIds).toContain(LINE_ID);
+    expect(parsed.lineIds).toContain(BONUS_LINE_ID);
+    expect(parsed.serviceTags).toContain(10);
+    expect(parsed.serviceTags).toContain(20);
   });
 });
