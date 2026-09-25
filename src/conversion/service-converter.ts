@@ -13,9 +13,11 @@ import type { DeparturesIteratorResult } from "../departures/iterator/departures
 import { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
 import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/types.js";
-import type { GtfsUpdatedTripMovement } from "../data/trip/updated/types.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../data/gtfs-transfer.js";
 import type { GtfsSystem } from "../gtfs-system.js";
+import type { GtfsRealtimeTripMovement, GtfsTrip } from "../data/trip/types.js";
+import { GtfsAddedTrip } from "../data/trip/added/gtfs-added-trip.js";
+import { GtfsReplacedTrip } from "../data/trip/replaced/gtfs-replaced-trip.js";
 
 export type ServiceConverterFields<
   CorequeryDepartureClass,
@@ -165,6 +167,18 @@ export class ServiceConverter<
         service,
         movementIndex: result.movementIndex,
       });
+    } else if (result.trip instanceof GtfsAddedTrip) {
+      const service = this.convertAddedTrip(result.trip);
+      return this._buildDeparture({
+        service,
+        movementIndex: result.movementIndex,
+      });
+    } else if (result.trip instanceof GtfsReplacedTrip) {
+      const service = this.convertReplacedTrip(result.trip);
+      return this._buildDeparture({
+        service,
+        movementIndex: result.movementIndex,
+      });
     } else {
       assertNever(result.trip);
     }
@@ -177,6 +191,10 @@ export class ServiceConverter<
   ): CorequeryServiceClass {
     const id = new CorequeryIntrasourceId(trip.gtfsTripId, serviceDay);
 
+    // TODO: Consider pushing this onto the scheduled trip class, and likewise
+    // for the realtime trip methods below. (Pass the converter as a parameter,
+    // or create some sort of ConversionContext class to pass, so that
+    // GtfsScheduledTrip has access to the _buildTags, etc. methods?)
     return this._buildService({
       sourceId: this._sourceId,
       intrasourceId: id.toString(),
@@ -207,8 +225,52 @@ export class ServiceConverter<
       color: trip.color,
 
       liveDataType: "updated",
-      movements: trip.movements.map((m) => this._convertUpdatedTripMovement(m)),
+      movements: trip.movements.map((m) =>
+        this._convertRealtimeTripMovement(m),
+      ),
       isCancelled: trip.isCancelled,
+
+      connections: this._convertConnections(trip, trip.serviceDay),
+    });
+  }
+
+  convertAddedTrip(trip: GtfsAddedTrip): CorequeryServiceClass {
+    const id = new CorequeryIntrasourceId(trip.gtfsTripId, trip.serviceDay);
+
+    return this._buildService({
+      sourceId: this._sourceId,
+      intrasourceId: id.toString(),
+
+      lineIds: trip.lineIds,
+      tags: this._buildTags(new Set(trip.serviceTags)),
+      color: trip.color,
+
+      liveDataType: "added",
+      movements: trip.movements.map((m) =>
+        this._convertRealtimeTripMovement(m),
+      ),
+      isCancelled: false,
+
+      connections: this._convertConnections(trip, trip.serviceDay),
+    });
+  }
+
+  convertReplacedTrip(trip: GtfsReplacedTrip): CorequeryServiceClass {
+    const id = new CorequeryIntrasourceId(trip.gtfsTripId, trip.serviceDay);
+
+    return this._buildService({
+      sourceId: this._sourceId,
+      intrasourceId: id.toString(),
+
+      lineIds: trip.lineIds,
+      tags: this._buildTags(new Set(trip.serviceTags)),
+      color: trip.color,
+
+      liveDataType: "updated",
+      movements: trip.movements.map((m) =>
+        this._convertRealtimeTripMovement(m),
+      ),
+      isCancelled: false,
 
       connections: this._convertConnections(trip, trip.serviceDay),
     });
@@ -242,8 +304,8 @@ export class ServiceConverter<
     }
   }
 
-  private _convertUpdatedTripMovement(
-    movement: GtfsUpdatedTripMovement,
+  private _convertRealtimeTripMovement(
+    movement: GtfsRealtimeTripMovement,
   ):
     | CorequeryServiceOriginatingMovementClass
     | CorequeryServiceRegularMovementClass
@@ -266,10 +328,7 @@ export class ServiceConverter<
     }
   }
 
-  private _convertConnections(
-    trip: GtfsScheduledTrip | GtfsUpdatedTrip,
-    serviceDay: Temporal.PlainDate,
-  ) {
+  private _convertConnections(trip: GtfsTrip, serviceDay: Temporal.PlainDate) {
     const feed = this._gtfsSystem.requireFeed();
 
     return feed

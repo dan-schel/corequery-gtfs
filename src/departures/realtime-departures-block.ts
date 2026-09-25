@@ -1,13 +1,15 @@
 import { itsOk } from "@dan-schel/js-utils";
 import type { GtfsRealtimeData } from "../data/gtfs-realtime-data.js";
-import type { GtfsUpdatedTripServicingMovement } from "../data/trip/updated/types.js";
-import type { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { DeparturesBlock } from "./departures-block.js";
+import type {
+  GtfsRealtimeTrip,
+  GtfsRealtimeTripServicingMovement,
+} from "../data/trip/types.js";
 
 export type RealtimeDeparturesBlockEntry = {
-  readonly trip: GtfsUpdatedTrip;
+  readonly trip: GtfsRealtimeTrip;
   readonly instant: Temporal.Instant;
-  readonly movement: GtfsUpdatedTripServicingMovement;
+  readonly movement: GtfsRealtimeTripServicingMovement;
   readonly movementIndex: number;
 };
 

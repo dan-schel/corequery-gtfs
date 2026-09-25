@@ -3,14 +3,18 @@ import { describe, expect, it } from "vitest";
 import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
 import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
+import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
 import { GtfsRealtimeDataParser } from "../../../src/parser/realtime/gtfs-realtime-data-parser.js";
 import {
   type GtfsTripUpdateParsingError,
   UnsupportedTripUpdateScheduleRelationshipError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../../../src/data/gtfs-transfer.js";
+import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 
 const TIMEZONE = "Australia/Melbourne";
 
@@ -47,12 +51,19 @@ const STOP_MAPPING = new StopGtfsIdMapping(
   ]),
 );
 
+const LINE_GTFS_ID_MAPPING = new LineGtfsIdMapping(new Map());
+const LINE_ROUTES_MAPPING = LineRoutesMapping.build({});
+const BONUS_LINES_MAPPING = BonusLinesMapping.build({});
+
 describe("GtfsRealtimeDataParser", () => {
   it("parses realtime feed into updated trips and drops invalid updates", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
     const parser = new GtfsRealtimeDataParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -75,7 +86,7 @@ describe("GtfsRealtimeDataParser", () => {
         // Invalid update.
         {
           trip: {
-            scheduleRelationship: "ADDED",
+            scheduleRelationship: "CHEESEBURGER",
           },
         },
       ],
@@ -85,6 +96,7 @@ describe("GtfsRealtimeDataParser", () => {
 
     expect(parsed.allTrips()).toHaveLength(1);
     const updatedTrip = itsOk(parsed.allTrips()[0]);
+    if (!(updatedTrip instanceof GtfsUpdatedTrip)) throw new Error();
 
     expect(updatedTrip.scheduledTrip.gtfsTripId).toBe(TRIP_1.gtfsTripId);
     const parsedDepartureTime =
@@ -105,6 +117,9 @@ describe("GtfsRealtimeDataParser", () => {
     const parser = new GtfsRealtimeDataParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -127,7 +142,9 @@ describe("GtfsRealtimeDataParser", () => {
 
     expect(errors).toHaveLength(0);
     expect(parsed.allTrips()).toHaveLength(1);
-    expect(parsed.allTrips()[0]?.isCancelled).toBe(true);
+    const updatedTrip = itsOk(parsed.allTrips()[0]);
+    if (!(updatedTrip instanceof GtfsUpdatedTrip)) throw new Error();
+    expect(updatedTrip.isCancelled).toBe(true);
 
     const sd = TRIP_1_DESCRIPTOR.startDate;
     const brokenTrip1 = parsed.getBrokenTransfersForTrip(TRIP_1.gtfsTripId, sd);

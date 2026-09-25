@@ -5,13 +5,13 @@ import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-schedul
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import { PlainDateRange } from "../../../src/data/plain-date-range.js";
 import {
-  type GtfsTripUpdateTripIdentificationError,
-  GtfsTripUpdateTripIdentifier,
+  type GtfsScheduledTripIdentificationError,
+  GtfsScheduledTripIdentifier,
   NecessaryFieldNotInTripDescriptorError,
   TripDescriptorReferencesNonExistentTripIdError,
   TripDoesNotOccurOnStartDateError,
   TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError,
-} from "../../../src/parser/realtime/gtfs-trip-update-trip-identifier.js";
+} from "../../../src/parser/realtime/gtfs-scheduled-trip-identifier.js";
 
 const TRIP = GtfsScheduledTrip.simple({
   gtfsTripId: "trip-1",
@@ -42,10 +42,10 @@ function expectEqualDates(
   }
 }
 
-describe("GtfsTripUpdateTripIdentifier", () => {
+describe("GtfsScheduledTripIdentifier", () => {
   it("identifies a trip and service day from trip descriptor fields", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -58,8 +58,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("reports missing tripId fields", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -73,8 +73,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("reports trip IDs that do not exist in the schedule", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -89,8 +89,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("reports start dates where the trip does not occur", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -129,8 +129,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("identifies overnight trips where startTime is over 24:00:00", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -161,8 +161,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("reports mismatching startTime values but still identifies the trip", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 
@@ -181,8 +181,8 @@ describe("GtfsTripUpdateTripIdentifier", () => {
   });
 
   it("doesn't report trip IDs that do not exist in the schedule if they were ignored intentionally when parsing the schedule", () => {
-    const errors: GtfsTripUpdateTripIdentificationError[] = [];
-    const identifier = new GtfsTripUpdateTripIdentifier({
+    const errors: GtfsScheduledTripIdentificationError[] = [];
+    const identifier = new GtfsScheduledTripIdentifier({
       onError: (e) => errors.push(e),
     });
 

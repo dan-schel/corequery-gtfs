@@ -2,17 +2,24 @@ import { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
 import { GtfsBrokenTransfer } from "../../data/gtfs-realtime-transfer.js";
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js";
-import type { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
+import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { RealtimeDataJson } from "../../data/raw/realtime-data-json.js";
 import {
   GtfsTripUpdateParser,
   type GtfsTripUpdateParsingError,
 } from "./gtfs-trip-update-parser.js";
+import type { GtfsRealtimeTrip } from "../../data/trip/types.js";
+import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
+import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
+import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 
 export type GtfsRealtimeDataParserFields = {
   readonly timezone: string;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
   readonly onError: (error: GtfsRealtimeDataParsingError) => void;
 };
 
@@ -23,6 +30,9 @@ export class GtfsRealtimeDataParser {
     this._tripUpdateParser = new GtfsTripUpdateParser({
       timezone: fields.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
       onError: fields.onError,
     });
   }
@@ -31,50 +41,48 @@ export class GtfsRealtimeDataParser {
     realtimeData: RealtimeDataJson,
     scheduleData: GtfsScheduleData,
   ): GtfsRealtimeData {
-    const updatedTrips = this._parseTripUpdates(realtimeData, scheduleData);
+    const realtimeTrips = this._parseTripUpdates(realtimeData, scheduleData);
 
-    const brokenTransfers = this._breakTransfers(updatedTrips, scheduleData);
+    const brokenTransfers = this._breakTransfers(realtimeTrips, scheduleData);
 
-    return new GtfsRealtimeData(updatedTrips, brokenTransfers, []);
+    return new GtfsRealtimeData(realtimeTrips, brokenTransfers, []);
   }
 
   private _parseTripUpdates(
     realtimeData: RealtimeDataJson,
     scheduleData: GtfsScheduleData,
   ) {
-    const updatedTrips: GtfsUpdatedTrip[] = [];
+    const realtimeTrips: GtfsRealtimeTrip[] = [];
 
     for (const tripUpdates of realtimeData.tripUpdates) {
       const result = this._tripUpdateParser.parse(tripUpdates, scheduleData);
 
       if (result != null) {
-        updatedTrips.push(result);
+        realtimeTrips.push(result);
       }
     }
 
-    return updatedTrips;
+    return realtimeTrips;
   }
 
   private _breakTransfers(
-    updatedTrips: GtfsUpdatedTrip[],
+    realtimeTrips: GtfsRealtimeTrip[],
     scheduleData: GtfsScheduleData,
   ) {
     const brokenTransfers = new MutableGtfsTransferMapping<GtfsBrokenTransfer>(
       (x) => x.transfer.getInvolvedTripIds(),
     );
 
-    for (const updatedTrip of updatedTrips) {
-      if (updatedTrip.isCancelled) {
-        const transfers = scheduleData.getTransfersForTrip(
-          updatedTrip.gtfsTripId,
-        );
+    for (const trip of realtimeTrips) {
+      if (trip instanceof GtfsUpdatedTrip && trip.isCancelled) {
+        const transfers = scheduleData.getTransfersForTrip(trip.gtfsTripId);
 
         for (const transfer of transfers) {
           const brokenTransfer = new GtfsBrokenTransfer(
             transfer,
-            updatedTrip.serviceDay,
+            trip.serviceDay,
           );
-          const existing = brokenTransfers.forTripId(updatedTrip.gtfsTripId);
+          const existing = brokenTransfers.forTripId(trip.gtfsTripId);
           if (!existing.some((x) => x.equals(brokenTransfer))) {
             brokenTransfers.push(brokenTransfer);
           }
