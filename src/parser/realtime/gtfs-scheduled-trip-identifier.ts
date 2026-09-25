@@ -2,16 +2,16 @@ import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import type { TripDescriptorJson } from "../../data/raw/realtime-data-json.js";
 
-export type GtfsTripUpdateTripIdentifierFields = {
-  readonly onError: (error: GtfsTripUpdateTripIdentificationError) => void;
+export type GtfsScheduledTripIdentifierFields = {
+  readonly onError: (error: GtfsScheduledTripIdentificationError) => void;
 };
 
-export class GtfsTripUpdateTripIdentifier {
+export class GtfsScheduledTripIdentifier {
   private readonly _onError: (
-    error: GtfsTripUpdateTripIdentificationError,
+    error: GtfsScheduledTripIdentificationError,
   ) => void;
 
-  constructor(fields: GtfsTripUpdateTripIdentifierFields) {
+  constructor(fields: GtfsScheduledTripIdentifierFields) {
     this._onError = fields.onError;
   }
 
@@ -74,7 +74,7 @@ export class GtfsTripUpdateTripIdentifier {
   }
 }
 
-export type GtfsTripUpdateTripIdentificationError =
+export type GtfsScheduledTripIdentificationError =
   | NecessaryFieldNotInTripDescriptorError
   | TripDescriptorReferencesNonExistentTripIdError
   | TripDoesNotOccurOnStartDateError
