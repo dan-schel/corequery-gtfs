@@ -11,6 +11,7 @@ import {
   UnsupportedTripUpdateScheduleRelationshipError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../../../src/data/gtfs-transfer.js";
+import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 
 const TIMEZONE = "Australia/Melbourne";
 
@@ -85,6 +86,7 @@ describe("GtfsRealtimeDataParser", () => {
 
     expect(parsed.allTrips()).toHaveLength(1);
     const updatedTrip = itsOk(parsed.allTrips()[0]);
+    if (!(updatedTrip instanceof GtfsUpdatedTrip)) throw new Error();
 
     expect(updatedTrip.scheduledTrip.gtfsTripId).toBe(TRIP_1.gtfsTripId);
     const parsedDepartureTime =
@@ -127,7 +129,9 @@ describe("GtfsRealtimeDataParser", () => {
 
     expect(errors).toHaveLength(0);
     expect(parsed.allTrips()).toHaveLength(1);
-    expect(parsed.allTrips()[0]?.isCancelled).toBe(true);
+    const updatedTrip = itsOk(parsed.allTrips()[0]);
+    if (!(updatedTrip instanceof GtfsUpdatedTrip)) throw new Error();
+    expect(updatedTrip.isCancelled).toBe(true);
 
     const sd = TRIP_1_DESCRIPTOR.startDate;
     const brokenTrip1 = parsed.getBrokenTransfersForTrip(TRIP_1.gtfsTripId, sd);

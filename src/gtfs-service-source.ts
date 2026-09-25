@@ -17,6 +17,8 @@ import { GtfsScheduledTrip } from "./data/trip/scheduled/gtfs-scheduled-trip.js"
 import type { GtfsSystem } from "./gtfs-system.js";
 import { GtfsUpdatedTrip } from "./data/trip/updated/gtfs-updated-trip.js";
 import { ServiceConversionIterator } from "./conversion/service-conversion-iterator.js";
+import { GtfsAddedTrip } from "./data/trip/added/gtfs-added-trip.js";
+import { GtfsReplacedTrip } from "./data/trip/replaced/gtfs-replaced-trip.js";
 
 type GtfsServiceSourceFields<
   CorequeryDepartureClass,
@@ -154,6 +156,12 @@ export class GtfsServiceSource<
       return Promise.resolve(result);
     } else if (trip instanceof GtfsUpdatedTrip) {
       const result = this._converter.convertUpdatedTrip(trip);
+      return Promise.resolve(result);
+    } else if (trip instanceof GtfsAddedTrip) {
+      const result = this._converter.convertAddedTrip(trip);
+      return Promise.resolve(result);
+    } else if (trip instanceof GtfsReplacedTrip) {
+      const result = this._converter.convertReplacedTrip(trip);
       return Promise.resolve(result);
     } else {
       assertNever(trip);

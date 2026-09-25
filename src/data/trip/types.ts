@@ -1,11 +1,20 @@
 import type { GtfsAddedTrip } from "./added/gtfs-added-trip.js";
-import type { GtfsAddedTripServicingMovement } from "./added/types.js";
+import type {
+  GtfsAddedTripMovement,
+  GtfsAddedTripServicingMovement,
+} from "./added/types.js";
 import type { GtfsReplacedTrip } from "./replaced/gtfs-replaced-trip.js";
-import type { GtfsReplacedTripServicingMovement } from "./replaced/types.js";
+import type {
+  GtfsReplacedTripMovement,
+  GtfsReplacedTripServicingMovement,
+} from "./replaced/types.js";
 import type { GtfsScheduledTrip } from "./scheduled/gtfs-scheduled-trip.js";
 import type { GtfsScheduledTripServicingMovement } from "./scheduled/types.js";
 import type { GtfsUpdatedTrip } from "./updated/gtfs-updated-trip.js";
-import type { GtfsUpdatedTripServicingMovement } from "./updated/types.js";
+import type {
+  GtfsUpdatedTripMovement,
+  GtfsUpdatedTripServicingMovement,
+} from "./updated/types.js";
 
 export type GtfsTrip = GtfsScheduledTrip | GtfsRealtimeTrip;
 
@@ -32,3 +41,11 @@ export type GtfsTripServicingMovement =
   | GtfsUpdatedTripServicingMovement
   | GtfsAddedTripServicingMovement
   | GtfsReplacedTripServicingMovement;
+
+export type GtfsRealtimeTripServicingMovement =
+  | GtfsUpdatedTripServicingMovement
+  | GtfsAddedTripServicingMovement
+  | GtfsReplacedTripServicingMovement;
+
+export type GtfsRealtimeTripMovement =
+  GtfsUpdatedTripMovement | GtfsAddedTripMovement | GtfsReplacedTripMovement;
