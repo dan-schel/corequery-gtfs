@@ -1,97 +1,125 @@
 import type { Color } from "../../corequery-types.js";
-import type {
-  StopTimesCsv,
-  StopTimesCsvRow,
-} from "../../data/raw/schedule-csvs.js";
-import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
+import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
+import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { Route } from "../../data/route/route.js";
-import { GtfsScheduledTripOriginatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
-import { GtfsScheduledTripPassingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-passing-movement.js";
-import { GtfsScheduledTripRegularMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
-import { GtfsScheduledTripTerminatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
-import type {
-  GtfsScheduledTripMovement,
-  GtfsScheduledTripServicingMovement,
-} from "../../data/trip/scheduled/types.js";
-import { itsOk } from "@dan-schel/js-utils";
+import type { GtfsTripMovement } from "../../data/trip/types.js";
 
-const STOP_TIME_PICKUP_TYPE_REGULAR = 0;
-const STOP_TIME_PICKUP_TYPE_NO_PICKUP = 1;
-const STOP_TIME_DROP_OFF_TYPE_REGULAR = 0;
-const STOP_TIME_DROP_OFF_TYPE_NO_DROP_OFF = 1;
-
-export type MatchedRoute = {
-  movements: readonly GtfsScheduledTripMovement[];
+export type MatchedRoute<T> = {
+  movements: readonly T[];
+  lineIds: readonly number[];
   color: Color | null;
   serviceTags: readonly number[];
 };
 
 export type GtfsRouteMatcherFields = {
   readonly onError: (error: GtfsRouteMatchingError) => void;
-  readonly stopGtfsIdMapping: StopGtfsIdMapping;
+
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
 };
 
 export class GtfsRouteMatcher {
   private readonly _onError: (error: GtfsRouteMatchingError) => void;
-  private readonly _stopGtfsIdMapping: StopGtfsIdMapping;
+
+  private readonly _lineRoutesMapping: LineRoutesMapping;
+  private readonly _bonusLinesMapping: BonusLinesMapping;
 
   constructor(fields: GtfsRouteMatcherFields) {
     this._onError = fields.onError;
-    this._stopGtfsIdMapping = fields.stopGtfsIdMapping;
+    this._lineRoutesMapping = fields.lineRoutesMapping;
+    this._bonusLinesMapping = fields.bonusLinesMapping;
   }
 
-  match(
-    stopTimes: StopTimesCsv,
-    routesForLine: readonly Route[],
-  ): MatchedRoute | null {
-    const servicingMovements = this._convertToServicingMovements(stopTimes);
-    if (servicingMovements == null) return null;
-
-    const match = this._matchToRoute(servicingMovements, routesForLine);
-    if (match == null) {
-      const stopIds = servicingMovements.map((movement) => movement.stopId);
-      this._onError(new NoMatchingRouteError(stopTimes, stopIds));
+  match<T extends GtfsTripMovement>(
+    lineId: number,
+    servicingMovements: readonly T[],
+    buildPassingMovement: (stopId: number) => T,
+  ): MatchedRoute<T> | null {
+    const stopIds = servicingMovements.map((m) => m.stopId);
+    const primaryRoute = this._getBestMatchForLine(lineId, stopIds);
+    if (primaryRoute == null) {
+      this._onError(new NoMatchingRouteError(stopIds));
       return null;
     }
 
-    return match;
+    const fullMovements = this._addPassingMovementsFromRoute(
+      servicingMovements,
+      primaryRoute,
+      buildPassingMovement,
+    );
+
+    const fullMovementsStopIds = fullMovements.map((m) => m.stopId);
+    const { lineIds, serviceTags } = this._applyBonusLines(
+      lineId,
+      primaryRoute.serviceTags,
+      fullMovementsStopIds,
+    );
+
+    return {
+      movements: fullMovements,
+      lineIds,
+      color: primaryRoute.color,
+      serviceTags,
+    };
   }
 
-  private _matchToRoute(
-    servicingMovements: readonly GtfsScheduledTripServicingMovement[],
-    routesForLine: readonly Route[],
-  ): MatchedRoute | null {
-    // Step 1: Find the shortest route for this line which contains all the
-    // stops where the trip services as a subsequence.
-    const shortestMatch = routesForLine
-      .filter((r) =>
-        r.matchesStoppingOrder(servicingMovements.map((m) => m.stopId)),
-      )
+  private _getBestMatchForLine(lineId: number, stopIds: readonly number[]) {
+    const routesForLine = this._lineRoutesMapping.forLine(lineId);
+
+    return routesForLine
+      .filter((r) => r.matchesStoppingOrder(stopIds))
       .reduce<Route | null>(
         (prev, me) => (prev == null || me.isShorterThan(prev) ? me : prev),
         null,
       );
-
-    if (shortestMatch == null) return null;
-    const { color, serviceTags } = shortestMatch;
-
-    // Step 2: Since stop_times.txt in GTFS only lists the stops the service
-    // actually serves (i.e. it doesn't have the express stops), use the matched
-    // route as a guide for which stops the service skipped, and add those into
-    // the list as passing movements.
-    const movements = this._addPassingMovementsFromRoute(
-      servicingMovements,
-      shortestMatch,
-    );
-
-    return { movements, color, serviceTags };
   }
 
-  private _addPassingMovementsFromRoute(
-    servicingMovements: readonly GtfsScheduledTripServicingMovement[],
-    matchingRoute: Route,
+  private _applyBonusLines(
+    primaryLineId: number,
+    primaryServiceTags: readonly number[],
+    stopIds: readonly number[],
   ) {
-    const result: GtfsScheduledTripMovement[] = [];
+    const bonusLines = this._bonusLinesMapping.forLine(primaryLineId);
+    if (bonusLines == null) {
+      return { lineIds: [primaryLineId], serviceTags: primaryServiceTags };
+    }
+
+    // Go through all bonus lines, and collect the line IDs and service tags
+    // for any routes that match.
+    const lineIds = new Set<number>();
+    const serviceTags = new Set<number>();
+    for (const bonusLine of bonusLines.lines) {
+      const route = this._getBestMatchForLine(bonusLine, stopIds);
+      if (route != null) {
+        lineIds.add(bonusLine);
+        for (const serviceTag of route.serviceTags) {
+          serviceTags.add(serviceTag);
+        }
+      }
+    }
+
+    // If in "replace" mode, we throw away the main route's line ID and tags if
+    // anything else matches. Otherwise they're added on.
+    const shouldReplace = lineIds.size > 0 && bonusLines.mode === "replace";
+    if (!shouldReplace) {
+      lineIds.add(primaryLineId);
+      for (const serviceTag of primaryServiceTags) {
+        serviceTags.add(serviceTag);
+      }
+    }
+
+    return {
+      lineIds: Array.from(lineIds),
+      serviceTags: Array.from(serviceTags),
+    };
+  }
+
+  private _addPassingMovementsFromRoute<T extends GtfsTripMovement>(
+    servicingMovements: readonly T[],
+    matchingRoute: Route,
+    buildPassingMovement: (stopId: number) => T,
+  ) {
+    const result: T[] = [];
 
     let nextServicingMovementIndex = 0;
 
@@ -131,140 +159,17 @@ export class GtfsRouteMatcher {
         // could consider adding the matched route itself as metadata to the
         // trip? Probably having the index of the route stop in this array will
         // be useful to reconcile the two.)
-        result.push(
-          new GtfsScheduledTripPassingMovement({
-            stopId: routeStop.stopId,
-          }),
-        );
+        result.push(buildPassingMovement(routeStop.stopId));
       }
     }
 
     return result;
-  }
-
-  /**
-   * Take the rows from stop_times.txt and form a
-   * GtfsScheduledTripServicingMovement for each. Note that passing movements
-   * are not added at this stage. They're sprinkled in later once we've matched
-   * the trip to a route.
-   */
-  private _convertToServicingMovements(
-    stopTimes: StopTimesCsv,
-  ): readonly GtfsScheduledTripServicingMovement[] | null {
-    const result: GtfsScheduledTripServicingMovement[] = [];
-
-    for (let i = 0; i < stopTimes.length; i++) {
-      const stopTime = itsOk(stopTimes[i]);
-
-      const gtfsIdMetadata = this._stopGtfsIdMapping.tryResolve(
-        stopTime.stop_id,
-      );
-      if (gtfsIdMetadata == null) {
-        this._onError(new StopTimeReferencesUnmappedStopIdError(stopTime));
-        return null;
-      }
-
-      const positionId =
-        gtfsIdMetadata.type === "positional" ? gtfsIdMetadata.positionId : null;
-
-      const picksUp = this._doesPickUp(stopTime);
-      const dropsOff = this._doesDropOff(stopTime);
-
-      if (i === 0) {
-        result.push(
-          new GtfsScheduledTripOriginatingMovement({
-            stopId: gtfsIdMetadata.stopId,
-            positionId,
-            departureTime: stopTime.departure_time,
-            gtfsIdMetadata,
-            gtfsStopSequence: stopTime.stop_sequence,
-          }),
-        );
-      } else if (i === stopTimes.length - 1) {
-        result.push(
-          new GtfsScheduledTripTerminatingMovement({
-            stopId: gtfsIdMetadata.stopId,
-            positionId,
-            arrivalTime: stopTime.arrival_time,
-            gtfsIdMetadata,
-            gtfsStopSequence: stopTime.stop_sequence,
-          }),
-        );
-      } else {
-        result.push(
-          new GtfsScheduledTripRegularMovement({
-            stopId: gtfsIdMetadata.stopId,
-            positionId,
-            arrivalTime: stopTime.arrival_time,
-            departureTime: stopTime.departure_time,
-            picksUp,
-            dropsOff,
-            gtfsIdMetadata,
-            gtfsStopSequence: stopTime.stop_sequence,
-          }),
-        );
-      }
-    }
-
-    return result;
-  }
-
-  private _doesPickUp(stopTime: StopTimesCsvRow): boolean {
-    if (stopTime.pickup_type === STOP_TIME_PICKUP_TYPE_REGULAR) {
-      return true;
-    } else if (stopTime.pickup_type === STOP_TIME_PICKUP_TYPE_NO_PICKUP) {
-      return false;
-    } else {
-      this._onError(new UnexpectedPickupTypeError(stopTime));
-
-      // If pickup_type is unexpected, let's just treat it like a normal stop. I
-      // don't think we need to exclude the whole trip for something as minor as
-      // mislabelling pick up only stops.
-      return true;
-    }
-  }
-
-  private _doesDropOff(stopTime: StopTimesCsvRow): boolean {
-    if (stopTime.drop_off_type === STOP_TIME_DROP_OFF_TYPE_REGULAR) {
-      return true;
-    } else if (stopTime.drop_off_type === STOP_TIME_DROP_OFF_TYPE_NO_DROP_OFF) {
-      return false;
-    } else {
-      this._onError(new UnexpectedDropOffTypeError(stopTime));
-
-      // If drop_off_type is unexpected, let's just treat it like a normal stop.
-      // I don't think we need to exclude the whole trip for something as minor
-      // as mislabelling drop off only stops.
-      return true;
-    }
   }
 }
 
-export type GtfsRouteMatchingError =
-  | NoMatchingRouteError
-  | StopTimeReferencesUnmappedStopIdError
-  | UnexpectedPickupTypeError
-  | UnexpectedDropOffTypeError;
+export type GtfsRouteMatchingError = NoMatchingRouteError;
 
 export class NoMatchingRouteError {
   readonly type = "no-matching-route";
-  constructor(
-    readonly stopTimes: StopTimesCsv,
-    readonly resolvedStopIds: readonly number[],
-  ) {}
-}
-
-export class StopTimeReferencesUnmappedStopIdError {
-  readonly type = "stop-time-references-unmapped-stop-id";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
-}
-
-export class UnexpectedPickupTypeError {
-  readonly type = "unexpected-pickup-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
-}
-
-export class UnexpectedDropOffTypeError {
-  readonly type = "unexpected-drop-off-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
+  constructor(readonly stopIds: readonly number[]) {}
 }

@@ -9,7 +9,10 @@ import type {
   GtfsReplacedTripServicingMovement,
 } from "./replaced/types.js";
 import type { GtfsScheduledTrip } from "./scheduled/gtfs-scheduled-trip.js";
-import type { GtfsScheduledTripServicingMovement } from "./scheduled/types.js";
+import type {
+  GtfsScheduledTripMovement,
+  GtfsScheduledTripServicingMovement,
+} from "./scheduled/types.js";
 import type { GtfsUpdatedTrip } from "./updated/gtfs-updated-trip.js";
 import type {
   GtfsUpdatedTripMovement,
@@ -35,6 +38,12 @@ export type GtfsTrip = GtfsScheduledTrip | GtfsRealtimeTrip;
 //   have a unique trip ID to any scheduled trips.
 export type GtfsRealtimeTrip =
   GtfsUpdatedTrip | GtfsAddedTrip | GtfsReplacedTrip;
+
+export type GtfsTripMovement =
+  | GtfsScheduledTripMovement
+  | GtfsUpdatedTripMovement
+  | GtfsAddedTripMovement
+  | GtfsReplacedTripMovement;
 
 export type GtfsTripServicingMovement =
   | GtfsScheduledTripServicingMovement
