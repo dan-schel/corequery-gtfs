@@ -12,10 +12,9 @@ export type MatchedRoute<T> = {
 };
 
 export type GtfsRouteMatcherFields = {
-  readonly onError: (error: GtfsRouteMatchingError) => void;
-
   readonly lineRoutesMapping: LineRoutesMapping;
   readonly bonusLinesMapping: BonusLinesMapping;
+  readonly onError: (error: GtfsRouteMatchingError) => void;
 };
 
 export class GtfsRouteMatcher {
@@ -25,9 +24,9 @@ export class GtfsRouteMatcher {
   private readonly _bonusLinesMapping: BonusLinesMapping;
 
   constructor(fields: GtfsRouteMatcherFields) {
-    this._onError = fields.onError;
     this._lineRoutesMapping = fields.lineRoutesMapping;
     this._bonusLinesMapping = fields.bonusLinesMapping;
+    this._onError = fields.onError;
   }
 
   match<T extends GtfsTripMovement>(

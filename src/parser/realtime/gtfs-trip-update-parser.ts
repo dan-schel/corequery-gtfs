@@ -13,6 +13,9 @@ import {
   GtfsUpdatedTripUpdateParser,
   type GtfsUpdatedTripUpdateParsingError,
 } from "./gtfs-updated-trip-update-parser.js";
+import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
+import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
+import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
@@ -22,6 +25,9 @@ const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_NEW = "NEW";
 export type GtfsTripUpdateParserFields = {
   readonly timezone: string;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
   readonly onError: (error: GtfsTripUpdateParsingError) => void;
 };
 
@@ -46,6 +52,9 @@ export class GtfsTripUpdateParser {
     });
     this._addedTripParser = new GtfsAddedTripUpdateParser({
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
       onError: this._onError,
     });
   }

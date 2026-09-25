@@ -46,6 +46,9 @@ export class GtfsFeedParser {
     this._realtimeParser = new GtfsRealtimeDataParser({
       timezone: fields.timezoneData.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
       onError: fields.onRealtimeParsingError,
     });
   }

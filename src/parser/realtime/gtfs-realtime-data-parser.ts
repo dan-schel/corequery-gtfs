@@ -10,10 +10,16 @@ import {
   type GtfsTripUpdateParsingError,
 } from "./gtfs-trip-update-parser.js";
 import type { GtfsRealtimeTrip } from "../../data/trip/types.js";
+import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
+import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
+import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 
 export type GtfsRealtimeDataParserFields = {
   readonly timezone: string;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
   readonly onError: (error: GtfsRealtimeDataParsingError) => void;
 };
 
@@ -24,6 +30,9 @@ export class GtfsRealtimeDataParser {
     this._tripUpdateParser = new GtfsTripUpdateParser({
       timezone: fields.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
       onError: fields.onError,
     });
   }

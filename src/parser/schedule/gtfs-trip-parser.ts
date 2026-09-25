@@ -114,24 +114,23 @@ export class GtfsTripParser {
         this._convertToServicingMovements(normalizedStopTimes);
       if (servicingMovements == null) continue;
 
-      const routeMatchResult =
-        this._routeMatcher.match<GtfsScheduledTripMovement>(
-          lineIdMatch.lineId,
-          servicingMovements,
-          (stopId) => new GtfsScheduledTripPassingMovement({ stopId }),
-        );
+      const routeMatch = this._routeMatcher.match<GtfsScheduledTripMovement>(
+        lineIdMatch.lineId,
+        servicingMovements,
+        (stopId) => new GtfsScheduledTripPassingMovement({ stopId }),
+      );
       // Route matcher reports its own errors.
-      if (routeMatchResult == null) continue;
+      if (routeMatch == null) continue;
 
       parsedTrips.push(
         new GtfsScheduledTrip({
           gtfsTripId: trip.trip_id,
           gtfsRouteId: trip.route_id,
           calendar,
-          movements: routeMatchResult.movements,
-          lineIds: routeMatchResult.lineIds,
-          color: routeMatchResult.color,
-          serviceTags: routeMatchResult.serviceTags,
+          movements: routeMatch.movements,
+          lineIds: routeMatch.lineIds,
+          color: routeMatch.color,
+          serviceTags: routeMatch.serviceTags,
         }),
       );
     }
