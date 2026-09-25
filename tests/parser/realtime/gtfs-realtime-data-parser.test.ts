@@ -76,7 +76,7 @@ describe("GtfsRealtimeDataParser", () => {
         // Invalid update.
         {
           trip: {
-            scheduleRelationship: "ADDED",
+            scheduleRelationship: "CHEESEBURGER",
           },
         },
       ],

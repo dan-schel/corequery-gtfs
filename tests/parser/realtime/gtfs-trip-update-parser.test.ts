@@ -19,6 +19,7 @@ import {
   TimeAndDelayDisagreeWithEachOtherError,
   NeitherArrivalNorDepartureGivenError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
+import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 
 const TIMEZONE = "Australia/Melbourne";
 
@@ -88,6 +89,7 @@ describe("GtfsTripUpdateParser", () => {
 
     expect(errors).toEqual([]);
     if (parsed == null) throw new Error("Expected updated trip.");
+    if (!(parsed instanceof GtfsUpdatedTrip)) throw new Error();
     expect(parsed.isCancelled).toBe(false);
 
     expect(
@@ -117,6 +119,7 @@ describe("GtfsTripUpdateParser", () => {
 
     expect(errors).toEqual([]);
     expect(parsed).not.toBeNull();
+    if (!(parsed instanceof GtfsUpdatedTrip)) throw new Error();
     expect(parsed?.isCancelled).toBe(true);
   });
 
@@ -130,7 +133,7 @@ describe("GtfsTripUpdateParser", () => {
 
     const tripUpdate = {
       trip: {
-        scheduleRelationship: "ADDED",
+        scheduleRelationship: "CHEESEBURGER",
       },
     };
 
@@ -481,6 +484,7 @@ describe("GtfsTripUpdateParser", () => {
     const parsed = parser.parse(tripUpdate, schedule);
 
     expect(parsed).not.toBeNull();
+    if (!(parsed instanceof GtfsUpdatedTrip)) throw new Error();
     expect(errors).toHaveLength(0);
 
     const updatedFirstMovement = parsed?.movements[0];
