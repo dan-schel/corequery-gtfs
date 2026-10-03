@@ -16,10 +16,7 @@ import { GtfsReplacedTripOriginatingMovement } from "../../data/trip/replaced/gt
 import { GtfsReplacedTripRegularMovement } from "../../data/trip/replaced/gtfs-replaced-trip-regular-movement.js";
 import { GtfsReplacedTripTerminatingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-terminating-movement.js";
 import { GtfsReplacedTripPassingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-passing-movement.js";
-import type {
-  GtfsReplacedTripMovement,
-  GtfsReplacedTripServicingMovement,
-} from "../../data/trip/replaced/types.js";
+import type { GtfsReplacedTripMovement } from "../../data/trip/replaced/types.js";
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
@@ -231,108 +228,102 @@ export class GtfsUpdatedTripUpdateParser {
       return null;
     }
 
-    const updatedTrip = new GtfsUpdatedTrip({
-      scheduledTrip: trip,
-      serviceDay,
-      movements: interpolated,
-      isCancelled: false,
-    });
-    if (skippedMovementIndexes.size === 0) return updatedTrip;
+    if (skippedMovementIndexes.size === 0) {
+      return new GtfsUpdatedTrip({
+        scheduledTrip: trip,
+        serviceDay,
+        movements: interpolated,
+        isCancelled: false,
+      });
+    } else {
+      const survivingMovements = interpolated.filter(
+        (movement, index) =>
+          movement.isServicing && !skippedMovementIndexes.has(index),
+      );
 
-    return this._buildReplacedTrip(
-      tripUpdate,
-      trip,
-      serviceDay,
-      updatedTrip,
-      skippedMovementIndexes,
-    );
+      if (survivingMovements.length < 2) {
+        this._onError(
+          new TooFewSurvivingServicingMovementsError(
+            tripUpdate,
+            survivingMovements,
+          ),
+        );
+        return null;
+      }
+
+      return this._buildReplacedTrip(trip, serviceDay, survivingMovements);
+    }
   }
 
   private _buildReplacedTrip(
-    tripUpdate: TripUpdateJson,
-    scheduledTrip: GtfsScheduledTrip,
+    trip: GtfsScheduledTrip,
     serviceDay: Temporal.PlainDate,
-    updatedTrip: GtfsUpdatedTrip,
-    skippedMovementIndexes: ReadonlySet<number>,
+    survivingMovements: GtfsUpdatedTripMovement[],
   ): GtfsReplacedTrip | null {
-    const remainingMovements = updatedTrip.movements.filter(
-      (movement, index) =>
-        movement.isServicing && !skippedMovementIndexes.has(index),
-    );
-
-    if (remainingMovements.length < 2) {
-      this._onError(
-        new ReplacedTripHasTooFewServicingMovementsError(
-          tripUpdate,
-          remainingMovements.length,
-        ),
-      );
-      return null;
-    }
-
-    const replacedServicingMovements: GtfsReplacedTripServicingMovement[] =
-      remainingMovements.map((movement, index) => {
-        if (index === 0) {
-          if (movement.type !== "originating" && movement.type !== "regular") {
-            throw new Error();
-          }
-          return new GtfsReplacedTripOriginatingMovement({
-            stopId: movement.stopId,
-            positionId: movement.updatedPositionId,
-            departureTime: movement.effectiveDepartureTime,
-            gtfsIdMetadata: movement.updatedGtfsIdMetadata,
-            gtfsStopSequence: movement.gtfsStopSequence,
-          });
+    const movements = survivingMovements.map((movement, index) => {
+      if (index === 0) {
+        if (movement.type !== "originating" && movement.type !== "regular") {
+          // Because only servicing movements "survive", and there's at least 2,
+          // this should never happen.
+          throw new Error();
         }
-
-        if (index === remainingMovements.length - 1) {
-          if (movement.type !== "regular" && movement.type !== "terminating") {
-            throw new Error();
-          }
-          return new GtfsReplacedTripTerminatingMovement({
-            stopId: movement.stopId,
-            positionId: movement.updatedPositionId,
-            arrivalTime: movement.effectiveArrivalTime,
-            gtfsIdMetadata: movement.updatedGtfsIdMetadata,
-            gtfsStopSequence: movement.gtfsStopSequence,
-          });
-        }
-
-        if (movement.type !== "regular") throw new Error();
-        return new GtfsReplacedTripRegularMovement({
+        return new GtfsReplacedTripOriginatingMovement({
           stopId: movement.stopId,
           positionId: movement.updatedPositionId,
-          arrivalTime: movement.effectiveArrivalTime,
           departureTime: movement.effectiveDepartureTime,
-          picksUp: movement.picksUp,
-          dropsOff: movement.dropsOff,
           gtfsIdMetadata: movement.updatedGtfsIdMetadata,
           gtfsStopSequence: movement.gtfsStopSequence,
         });
-      });
+      }
 
-    const lineMetadata = this._lineGtfsIdMapping.tryResolve(
-      scheduledTrip.gtfsRouteId,
-    );
+      if (index === survivingMovements.length - 1) {
+        if (movement.type !== "regular" && movement.type !== "terminating") {
+          // Because only servicing movements "survive", and there's at least 2,
+          // this should never happen.
+          throw new Error();
+        }
+        return new GtfsReplacedTripTerminatingMovement({
+          stopId: movement.stopId,
+          positionId: movement.updatedPositionId,
+          arrivalTime: movement.effectiveArrivalTime,
+          gtfsIdMetadata: movement.updatedGtfsIdMetadata,
+          gtfsStopSequence: movement.gtfsStopSequence,
+        });
+      }
+
+      // You won't get an originating or terminating movement to leave the first
+      // or last index by removing stops, so therefore if we're not in the first
+      // or last index, it must be a regular movement.
+      if (movement.type !== "regular") throw new Error();
+      return new GtfsReplacedTripRegularMovement({
+        stopId: movement.stopId,
+        positionId: movement.updatedPositionId,
+        arrivalTime: movement.effectiveArrivalTime,
+        departureTime: movement.effectiveDepartureTime,
+        picksUp: movement.picksUp,
+        dropsOff: movement.dropsOff,
+        gtfsIdMetadata: movement.updatedGtfsIdMetadata,
+        gtfsStopSequence: movement.gtfsStopSequence,
+      });
+    });
+
+    const lineMetadata = this._lineGtfsIdMapping.tryResolve(trip.gtfsRouteId);
     if (lineMetadata == null || lineMetadata.type === "ignored") {
-      this._onError(
-        new ReplacedTripReferencesUnroutableRouteIdError(
-          tripUpdate,
-          scheduledTrip.gtfsRouteId,
-        ),
-      );
-      return null;
+      // We're grabbing the GTFS route ID from the scheduled trip, so it should
+      // be impossible that it's invalid or ignored, otherwise the scheduled
+      // trip wouldn't exist!
+      throw new Error();
     }
 
     const routeMatch = this._routeMatcher.match<GtfsReplacedTripMovement>(
       lineMetadata.lineId,
-      replacedServicingMovements,
+      movements,
       (stopId) => new GtfsReplacedTripPassingMovement({ stopId }),
     );
     if (routeMatch == null) return null;
 
     return new GtfsReplacedTrip({
-      scheduledTrip,
+      scheduledTrip: trip,
       serviceDay,
       movements: routeMatch.movements,
       lineIds: routeMatch.lineIds,
@@ -422,8 +413,7 @@ export type GtfsUpdatedTripUpdateParsingError =
   | TimeAndDelayDisagreeWithEachOtherError
   | NeitherArrivalNorDepartureGivenError
   | KnownDepartureTimesEntailTimeTravelError
-  | ReplacedTripHasTooFewServicingMovementsError
-  | ReplacedTripReferencesUnroutableRouteIdError;
+  | TooFewSurvivingServicingMovementsError;
 
 export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError {
   readonly type =
@@ -493,18 +483,10 @@ class KnownDepartureTimesEntailTimeTravelError {
   ) {}
 }
 
-export class ReplacedTripHasTooFewServicingMovementsError {
-  readonly type = "replaced-trip-has-too-few-servicing-movements";
+export class TooFewSurvivingServicingMovementsError {
+  readonly type = "too-few-surviving-servicing-movements";
   constructor(
     readonly tripUpdate: TripUpdateJson,
-    readonly remainingMovementCount: number,
-  ) {}
-}
-
-export class ReplacedTripReferencesUnroutableRouteIdError {
-  readonly type = "replaced-trip-references-unroutable-route-id";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly gtfsRouteId: string,
+    readonly survivingMovements: GtfsUpdatedTripMovement[],
   ) {}
 }
