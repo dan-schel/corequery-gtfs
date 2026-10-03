@@ -148,31 +148,6 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     expect(errors[0]).toBeInstanceOf(NoStopTimeUpdateFieldGivenError);
   });
 
-  it("reports skipped stop updates without required stop identifiers", () => {
-    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
-    const parser = new GtfsUpdatedTripUpdateParser({
-      timezone: TIMEZONE,
-      stopGtfsIdMapping: STOP_MAPPING,
-      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
-      lineRoutesMapping: LINE_ROUTES_MAPPING,
-      bonusLinesMapping: BONUS_LINES_MAPPING,
-      onError: (e) => errors.push(e),
-    });
-
-    const tripUpdate = {
-      trip: TRIP_DESCRIPTOR,
-      stopTimeUpdate: [{ scheduleRelationship: "SKIPPED" }],
-    };
-
-    const parsed = parser.parse(tripUpdate, SCHEDULE);
-
-    expect(parsed).toBeNull();
-    expect(errors).toHaveLength(1);
-    expect(errors[0]).toBeInstanceOf(
-      NecessaryFieldNotInStopTimeUpdateEntryError,
-    );
-  });
-
   it("reports unsupported stop time entry schedule relationships", () => {
     const errors: GtfsUpdatedTripUpdateParsingError[] = [];
     const parser = new GtfsUpdatedTripUpdateParser({
@@ -201,6 +176,31 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(
       UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
+    );
+  });
+
+  it("reports skipped stop updates without required stop identifiers", () => {
+    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
+    const parser = new GtfsUpdatedTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const tripUpdate = {
+      trip: TRIP_DESCRIPTOR,
+      stopTimeUpdate: [{ scheduleRelationship: "SKIPPED" }],
+    };
+
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
+
+    expect(parsed).toBeNull();
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toBeInstanceOf(
+      NecessaryFieldNotInStopTimeUpdateEntryError,
     );
   });
 
