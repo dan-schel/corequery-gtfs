@@ -1,5 +1,8 @@
 import type { ServiceRegularMovementFields } from "../../../corequery-types.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
+import { GtfsReplacedTripOriginatingMovement } from "../replaced/gtfs-replaced-trip-originating-movement.js";
+import { GtfsReplacedTripRegularMovement } from "../replaced/gtfs-replaced-trip-regular-movement.js";
+import { GtfsReplacedTripTerminatingMovement } from "../replaced/gtfs-replaced-trip-terminating-movement.js";
 import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 
 export type GtfsUpdatedTripRegularMovementFields = {
@@ -168,5 +171,38 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
     } else {
       return null;
     }
+  }
+
+  asReplacedTripOriginatingMovement(): GtfsReplacedTripOriginatingMovement {
+    return new GtfsReplacedTripOriginatingMovement({
+      stopId: this.stopId,
+      positionId: this.updatedPositionId,
+      departureTime: this.effectiveDepartureTime,
+      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsStopSequence: this.gtfsStopSequence,
+    });
+  }
+
+  asReplacedTripRegularMovement(): GtfsReplacedTripRegularMovement {
+    return new GtfsReplacedTripRegularMovement({
+      stopId: this.stopId,
+      positionId: this.updatedPositionId,
+      arrivalTime: this.effectiveArrivalTime,
+      departureTime: this.effectiveDepartureTime,
+      picksUp: this.picksUp,
+      dropsOff: this.dropsOff,
+      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsStopSequence: this.gtfsStopSequence,
+    });
+  }
+
+  asReplacedTripTerminatingMovement(): GtfsReplacedTripTerminatingMovement {
+    return new GtfsReplacedTripTerminatingMovement({
+      stopId: this.stopId,
+      positionId: this.updatedPositionId,
+      arrivalTime: this.effectiveArrivalTime,
+      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsStopSequence: this.gtfsStopSequence,
+    });
   }
 }

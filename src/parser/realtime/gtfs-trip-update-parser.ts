@@ -44,6 +44,9 @@ export class GtfsTripUpdateParser {
     this._updatedTripParser = new GtfsUpdatedTripUpdateParser({
       timezone: fields.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
+      lineGtfsIdMapping: fields.lineGtfsIdMapping,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
       onError: this._onError,
     });
     this._cancelledTripParser = new GtfsCancelledTripUpdateParser({

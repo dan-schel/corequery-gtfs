@@ -90,15 +90,15 @@ async function formatDeparture(
   const realtimeStr =
     departure.service.liveDataType === "scheduled"
       ? "No realtime data"
-      : formerTime == null
-        ? "No realtime data at this stop"
-        : delayMins === 0
-          ? `On time${suffix}`
-          : delayMins > 0
-            ? `${delayMins} mins delayed${suffix}`
-            : `${-delayMins} mins early${suffix}`;
+      : delayMins === 0
+        ? `On time${suffix}`
+        : delayMins > 0
+          ? `${delayMins} mins delayed${suffix}`
+          : `${-delayMins} mins early${suffix}`;
 
-  return [timeStr, destination, realtimeStr];
+  const id = `(ID: "${departure.service.intrasourceId}")`;
+
+  return [timeStr, destination, realtimeStr, id];
 }
 
 function getTimePair(departure: IntegrationTestDeparture) {

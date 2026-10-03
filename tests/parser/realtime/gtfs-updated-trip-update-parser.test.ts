@@ -3,6 +3,10 @@ import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collection.js";
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
+import { LineGtfsIdCollection } from "../../../src/data/ids/line-gtfs-id-collection.js";
+import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
+import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
+import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 import {
@@ -49,12 +53,32 @@ const STOP_MAPPING = new StopGtfsIdMapping(
   ]),
 );
 
+const LINE_GTFS_ID_MAPPING = new LineGtfsIdMapping(
+  new Map([[1, LineGtfsIdCollection.simple(1, "route-1")]]),
+);
+const LINE_ROUTES_MAPPING = LineRoutesMapping.build({
+  1: [
+    {
+      color: "blue",
+      serviceTags: [],
+      stops: [
+        { stopId: 1, collapseInStoppingPatterns: false },
+        { stopId: 2, collapseInStoppingPatterns: false },
+      ],
+    },
+  ],
+});
+const BONUS_LINES_MAPPING = BonusLinesMapping.build({});
+
 describe("GtfsUpdatedTripUpdateParser", () => {
   it("parses a scheduled trip update and applies realtime stop times", () => {
     const errors: GtfsUpdatedTripUpdateParsingError[] = [];
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -106,6 +130,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -126,12 +153,15 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
-      stopTimeUpdate: [{ scheduleRelationship: "SKIPPED" }],
+      stopTimeUpdate: [{ scheduleRelationship: "VIBES" }],
     };
 
     const parsed = parser.parse(tripUpdate, SCHEDULE);
@@ -148,6 +178,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -178,6 +211,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -208,6 +244,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -245,6 +284,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -275,6 +317,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -303,6 +348,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -331,6 +379,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -365,6 +416,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 
@@ -433,6 +487,9 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const parser = new GtfsUpdatedTripUpdateParser({
       timezone: TIMEZONE,
       stopGtfsIdMapping: mapping,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
       onError: (e) => errors.push(e),
     });
 

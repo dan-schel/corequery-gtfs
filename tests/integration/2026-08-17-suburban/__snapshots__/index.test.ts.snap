@@ -2,46 +2,46 @@
 
 exports[`2026-08-17-suburban > Clayton, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:27 pm   Town Hall -> Sunbury        1 mins delayed (*)
-17/8/26, 12:32 pm   Cranbourne                  On time           
-17/8/26, 12:36 pm   Town Hall -> Watergardens   On time (*)       
-17/8/26, 12:42 pm   East Pakenham               On time (*)       
-17/8/26, 12:46 pm   Town Hall -> Sunbury        On time (*)       
-17/8/26, 12:52 pm   Cranbourne                  On time (*)       
-17/8/26, 12:56 pm   Town Hall -> Watergardens   On time (*)       
-17/8/26, 1:02 pm    East Pakenham               On time (*)       
-17/8/26, 1:06 pm    Town Hall -> Sunbury        On time (*)       
-17/8/26, 1:12 pm    Cranbourne                  On time (*)       
+17/8/26, 12:27 pm   Town Hall -> Sunbury        1 mins delayed (*)   (ID: "2026-08-17|02-CBE--62-T5-C468")
+17/8/26, 12:32 pm   Cranbourne                  On time              (ID: "2026-08-17|02-CBE--62-T5-C453")
+17/8/26, 12:36 pm   Town Hall -> Watergardens   On time (*)          (ID: "2026-08-17|02-PKM--62-T5-C068")
+17/8/26, 12:42 pm   East Pakenham               On time (*)          (ID: "2026-08-17|02-PKM--62-T5-C055")
+17/8/26, 12:46 pm   Town Hall -> Sunbury        On time (*)          (ID: "2026-08-17|02-CBE--62-T5-C470")
+17/8/26, 12:52 pm   Cranbourne                  On time (*)          (ID: "2026-08-17|02-CBE--62-T5-C455")
+17/8/26, 12:56 pm   Town Hall -> Watergardens   On time (*)          (ID: "2026-08-17|02-PKM--62-T5-C070")
+17/8/26, 1:02 pm    East Pakenham               On time (*)          (ID: "2026-08-17|02-PKM--62-T5-C057")
+17/8/26, 1:06 pm    Town Hall -> Sunbury        On time (*)          (ID: "2026-08-17|02-CBE--62-T5-C472")
+17/8/26, 1:12 pm    Cranbourne                  On time (*)          (ID: "2026-08-17|02-CBE--62-T5-C457")
 "
 `;
 
 exports[`2026-08-17-suburban > Flinders Street, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:26 pm   Upfield                   On time                      
-17/8/26, 12:26 pm   Belgrave                  On time                      
-17/8/26, 12:29 pm   Mernda                    On time                      
-17/8/26, 12:30 pm   Williamstown              On time                      
-17/8/26, 12:33 pm   Flinders Street (added)   No realtime data at this stop
-17/8/26, 12:33 pm   Glen Waverley             On time                      
-17/8/26, 12:34 pm   Frankston                 On time                      
-17/8/26, 12:35 pm   Lilydale                  On time                      
-17/8/26, 12:35 pm   Werribee                  On time                      
-17/8/26, 12:36 pm   Sandringham               On time                      
+17/8/26, 12:26 pm   Upfield                   On time   (ID: "2026-08-17|02-UFD--62-T5-5049")                       
+17/8/26, 12:26 pm   Belgrave                  On time   (ID: "2026-08-17|02-BEG--62-T5-3031")                       
+17/8/26, 12:29 pm   Mernda                    On time   (ID: "2026-08-17|02-MDD--62-T5-1689")                       
+17/8/26, 12:30 pm   Williamstown              On time   (ID: "2026-08-17|02-WIL--62-T5-6347")                       
+17/8/26, 12:33 pm   Flinders Street (added)   On time   (ID: "2026-08-17|vic:02BEG:_:R:vpt._Belgrave_3938_20260817")
+17/8/26, 12:33 pm   Glen Waverley             On time   (ID: "2026-08-17|02-GWY--62-T5-2073")                       
+17/8/26, 12:34 pm   Frankston                 On time   (ID: "2026-08-17|02-FKN--62-T5-4401")                       
+17/8/26, 12:35 pm   Lilydale                  On time   (ID: "2026-08-17|02-LIL--62-T5-3237")                       
+17/8/26, 12:35 pm   Werribee                  On time   (ID: "2026-08-17|02-WER--62-T5-6459")                       
+17/8/26, 12:36 pm   Sandringham               On time   (ID: "2026-08-17|02-SHM--62-T5-X073")                       
 "
 `;
 
 exports[`2026-08-17-suburban > Melbourne Central, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:25 pm   Flinders Street (added)            No realtime data at this stop
-17/8/26, 12:26 pm   Flinders Street -> Craigieburn     1 mins delayed               
-17/8/26, 12:27 pm   Eltham                             1 mins delayed               
-17/8/26, 12:32 pm   Flinders Street -> Belgrave        3 mins delayed               
-17/8/26, 12:35 pm   Flinders Street -> Frankston       2 mins delayed               
-17/8/26, 12:35 pm   Flinders Street                    On time                      
-17/8/26, 12:36 pm   Mernda                             On time                      
-17/8/26, 12:39 pm   Flinders Street -> Glen Waverley   No realtime data             
-17/8/26, 12:41 pm   Flinders Street (added)            No realtime data at this stop
-17/8/26, 12:45 pm   Flinders Street -> Frankston       2 mins delayed               
+17/8/26, 12:25 pm   Flinders Street (added)            On time            (ID: "2026-08-17|vic:02BEG:_:R:vpt._Belgrave_3938_20260817")
+17/8/26, 12:26 pm   Flinders Street -> Craigieburn     1 mins delayed     (ID: "2026-08-17|02-UFD--62-T5-5648")                       
+17/8/26, 12:27 pm   Eltham                             1 mins delayed     (ID: "2026-08-17|02-HBE--62-T5-1875")                       
+17/8/26, 12:32 pm   Flinders Street -> Belgrave        3 mins delayed     (ID: "2026-08-17|02-LIL--62-T5-3846")                       
+17/8/26, 12:35 pm   Flinders Street -> Frankston       2 mins delayed     (ID: "2026-08-17|02-FKN--62-T5-4886")                       
+17/8/26, 12:35 pm   Flinders Street                    On time            (ID: "2026-08-17|02-CGB--62-T5-5882")                       
+17/8/26, 12:36 pm   Mernda                             On time            (ID: "2026-08-17|02-MDD--62-T5-1689")                       
+17/8/26, 12:39 pm   Flinders Street -> Glen Waverley   No realtime data   (ID: "2026-08-17|02-LIL--62-T5-3940")                       
+17/8/26, 12:41 pm   Flinders Street (added)            On time            (ID: "2026-08-17|vic:02BEG:_:R:vpt._Belgrave_3940_20260817")
+17/8/26, 12:45 pm   Flinders Street -> Frankston       2 mins delayed     (ID: "2026-08-17|02-FKN--62-T5-4888")                       
 "
 `;
 
