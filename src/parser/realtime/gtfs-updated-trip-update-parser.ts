@@ -483,7 +483,7 @@ class KnownDepartureTimesEntailTimeTravelError {
   ) {}
 }
 
-export class TooFewSurvivingServicingMovementsError {
+class TooFewSurvivingServicingMovementsError {
   readonly type = "too-few-surviving-servicing-movements";
   constructor(
     readonly tripUpdate: TripUpdateJson,
