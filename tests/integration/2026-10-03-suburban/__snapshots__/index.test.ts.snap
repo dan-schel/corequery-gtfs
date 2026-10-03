@@ -21,7 +21,6 @@ Schedule parsing errors:
 <none>
 
 Realtime parsing errors:
-- unsupported-stop-time-update-entry-schedule-relationship
 - known-departure-times-entail-time-travel
 - known-departure-times-entail-time-travel
 - known-departure-times-entail-time-travel
