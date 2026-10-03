@@ -13,10 +13,6 @@ import {
   UnsupportedTripUpdateScheduleRelationshipError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
-import { GtfsReplacedTrip } from "../../../src/data/trip/replaced/gtfs-replaced-trip.js";
-import { GtfsScheduledTripRegularMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
-import { GtfsScheduledTripTerminatingMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
-import { LineGtfsIdCollection } from "../../../src/data/ids/line-gtfs-id-collection.js";
 
 const TIMEZONE = "Australia/Melbourne";
 

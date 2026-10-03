@@ -233,6 +233,8 @@ export class GtfsUpdatedTripUpdateParser {
         isCancelled: false,
       });
     } else {
+      // TODO: Test this.
+
       const survivingMovements = interpolated.filter(
         (movement, index) =>
           movement.isServicing && !skippedMovementIndexes.has(index),
