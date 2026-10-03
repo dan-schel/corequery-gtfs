@@ -254,6 +254,9 @@ export class GtfsUpdatedTripUpdateParser {
     // realtime update to yesterday/tomorrow's service and it makes it look like
     // there's two departures of the same service happening at/near to the same
     // time, so I'll pick `time`.
+    //
+    // This also aligns with the GTFS-RT spec, which says `time` takes
+    // precedence.
     if (fromTime != null) {
       return fromTime;
     } else if (fromDelay != null) {

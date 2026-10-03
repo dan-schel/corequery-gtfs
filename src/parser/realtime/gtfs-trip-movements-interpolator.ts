@@ -27,6 +27,25 @@ import type {
 // Interpolated times are stored in the `assumedRealtime...` times, rather than
 // `knownRealtime...` times to distinguish them.
 
+// TODO: According to the GTFS spec:
+//
+// "If one or more stops are missing along the trip the delay from the update
+// (or, if only time is provided in the update, a delay computed by comparing
+// the time against the GTFS schedule time) is propagated to all subsequent
+// stops. This means that updating a stop time for a certain stop will change
+// all subsequent stops in the absence of any other information. Note that
+// updates with a schedule relationship of SKIPPED will not stop delay
+// propagation, but updates with schedule relationships of SCHEDULED (also the
+// default value if schedule relationship is not provided) or NO_DATA will."
+//
+// It doesn't mention what happens for movements preceding the first stop
+// update, so I think the extrapolation we do here is still worthwhile, but
+// maybe we should consider dropping the linear interpolation between updates to
+// align with the spec.
+//
+// In case I missed something, I should also read the rest of:
+// https://gtfs.org/documentation/realtime/feed-entities/trip-updates/
+
 export class GtfsTripMovementsInterpolator {
   interpolate(
     movements: readonly GtfsUpdatedTripMovement[],
