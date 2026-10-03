@@ -2,16 +2,16 @@
 
 exports[`2026-08-17-regional > Flinders Street, 2026-08-17T12:25:00+10:00, forwards > gives correct departures 1`] = `
 "
-17/8/26, 12:32 pm   Traralgon        On time                         (ID: "2026-08-17|01-TRN--6-T0-8423")
-17/8/26, 12:54 pm   Southern Cross   2 mins delayed (*)              (ID: "2026-08-17|01-TRN--6-T0-8424")
-17/8/26, 1:12 pm    Bairnsdale       On time                         (ID: "2026-08-17|01-BDE--6-T0-8465")
-17/8/26, 1:52 pm    Traralgon        No realtime data                (ID: "2026-08-17|01-TRN--6-T0-8427")
-17/8/26, 1:53 pm    Southern Cross   21 mins delayed (*)             (ID: "2026-08-17|01-TRN--6-T0-8426")
-17/8/26, 2:32 pm    Traralgon        No realtime data                (ID: "2026-08-17|01-TRN--6-T0-8429")
-17/8/26, 2:37 pm    Southern Cross   25 mins delayed (*)             (ID: "2026-08-17|01-TRN--6-T0-8428")
-17/8/26, 2:52 pm    Southern Cross   No realtime data at this stop   (ID: "2026-08-17|01-TRN--6-T0-8430")
-17/8/26, 3:12 pm    Traralgon        No realtime data                (ID: "2026-08-17|01-TRN--6-T0-8431")
-17/8/26, 3:32 pm    Southern Cross   On time (*)                     (ID: "2026-08-17|01-TRN--6-T0-8432")
+17/8/26, 12:32 pm   Traralgon        On time               (ID: "2026-08-17|01-TRN--6-T0-8423")
+17/8/26, 12:54 pm   Southern Cross   2 mins delayed (*)    (ID: "2026-08-17|01-TRN--6-T0-8424")
+17/8/26, 1:12 pm    Bairnsdale       On time               (ID: "2026-08-17|01-BDE--6-T0-8465")
+17/8/26, 1:52 pm    Traralgon        No realtime data      (ID: "2026-08-17|01-TRN--6-T0-8427")
+17/8/26, 1:53 pm    Southern Cross   21 mins delayed (*)   (ID: "2026-08-17|01-TRN--6-T0-8426")
+17/8/26, 2:32 pm    Traralgon        No realtime data      (ID: "2026-08-17|01-TRN--6-T0-8429")
+17/8/26, 2:37 pm    Southern Cross   25 mins delayed (*)   (ID: "2026-08-17|01-TRN--6-T0-8428")
+17/8/26, 2:52 pm    Southern Cross   On time               (ID: "2026-08-17|01-TRN--6-T0-8430")
+17/8/26, 3:12 pm    Traralgon        No realtime data      (ID: "2026-08-17|01-TRN--6-T0-8431")
+17/8/26, 3:32 pm    Southern Cross   On time (*)           (ID: "2026-08-17|01-TRN--6-T0-8432")
 "
 `;
 
