@@ -108,7 +108,7 @@ describe("GtfsTripUpdateParser", () => {
     ).toBe(true);
   });
 
-  it("routes scheduled updates containing skipped stops to the replaced parser", () => {
+  it("parses skipped-stop updates as replaced trips and rematches routes", () => {
     const errors: GtfsTripUpdateParsingError[] = [];
     const trip = TRIP.with({
       movements: [

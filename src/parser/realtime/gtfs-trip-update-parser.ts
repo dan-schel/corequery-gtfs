@@ -13,10 +13,6 @@ import {
   GtfsUpdatedTripUpdateParser,
   type GtfsUpdatedTripUpdateParsingError,
 } from "./gtfs-updated-trip-update-parser.js";
-import {
-  GtfsReplacedTripUpdateParser,
-  type GtfsReplacedTripUpdateParsingError,
-} from "./gtfs-replaced-trip-update-parser.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
@@ -25,7 +21,6 @@ const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_ADDED = "ADDED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_NEW = "NEW";
-const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SKIPPED = "SKIPPED";
 
 export type GtfsTripUpdateParserFields = {
   readonly timezone: string;
@@ -40,7 +35,6 @@ export class GtfsTripUpdateParser {
   private readonly _onError: (error: GtfsTripUpdateParsingError) => void;
 
   private readonly _updatedTripParser: GtfsUpdatedTripUpdateParser;
-  private readonly _replacedTripParser: GtfsReplacedTripUpdateParser;
   private readonly _cancelledTripParser: GtfsCancelledTripUpdateParser;
   private readonly _addedTripParser: GtfsAddedTripUpdateParser;
 
@@ -48,11 +42,6 @@ export class GtfsTripUpdateParser {
     this._onError = fields.onError;
 
     this._updatedTripParser = new GtfsUpdatedTripUpdateParser({
-      timezone: fields.timezone,
-      stopGtfsIdMapping: fields.stopGtfsIdMapping,
-      onError: this._onError,
-    });
-    this._replacedTripParser = new GtfsReplacedTripUpdateParser({
       timezone: fields.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
       lineGtfsIdMapping: fields.lineGtfsIdMapping,
@@ -77,15 +66,6 @@ export class GtfsTripUpdateParser {
     const sr = tripUpdate.trip.scheduleRelationship;
 
     if (sr === TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED) {
-      if (
-        tripUpdate.stopTimeUpdate?.some(
-          (entry) =>
-            entry.scheduleRelationship ===
-            STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SKIPPED,
-        ) === true
-      ) {
-        return this._replacedTripParser.parse(tripUpdate, scheduleData);
-      }
       return this._updatedTripParser.parse(tripUpdate, scheduleData);
     } else if (sr === TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED) {
       return this._cancelledTripParser.parse(tripUpdate, scheduleData);
@@ -107,7 +87,6 @@ export class GtfsTripUpdateParser {
 export type GtfsTripUpdateParsingError =
   | UnsupportedTripUpdateScheduleRelationshipError
   | GtfsUpdatedTripUpdateParsingError
-  | GtfsReplacedTripUpdateParsingError
   | GtfsCancelledTripUpdateParsingError
   | GtfsAddedTripUpdateParsingError;
 

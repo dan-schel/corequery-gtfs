@@ -8,9 +8,25 @@ import type {
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import type { GtfsStopTime } from "../../data/gtfs-stop-time.js";
 import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
+import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
+import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
+import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
+import { GtfsReplacedTrip } from "../../data/trip/replaced/gtfs-replaced-trip.js";
+import { GtfsReplacedTripOriginatingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-originating-movement.js";
+import { GtfsReplacedTripRegularMovement } from "../../data/trip/replaced/gtfs-replaced-trip-regular-movement.js";
+import { GtfsReplacedTripTerminatingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-terminating-movement.js";
+import { GtfsReplacedTripPassingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-passing-movement.js";
+import type {
+  GtfsReplacedTripMovement,
+  GtfsReplacedTripServicingMovement,
+} from "../../data/trip/replaced/types.js";
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
+import {
+  GtfsRouteMatcher,
+  type GtfsRouteMatchingError,
+} from "../gtfs-route-matcher.js";
 import {
   GtfsScheduledTripIdentifier,
   type GtfsScheduledTripIdentificationError,
@@ -23,10 +39,14 @@ import {
 } from "./gtfs-trip-update-parser-common-error-types.js";
 
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
+const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SKIPPED = "SKIPPED";
 
 export type GtfsUpdatedTripUpdateParserFields = {
   readonly timezone: string;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
+  readonly lineGtfsIdMapping: LineGtfsIdMapping;
+  readonly lineRoutesMapping: LineRoutesMapping;
+  readonly bonusLinesMapping: BonusLinesMapping;
   readonly onError: (error: GtfsUpdatedTripUpdateParsingError) => void;
 };
 
@@ -37,22 +57,30 @@ export class GtfsUpdatedTripUpdateParser {
 
   private readonly _tripIdentifier: GtfsScheduledTripIdentifier;
   private readonly _movementsInterpolator: GtfsTripMovementsInterpolator;
+  private readonly _lineGtfsIdMapping: LineGtfsIdMapping;
+  private readonly _routeMatcher: GtfsRouteMatcher;
 
   constructor(fields: GtfsUpdatedTripUpdateParserFields) {
     this._timezone = fields.timezone;
     this._stopGtfsIdMapping = fields.stopGtfsIdMapping;
     this._onError = fields.onError;
+    this._lineGtfsIdMapping = fields.lineGtfsIdMapping;
 
     this._tripIdentifier = new GtfsScheduledTripIdentifier({
       onError: this._onError,
     });
     this._movementsInterpolator = new GtfsTripMovementsInterpolator();
+    this._routeMatcher = new GtfsRouteMatcher({
+      onError: this._onError,
+      lineRoutesMapping: fields.lineRoutesMapping,
+      bonusLinesMapping: fields.bonusLinesMapping,
+    });
   }
 
   parse(
     tripUpdate: TripUpdateJson,
     scheduleData: GtfsScheduleData,
-  ): GtfsUpdatedTrip | null {
+  ): GtfsUpdatedTrip | GtfsReplacedTrip | null {
     const result = this._tripIdentifier.identify(tripUpdate.trip, scheduleData);
     if (result == null) return null;
     const { trip, serviceDay } = result;
@@ -63,10 +91,16 @@ export class GtfsUpdatedTripUpdateParser {
     }
 
     const updatedMovementsByIndex = new Map<number, GtfsUpdatedTripMovement>();
+    const skippedMovementIndexes = new Set<number>();
 
     for (const entry of tripUpdate.stopTimeUpdate) {
       const sr = entry.scheduleRelationship;
-      if (sr !== STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED) {
+      const isSkipped =
+        sr === STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SKIPPED;
+      if (
+        sr !== STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED &&
+        !isSkipped
+      ) {
         const Err = UnsupportedStopTimeUpdateEntryScheduleRelationshipError;
         this._onError(new Err(tripUpdate, entry));
         return null;
@@ -84,7 +118,7 @@ export class GtfsUpdatedTripUpdateParser {
         this._onError(new Err(tripUpdate, entry, "stopId"));
         return null;
       }
-      if (entry.arrival == null && entry.departure == null) {
+      if (!isSkipped && entry.arrival == null && entry.departure == null) {
         const Err = NeitherArrivalNorDepartureGivenError;
         this._onError(new Err(tripUpdate, entry));
         return null;
@@ -108,7 +142,10 @@ export class GtfsUpdatedTripUpdateParser {
       // Check that we haven't already matched a stop time update entry to this
       // movement index. (Would happen if `stopSequence` was the same value
       // twice, I guess.)
-      if (updatedMovementsByIndex.has(movementIndex)) {
+      if (
+        updatedMovementsByIndex.has(movementIndex) ||
+        skippedMovementIndexes.has(movementIndex)
+      ) {
         const Err = MultipleStopTimeUpdateEntriesForSameMovementIndexError;
         this._onError(new Err(tripUpdate, entry, trip, movementIndex));
         return null;
@@ -129,43 +166,49 @@ export class GtfsUpdatedTripUpdateParser {
         return null;
       }
 
-      const updatedPositionId =
-        gtfsIdMetadata.type === "positional" ? gtfsIdMetadata.positionId : null;
+      if (isSkipped) {
+        skippedMovementIndexes.add(movementIndex);
+      } else {
+        const updatedPositionId =
+          gtfsIdMetadata.type === "positional"
+            ? gtfsIdMetadata.positionId
+            : null;
 
-      // Parse the updated times from the `arrivalTime` and `departureTime`
-      // fields.
-      const realtimeArrivalTime =
-        "arrivalTime" in scheduledMovement
-          ? this._parseUpdatedTime(
-              entry.arrival ?? null,
-              scheduledMovement.arrivalTime,
-              serviceDay,
-              tripUpdate,
-              entry,
-            )
-          : null;
-      const realtimeDepartureTime =
-        "departureTime" in scheduledMovement
-          ? this._parseUpdatedTime(
-              entry.departure ?? null,
-              scheduledMovement.departureTime,
-              serviceDay,
-              tripUpdate,
-              entry,
-            )
-          : null;
+        // Parse the updated times from the `arrivalTime` and `departureTime`
+        // fields.
+        const realtimeArrivalTime =
+          "arrivalTime" in scheduledMovement
+            ? this._parseUpdatedTime(
+                entry.arrival ?? null,
+                scheduledMovement.arrivalTime,
+                serviceDay,
+                tripUpdate,
+                entry,
+              )
+            : null;
+        const realtimeDepartureTime =
+          "departureTime" in scheduledMovement
+            ? this._parseUpdatedTime(
+                entry.departure ?? null,
+                scheduledMovement.departureTime,
+                serviceDay,
+                tripUpdate,
+                entry,
+              )
+            : null;
 
-      updatedMovementsByIndex.set(
-        movementIndex,
-        scheduledMovement.asUpdatedTripMovement({
-          arrivalTime: realtimeArrivalTime,
-          departureTime: realtimeDepartureTime,
-          updatedPositionId,
-          updatedGtfsIdMetadata: gtfsIdMetadata,
-          serviceDay,
-          timezone: this._timezone,
-        }),
-      );
+        updatedMovementsByIndex.set(
+          movementIndex,
+          scheduledMovement.asUpdatedTripMovement({
+            arrivalTime: realtimeArrivalTime,
+            departureTime: realtimeDepartureTime,
+            updatedPositionId,
+            updatedGtfsIdMetadata: gtfsIdMetadata,
+            serviceDay,
+            timezone: this._timezone,
+          }),
+        );
+      }
     }
 
     const rawMovements = trip.movements.map((m, i) => {
@@ -188,11 +231,113 @@ export class GtfsUpdatedTripUpdateParser {
       return null;
     }
 
-    return new GtfsUpdatedTrip({
+    const updatedTrip = new GtfsUpdatedTrip({
       scheduledTrip: trip,
       serviceDay,
       movements: interpolated,
       isCancelled: false,
+    });
+    if (skippedMovementIndexes.size === 0) return updatedTrip;
+
+    return this._buildReplacedTrip(
+      tripUpdate,
+      trip,
+      serviceDay,
+      updatedTrip,
+      skippedMovementIndexes,
+    );
+  }
+
+  private _buildReplacedTrip(
+    tripUpdate: TripUpdateJson,
+    scheduledTrip: GtfsScheduledTrip,
+    serviceDay: Temporal.PlainDate,
+    updatedTrip: GtfsUpdatedTrip,
+    skippedMovementIndexes: ReadonlySet<number>,
+  ): GtfsReplacedTrip | null {
+    const remainingMovements = updatedTrip.movements.filter(
+      (movement, index) =>
+        movement.isServicing && !skippedMovementIndexes.has(index),
+    );
+
+    if (remainingMovements.length < 2) {
+      this._onError(
+        new ReplacedTripHasTooFewServicingMovementsError(
+          tripUpdate,
+          remainingMovements.length,
+        ),
+      );
+      return null;
+    }
+
+    const replacedServicingMovements: GtfsReplacedTripServicingMovement[] =
+      remainingMovements.map((movement, index) => {
+        if (index === 0) {
+          if (movement.type !== "originating" && movement.type !== "regular") {
+            throw new Error();
+          }
+          return new GtfsReplacedTripOriginatingMovement({
+            stopId: movement.stopId,
+            positionId: movement.updatedPositionId,
+            departureTime: movement.effectiveDepartureTime,
+            gtfsIdMetadata: movement.updatedGtfsIdMetadata,
+            gtfsStopSequence: movement.gtfsStopSequence,
+          });
+        }
+
+        if (index === remainingMovements.length - 1) {
+          if (movement.type !== "regular" && movement.type !== "terminating") {
+            throw new Error();
+          }
+          return new GtfsReplacedTripTerminatingMovement({
+            stopId: movement.stopId,
+            positionId: movement.updatedPositionId,
+            arrivalTime: movement.effectiveArrivalTime,
+            gtfsIdMetadata: movement.updatedGtfsIdMetadata,
+            gtfsStopSequence: movement.gtfsStopSequence,
+          });
+        }
+
+        if (movement.type !== "regular") throw new Error();
+        return new GtfsReplacedTripRegularMovement({
+          stopId: movement.stopId,
+          positionId: movement.updatedPositionId,
+          arrivalTime: movement.effectiveArrivalTime,
+          departureTime: movement.effectiveDepartureTime,
+          picksUp: movement.picksUp,
+          dropsOff: movement.dropsOff,
+          gtfsIdMetadata: movement.updatedGtfsIdMetadata,
+          gtfsStopSequence: movement.gtfsStopSequence,
+        });
+      });
+
+    const lineMetadata = this._lineGtfsIdMapping.tryResolve(
+      scheduledTrip.gtfsRouteId,
+    );
+    if (lineMetadata == null || lineMetadata.type === "ignored") {
+      this._onError(
+        new ReplacedTripReferencesUnroutableRouteIdError(
+          tripUpdate,
+          scheduledTrip.gtfsRouteId,
+        ),
+      );
+      return null;
+    }
+
+    const routeMatch = this._routeMatcher.match<GtfsReplacedTripMovement>(
+      lineMetadata.lineId,
+      replacedServicingMovements,
+      (stopId) => new GtfsReplacedTripPassingMovement({ stopId }),
+    );
+    if (routeMatch == null) return null;
+
+    return new GtfsReplacedTrip({
+      scheduledTrip,
+      serviceDay,
+      movements: routeMatch.movements,
+      lineIds: routeMatch.lineIds,
+      serviceTags: routeMatch.serviceTags,
+      color: routeMatch.color,
     });
   }
 
@@ -265,6 +410,7 @@ export class GtfsUpdatedTripUpdateParser {
 
 export type GtfsUpdatedTripUpdateParsingError =
   | GtfsScheduledTripIdentificationError
+  | GtfsRouteMatchingError
   | NoStopTimeUpdateFieldGivenError
   | UnsupportedStopTimeUpdateEntryScheduleRelationshipError
   | NecessaryFieldNotInStopTimeUpdateEntryError
@@ -275,7 +421,9 @@ export type GtfsUpdatedTripUpdateParsingError =
   | NeitherTimeNorDelayGivenError
   | TimeAndDelayDisagreeWithEachOtherError
   | NeitherArrivalNorDepartureGivenError
-  | KnownDepartureTimesEntailTimeTravelError;
+  | KnownDepartureTimesEntailTimeTravelError
+  | ReplacedTripHasTooFewServicingMovementsError
+  | ReplacedTripReferencesUnroutableRouteIdError;
 
 export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError {
   readonly type =
@@ -342,5 +490,21 @@ class KnownDepartureTimesEntailTimeTravelError {
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly movements: readonly GtfsUpdatedTripMovement[],
+  ) {}
+}
+
+export class ReplacedTripHasTooFewServicingMovementsError {
+  readonly type = "replaced-trip-has-too-few-servicing-movements";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly remainingMovementCount: number,
+  ) {}
+}
+
+export class ReplacedTripReferencesUnroutableRouteIdError {
+  readonly type = "replaced-trip-references-unroutable-route-id";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly gtfsRouteId: string,
   ) {}
 }
