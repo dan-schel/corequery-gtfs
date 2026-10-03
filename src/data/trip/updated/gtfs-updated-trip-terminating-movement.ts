@@ -1,5 +1,6 @@
 import type { ServiceTerminatingMovementFields } from "../../../corequery-types.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
+import { GtfsReplacedTripTerminatingMovement } from "../replaced/gtfs-replaced-trip-terminating-movement.js";
 import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 
 export type GtfsUpdatedTripTerminatingMovementFields = {
@@ -112,5 +113,15 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
   get knownRealtimeDelay(): Temporal.Duration | null {
     if (this.knownRealtimeArrivalTime == null) return null;
     return this.knownRealtimeArrivalTime.since(this.scheduledArrivalTime);
+  }
+
+  asReplacedTripTerminatingMovement(): GtfsReplacedTripTerminatingMovement {
+    return new GtfsReplacedTripTerminatingMovement({
+      stopId: this.stopId,
+      positionId: this.updatedPositionId,
+      arrivalTime: this.effectiveArrivalTime,
+      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsStopSequence: this.gtfsStopSequence,
+    });
   }
 }

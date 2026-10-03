@@ -1,5 +1,6 @@
 import type { ServiceOriginatingMovementFields } from "../../../corequery-types.js";
 import type { StopGtfsIdMetadata } from "../../ids/stop-gtfs-id-metadata.js";
+import { GtfsReplacedTripOriginatingMovement } from "../replaced/gtfs-replaced-trip-originating-movement.js";
 import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 
 export type GtfsUpdatedTripOriginatingMovementFields = {
@@ -113,5 +114,15 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
     if (this.knownRealtimeDepartureTime == null) return null;
 
     return this.knownRealtimeDepartureTime.since(this.scheduledDepartureTime);
+  }
+
+  asReplacedTripOriginatingMovement(): GtfsReplacedTripOriginatingMovement {
+    return new GtfsReplacedTripOriginatingMovement({
+      stopId: this.stopId,
+      positionId: this.updatedPositionId,
+      departureTime: this.effectiveDepartureTime,
+      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsStopSequence: this.gtfsStopSequence,
+    });
   }
 }

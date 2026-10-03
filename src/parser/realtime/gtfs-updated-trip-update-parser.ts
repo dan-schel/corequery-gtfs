@@ -12,9 +12,6 @@ import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import { GtfsReplacedTrip } from "../../data/trip/replaced/gtfs-replaced-trip.js";
-import { GtfsReplacedTripOriginatingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-originating-movement.js";
-import { GtfsReplacedTripRegularMovement } from "../../data/trip/replaced/gtfs-replaced-trip-regular-movement.js";
-import { GtfsReplacedTripTerminatingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-terminating-movement.js";
 import { GtfsReplacedTripPassingMovement } from "../../data/trip/replaced/gtfs-replaced-trip-passing-movement.js";
 import type { GtfsReplacedTripMovement } from "../../data/trip/replaced/types.js";
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
@@ -260,51 +257,39 @@ export class GtfsUpdatedTripUpdateParser {
     serviceDay: Temporal.PlainDate,
     survivingMovements: GtfsUpdatedTripMovement[],
   ): GtfsReplacedTrip | null {
+    // After stripping out skipped movements, some movements may have changed
+    // type (and all of them need converting to replaced trip movements too)!
     const movements = survivingMovements.map((movement, index) => {
       if (index === 0) {
-        if (movement.type !== "originating" && movement.type !== "regular") {
-          // Because only servicing movements "survive", and there's at least 2,
-          // this should never happen.
+        if (movement.type === "originating") {
+          return movement.asReplacedTripOriginatingMovement();
+        } else if (movement.type === "regular") {
+          return movement.asReplacedTripOriginatingMovement();
+        } else {
+          // The first surviving servicing movement cannot be terminating when
+          // there are at least two surviving movements.
           throw new Error();
         }
-        return new GtfsReplacedTripOriginatingMovement({
-          stopId: movement.stopId,
-          positionId: movement.updatedPositionId,
-          departureTime: movement.effectiveDepartureTime,
-          gtfsIdMetadata: movement.updatedGtfsIdMetadata,
-          gtfsStopSequence: movement.gtfsStopSequence,
-        });
-      }
-
-      if (index === survivingMovements.length - 1) {
-        if (movement.type !== "regular" && movement.type !== "terminating") {
-          // Because only servicing movements "survive", and there's at least 2,
-          // this should never happen.
+      } else if (index === survivingMovements.length - 1) {
+        if (movement.type === "regular") {
+          return movement.asReplacedTripTerminatingMovement();
+        } else if (movement.type === "terminating") {
+          return movement.asReplacedTripTerminatingMovement();
+        } else {
+          // The last surviving servicing movement cannot be originating when
+          // there are at least two surviving movements.
           throw new Error();
         }
-        return new GtfsReplacedTripTerminatingMovement({
-          stopId: movement.stopId,
-          positionId: movement.updatedPositionId,
-          arrivalTime: movement.effectiveArrivalTime,
-          gtfsIdMetadata: movement.updatedGtfsIdMetadata,
-          gtfsStopSequence: movement.gtfsStopSequence,
-        });
+      } else {
+        if (movement.type === "regular") {
+          return movement.asReplacedTripRegularMovement();
+        } else {
+          // You won't get an originating or terminating movement to leave the first
+          // or last index by removing stops, so therefore if we're not in the first
+          // or last index, it must be a regular movement.
+          throw new Error();
+        }
       }
-
-      // You won't get an originating or terminating movement to leave the first
-      // or last index by removing stops, so therefore if we're not in the first
-      // or last index, it must be a regular movement.
-      if (movement.type !== "regular") throw new Error();
-      return new GtfsReplacedTripRegularMovement({
-        stopId: movement.stopId,
-        positionId: movement.updatedPositionId,
-        arrivalTime: movement.effectiveArrivalTime,
-        departureTime: movement.effectiveDepartureTime,
-        picksUp: movement.picksUp,
-        dropsOff: movement.dropsOff,
-        gtfsIdMetadata: movement.updatedGtfsIdMetadata,
-        gtfsStopSequence: movement.gtfsStopSequence,
-      });
     });
 
     const lineMetadata = this._lineGtfsIdMapping.tryResolve(trip.gtfsRouteId);
