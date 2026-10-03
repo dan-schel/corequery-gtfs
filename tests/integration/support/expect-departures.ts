@@ -98,7 +98,9 @@ async function formatDeparture(
             ? `${delayMins} mins delayed${suffix}`
             : `${-delayMins} mins early${suffix}`;
 
-  return [timeStr, destination, realtimeStr];
+  const id = `(ID: "${departure.service.intrasourceId}")`;
+
+  return [timeStr, destination, realtimeStr, id];
 }
 
 function getTimePair(departure: IntegrationTestDeparture) {
