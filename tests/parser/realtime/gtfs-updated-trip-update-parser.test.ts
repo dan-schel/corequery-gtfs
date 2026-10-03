@@ -161,13 +161,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
 
     const tripUpdate = {
       trip: TRIP_DESCRIPTOR,
-      stopTimeUpdate: [
-        {
-          stopSequence: TRIP.origination.gtfsStopSequence,
-          stopId: "stop-1",
-          scheduleRelationship: "VIBES",
-        },
-      ],
+      stopTimeUpdate: [{ scheduleRelationship: "VIBES" }],
     };
 
     const parsed = parser.parse(tripUpdate, SCHEDULE);
