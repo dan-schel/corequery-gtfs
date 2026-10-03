@@ -23,6 +23,7 @@ import {
   NecessaryFieldNotInStopTimeUpdateEntryError,
   NoStopTimeUpdateFieldGivenError,
   StopTimeUpdateEntryReferencesUnmappedStopIdError,
+  UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
 } from "../../../src/parser/realtime/gtfs-trip-update-parser-common-error-types.js";
 
 const TIMEZONE = "Australia/Melbourne";
@@ -169,6 +170,37 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(
       NecessaryFieldNotInStopTimeUpdateEntryError,
+    );
+  });
+
+  it("reports unsupported stop time entry schedule relationships", () => {
+    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
+    const parser = new GtfsUpdatedTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const tripUpdate = {
+      trip: TRIP_DESCRIPTOR,
+      stopTimeUpdate: [
+        {
+          stopSequence: TRIP.origination.gtfsStopSequence,
+          stopId: "stop-1",
+          scheduleRelationship: "VIBES",
+        },
+      ],
+    };
+
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
+
+    expect(parsed).toBeNull();
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toBeInstanceOf(
+      UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
     );
   });
 
