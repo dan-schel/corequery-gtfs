@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2026-10-03-regional > Flinders Street, 2026-10-03T13:08:00+10:00, forwards > gives correct departures 1`] = `
+"
+3/10/26, 1:13 pm   Traralgon        1 mins delayed               
+3/10/26, 1:32 pm   Southern Cross   No realtime data             
+3/10/26, 1:52 pm   Traralgon        On time                      
+3/10/26, 2:15 pm   Southern Cross   3 mins delayed (*)           
+3/10/26, 2:32 pm   Traralgon        No realtime data             
+3/10/26, 2:52 pm   Southern Cross   No realtime data at this stop
+3/10/26, 3:12 pm   Traralgon        No realtime data             
+3/10/26, 3:32 pm   Southern Cross   On time (*)                  
+3/10/26, 3:52 pm   Traralgon        No realtime data             
+3/10/26, 4:12 pm   Southern Cross   On time (*)                  
+"
+`;
+
+exports[`2026-10-03-regional > parses with expected errors only 1`] = `
+"
+Schedule parsing errors:
+<none>
+
+Realtime parsing errors:
+- unsupported-stop-time-update-entry-schedule-relationship
+"
+`;
