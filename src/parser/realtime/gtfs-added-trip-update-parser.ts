@@ -29,6 +29,7 @@ import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 import { GtfsAddedTripPassingMovement } from "../../data/trip/added/gtfs-added-trip-passing-movement.js";
 
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
+const STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE = "NONE";
 
 export type GtfsAddedTripUpdateParserFields = {
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
@@ -209,6 +210,18 @@ export class GtfsAddedTripUpdateParser {
           departureTimestamp * 1000,
         );
 
+        // I'm not sure if V/Line actually supplies `stop_time_properties`
+        // (experimental field). If not, we might need to handle it manually.
+        // This could involve adding metadata to stops on each route, to say
+        // whether they're set down only/pick up only by default (similar to how
+        // TrainQuery v3 did it).
+        const picksUp =
+          entry.stopTimeProperties?.pickupType !==
+          STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE;
+        const dropsOff =
+          entry.stopTimeProperties?.dropOffType !==
+          STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE;
+
         servicingMovements.push(
           new GtfsAddedTripRegularMovement({
             stopId,
@@ -218,14 +231,8 @@ export class GtfsAddedTripUpdateParser {
             gtfsIdMetadata,
             gtfsStopSequence: entry.stopSequence,
 
-            // TODO: These can be set via `stop_time_properties` (experimental
-            // field), but I'm not sure if V/Line actually does. If not, we
-            // might need to handle it manually. This could involve adding
-            // metadata to stops on each route, to say whether they're set down
-            // only/pick up only by default (similar to how TrainQuery v3 did
-            // it).
-            picksUp: true,
-            dropsOff: true,
+            picksUp,
+            dropsOff,
           }),
         );
       }

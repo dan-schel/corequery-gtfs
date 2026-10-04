@@ -13,12 +13,18 @@ export type UpdatedTimeJson = {
   readonly time?: number;
 };
 
+export type StopTimePropertiesJson = {
+  readonly pickupType?: string;
+  readonly dropOffType?: string;
+};
+
 export type StopTimeUpdateJson = {
   readonly stopSequence?: number;
   readonly arrival?: UpdatedTimeJson;
   readonly departure?: UpdatedTimeJson;
   readonly stopId?: string;
   readonly scheduleRelationship: string;
+  readonly stopTimeProperties?: StopTimePropertiesJson;
 };
 
 export type TripUpdateJson = {
