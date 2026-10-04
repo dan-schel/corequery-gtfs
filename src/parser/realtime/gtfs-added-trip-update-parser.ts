@@ -29,6 +29,7 @@ import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
 import { GtfsAddedTripPassingMovement } from "../../data/trip/added/gtfs-added-trip-passing-movement.js";
 
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
+const STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE = "NONE";
 
 export type GtfsAddedTripUpdateParserFields = {
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
@@ -61,8 +62,6 @@ export class GtfsAddedTripUpdateParser {
     tripUpdate: TripUpdateJson,
     scheduleData: GtfsScheduleData,
   ): GtfsAddedTrip | null {
-    // TODO: Test this.
-
     const gtfsTripId = tripUpdate.trip.tripId;
     if (gtfsTripId == null) {
       const Err = NecessaryFieldNotSuppliedForAddedTripError;
@@ -101,8 +100,6 @@ export class GtfsAddedTripUpdateParser {
       return null;
     }
 
-    // TODO: Report non-sequential stop sequences, like we do for scheduled
-    // trips?
     const sortedEntries = [...tripUpdate.stopTimeUpdate].sort(
       (a, b) => (a.stopSequence ?? 0) - (b.stopSequence ?? 0),
     );
@@ -137,6 +134,12 @@ export class GtfsAddedTripUpdateParser {
         const Err = StopTimeUpdateEntryReferencesUnmappedStopIdError;
         this._onError(new Err(tripUpdate, entry));
         return null;
+      }
+
+      if (entry.stopSequence !== i + 1) {
+        this._onError(
+          new NonSequentialStopTimeUpdateEntryError(tripUpdate, entry, i + 1),
+        );
       }
 
       const stopId = gtfsIdMetadata.stopId;
@@ -207,6 +210,18 @@ export class GtfsAddedTripUpdateParser {
           departureTimestamp * 1000,
         );
 
+        // I'm not sure if V/Line actually supplies `stop_time_properties`
+        // (experimental field). If not, we might need to handle it manually.
+        // This could involve adding metadata to stops on each route, to say
+        // whether they're set down only/pick up only by default (similar to how
+        // TrainQuery v3 did it).
+        const picksUp =
+          entry.stopTimeProperties?.pickupType !==
+          STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE;
+        const dropsOff =
+          entry.stopTimeProperties?.dropOffType !==
+          STOP_TIME_PROPERTIES_DROP_OFF_PICKUP_TYPE_NONE;
+
         servicingMovements.push(
           new GtfsAddedTripRegularMovement({
             stopId,
@@ -216,14 +231,8 @@ export class GtfsAddedTripUpdateParser {
             gtfsIdMetadata,
             gtfsStopSequence: entry.stopSequence,
 
-            // TODO: These can be set via `stop_time_properties` (experimental
-            // field), but I'm not sure if V/Line actually does. If not, we
-            // might need to handle it manually. This could involve adding
-            // metadata to stops on each route, to say whether they're set down
-            // only/pick up only by default (similar to how TrainQuery v3 did
-            // it).
-            picksUp: true,
-            dropsOff: true,
+            picksUp,
+            dropsOff,
           }),
         );
       }
@@ -257,7 +266,8 @@ export type GtfsAddedTripUpdateParsingError =
   | StopTimeUpdateEntryReferencesUnmappedStopIdError
   | AddedTripStopTimeUpdateMissingTimeError
   | AddedTripReferencesUnmappedRouteIdError
-  | GtfsRouteMatchingError;
+  | GtfsRouteMatchingError
+  | NonSequentialStopTimeUpdateEntryError;
 
 export class NecessaryFieldNotSuppliedForAddedTripError {
   readonly type = "necessary-field-not-supplied-for-added-trip";
@@ -288,5 +298,14 @@ export class AddedTripReferencesUnmappedRouteIdError {
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly gtfsRouteId: string,
+  ) {}
+}
+
+export class NonSequentialStopTimeUpdateEntryError {
+  readonly type = "non-sequential-stop-time-update-entry";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
+    readonly expectedStopSequence: number,
   ) {}
 }

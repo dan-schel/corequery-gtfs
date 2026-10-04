@@ -30,9 +30,6 @@ export class ServiceConversionIterator<
       CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
     >,
-
-    // TODO: The need to pass around timezone here (and everywhere), I think
-    // hints at that it should be a property of the DeparturesIteratorResult.
     private readonly _timezone: string,
   ) {
     this._convertedNextDeparture = null;

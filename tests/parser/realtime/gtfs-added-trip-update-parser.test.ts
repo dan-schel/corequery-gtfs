@@ -16,6 +16,7 @@ import {
   AddedTripReferencesUnmappedRouteIdError,
   AddedTripStopTimeUpdateMissingTimeError,
   NecessaryFieldNotSuppliedForAddedTripError,
+  NonSequentialStopTimeUpdateEntryError,
 } from "../../../src/parser/realtime/gtfs-added-trip-update-parser.js";
 import { NoStopTimeUpdateFieldGivenError } from "../../../src/parser/realtime/gtfs-trip-update-parser-common-error-types.js";
 
@@ -103,6 +104,132 @@ describe("GtfsAddedTripUpdateParser", () => {
     expect(parsed.termination.arrivalTime).toEqual(
       Temporal.Instant.from("2026-09-25T09:30:00Z"),
     );
+  });
+
+  it("applies stop_time_properties pickup and drop-off types", () => {
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const lineRoutesMapping = LineRoutesMapping.build({
+      [LINE_ID]: [
+        {
+          color: "blue",
+          serviceTags: [],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+            { stopId: 3, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+    });
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      {
+        trip: TRIP_DESCRIPTOR,
+        stopTimeUpdate: [
+          {
+            stopSequence: 1,
+            stopId: "stop-1",
+            departure: { time: T1 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 2,
+            stopId: "stop-2",
+            arrival: { time: T2 },
+            departure: { time: T2 },
+            scheduleRelationship: "SCHEDULED",
+            stopTimeProperties: {
+              pickupType: "NONE",
+              dropOffType: "NONE",
+            },
+          },
+          {
+            stopSequence: 3,
+            stopId: "stop-3",
+            arrival: { time: T3 },
+            scheduleRelationship: "SCHEDULED",
+          },
+        ],
+      },
+      SCHEDULE,
+    );
+
+    expect(errors).toEqual([]);
+    if (parsed == null) throw new Error("Expected an added trip.");
+    const middleMovement = parsed.movements[1];
+    if (middleMovement?.type !== "regular") throw new Error();
+    expect(middleMovement.picksUp).toBe(false);
+    expect(middleMovement.dropsOff).toBe(false);
+  });
+
+  it("defaults missing types to available and ignores unsupported stop time properties", () => {
+    const lineRoutesMapping = LineRoutesMapping.build({
+      [LINE_ID]: [
+        {
+          color: "blue",
+          serviceTags: [],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+            { stopId: 3, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+    });
+
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      {
+        trip: TRIP_DESCRIPTOR,
+        stopTimeUpdate: [
+          {
+            stopSequence: 1,
+            stopId: "stop-1",
+            departure: { time: T1 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 2,
+            stopId: "stop-2",
+            arrival: { time: T2 },
+            departure: { time: T2 },
+            scheduleRelationship: "SCHEDULED",
+            stopTimeProperties: {
+              pickupType: "PHONE_AGENCY",
+            },
+          },
+          {
+            stopSequence: 3,
+            stopId: "stop-3",
+            arrival: { time: T3 },
+            scheduleRelationship: "SCHEDULED",
+          },
+        ],
+      },
+      SCHEDULE,
+    );
+
+    expect(errors).toEqual([]);
+    if (parsed == null) throw new Error("Expected an added trip.");
+    const middleMovement = parsed.movements[1];
+    if (middleMovement?.type !== "regular") throw new Error();
+    expect(middleMovement.picksUp).toBe(true);
+    expect(middleMovement.dropsOff).toBe(true);
   });
 
   it("reports missing required fields in the trip descriptor", () => {
@@ -264,7 +391,7 @@ describe("GtfsAddedTripUpdateParser", () => {
             scheduleRelationship: "SCHEDULED",
           },
           {
-            stopSequence: 3,
+            stopSequence: 2,
             stopId: "stop-3",
             arrival: { time: T3 },
             scheduleRelationship: "SCHEDULED",
@@ -330,5 +457,41 @@ describe("GtfsAddedTripUpdateParser", () => {
     expect(parsed.lineIds).toContain(BONUS_LINE_ID);
     expect(parsed.serviceTags).toContain(10);
     expect(parsed.serviceTags).toContain(20);
+  });
+
+  it("reports non-sequential stop sequences", () => {
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      {
+        trip: TRIP_DESCRIPTOR,
+        stopTimeUpdate: [
+          {
+            stopSequence: 1,
+            stopId: "stop-1",
+            departure: { time: T1 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 3,
+            stopId: "stop-2",
+            arrival: { time: T2 },
+            scheduleRelationship: "SCHEDULED",
+          },
+        ],
+      },
+      SCHEDULE,
+    );
+
+    expect(parsed).not.toBeNull();
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toBeInstanceOf(NonSequentialStopTimeUpdateEntryError);
   });
 });
