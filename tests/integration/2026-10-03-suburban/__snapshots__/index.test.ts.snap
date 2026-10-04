@@ -15,6 +15,21 @@ exports[`2026-10-03-suburban > Flinders Street, 2026-10-04T01:50:00+10:00, forwa
 "
 `;
 
+exports[`2026-10-03-suburban > Flinders Street, 2026-10-11T01:50:00+11:00, forwards > gives correct departures 1`] = `
+"
+11/10/26, 1:51 am   Mernda            No realtime data   (ID: "2026-10-10|02-MDD--70-T2-1115")
+11/10/26, 1:55 am   Werribee          No realtime data   (ID: "2026-10-10|02-WER--70-T2-6575")
+11/10/26, 2:09 am   Frankston         No realtime data   (ID: "2026-10-10|02-FKN--70-T2-4585")
+11/10/26, 2:10 am   Sandringham       No realtime data   (ID: "2026-10-10|02-SHM--70-T2-X225")
+11/10/26, 2:12 am   Upfield           No realtime data   (ID: "2026-10-10|02-UFD--70-T2-5125")
+11/10/26, 2:13 am   Glen Waverley     No realtime data   (ID: "2026-10-10|02-GWY--70-T2-2181")
+11/10/26, 2:21 am   Hurstbridge       No realtime data   (ID: "2026-10-10|02-HBE--70-T2-1321")
+11/10/26, 2:30 am   Flinders Street   No realtime data   (ID: "2026-10-10|02-FKN--70-T2-4586")
+11/10/26, 2:42 am   Craigieburn       No realtime data   (ID: "2026-10-10|02-CGB--70-T2-5457")
+11/10/26, 2:43 am   Lilydale          No realtime data   (ID: "2026-10-10|02-LIL--70-T2-3285")
+"
+`;
+
 exports[`2026-10-03-suburban > parses with expected errors only 1`] = `
 "
 Schedule parsing errors:

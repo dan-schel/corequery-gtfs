@@ -26,4 +26,19 @@ describe("2026-10-03-regional", async () => {
       });
     });
   });
+
+  describe("Southern Cross, 2026-10-11T00:00:00+11:00, forwards", () => {
+    it("gives correct departures", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2026-10-11T00:00:00+11:00",
+        direction: "forwards",
+        maxResults: 10,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
 });

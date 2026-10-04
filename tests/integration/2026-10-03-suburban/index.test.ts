@@ -26,4 +26,19 @@ describe("2026-10-03-suburban", async () => {
       });
     });
   });
+
+  describe("Flinders Street, 2026-10-11T01:50:00+11:00, forwards", () => {
+    it("gives correct departures", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2026-10-11T01:50:00+11:00",
+        direction: "forwards",
+        maxResults: 10,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
 });
