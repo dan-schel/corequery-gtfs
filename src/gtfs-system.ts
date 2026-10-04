@@ -1,4 +1,4 @@
-import type { GtfsConfig, TimezoneData } from "./config/index.js";
+import type { GtfsConfig, TimezoneConfig } from "./config/index.js";
 import type { GtfsFeed } from "./data/gtfs-feed.js";
 import { LineGtfsIdMapping } from "./data/ids/line-gtfs-id-mapping.js";
 import { StopGtfsIdMapping } from "./data/ids/stop-gtfs-id-mapping.js";
@@ -22,14 +22,14 @@ export class GtfsSystem {
     private readonly _stopGtfsIdMapping: StopGtfsIdMapping,
     private readonly _lineRoutesMapping: LineRoutesMapping,
     private readonly _bonusLinesMapping: BonusLinesMapping,
-    private readonly _timezoneData: TimezoneData,
+    private readonly _timezoneConfig: TimezoneConfig,
   ) {
     this._parser = new GtfsFeedParser({
       lineRoutesMapping: this._lineRoutesMapping,
       bonusLinesMapping: this._bonusLinesMapping,
       lineGtfsIdMapping: this._lineGtfsIdMapping,
       stopGtfsIdMapping: this._stopGtfsIdMapping,
-      timezoneData: this._timezoneData,
+      timezoneConfig: this._timezoneConfig,
       onScheduleParsingError: (error) => this._onScheduledParsingError(error),
       onRealtimeParsingError: (error) => this._onRealtimeParsingError(error),
     });
@@ -45,7 +45,7 @@ export class GtfsSystem {
       StopGtfsIdMapping.build(config.stopGtfsIds),
       LineRoutesMapping.build(config.lineRoutesMapping),
       BonusLinesMapping.build(config.bonusLinesMapping ?? {}),
-      config.timezoneData,
+      config.timezoneConfig,
     );
   }
 

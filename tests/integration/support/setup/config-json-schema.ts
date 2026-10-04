@@ -53,7 +53,7 @@ const bonusLinesMappingSchema = z.record(
   }),
 );
 
-const timezoneDataSchema = z.object({
+const timezoneConfigSchema = z.object({
   timezone: z.string(),
   minimumViableOffsetSeconds: z.number(),
   maximumViableOffsetSeconds: z.number(),
@@ -64,5 +64,5 @@ export const configJsonSchema: z.ZodType<GtfsConfig> = z.object({
   stopGtfsIds: stopGtfsIdsSchema,
   lineRoutesMapping: lineRoutesMappingSchema,
   bonusLinesMapping: bonusLinesMappingSchema.optional(),
-  timezoneData: timezoneDataSchema,
+  timezoneConfig: timezoneConfigSchema,
 });

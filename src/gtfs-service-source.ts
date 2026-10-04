@@ -151,7 +151,7 @@ export class GtfsServiceSource<
       const result = this._converter.convertScheduledTrip(
         trip,
         id.serviceDay,
-        feed.timezoneData.timezone,
+        feed.timezoneConfig.timezone,
       );
       return Promise.resolve(result);
     } else if (trip instanceof GtfsUpdatedTrip) {
@@ -189,6 +189,6 @@ export class GtfsServiceSource<
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
       CorequeryServiceConnectionClass
-    >(iterator, this._converter, feed.timezoneData.timezone);
+    >(iterator, this._converter, feed.timezoneConfig.timezone);
   }
 }

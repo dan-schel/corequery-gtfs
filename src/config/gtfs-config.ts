@@ -3,12 +3,12 @@ import type {
   BonusLinesMappingConfig,
   LineRoutesMappingConfig,
 } from "./routes.js";
-import type { TimezoneData } from "./timezone-data.js";
+import type { TimezoneConfig } from "./timezone-config.js";
 
 export type GtfsConfig = {
   readonly lineGtfsIds: LineGtfsIdsConfig;
   readonly stopGtfsIds: StopGtfsIdsConfig;
   readonly lineRoutesMapping: LineRoutesMappingConfig;
   readonly bonusLinesMapping?: BonusLinesMappingConfig;
-  readonly timezoneData: TimezoneData;
+  readonly timezoneConfig: TimezoneConfig;
 };

@@ -8,7 +8,7 @@ import { ScheduledDeparturesBlockIterator } from "./scheduled-departures-block-i
 import type { GtfsScheduledMovementsIndex } from "../gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
 import { ScheduledDeparturesBlocksBuilder } from "../scheduled-departures-blocks-builder.js";
-import type { TimezoneData } from "../../config/timezone-data.js";
+import type { TimezoneConfig } from "../../config/timezone-config.js";
 import type { DeparturesIterationDirection } from "../../corequery-types.js";
 
 const DEFAULT_BLOCK_SCAN_HOURS = 48;
@@ -47,13 +47,13 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     stopId: number,
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
     realtimeData: GtfsRealtimeData,
-    timezoneData: TimezoneData,
+    timezoneConfig: TimezoneConfig,
     iterationLimitHours: number | null,
   ) {
     const blockBuilder = ScheduledDeparturesBlocksBuilder.tryBuild(
       stopId,
       scheduledMovementsIndex,
-      timezoneData,
+      timezoneConfig,
     );
     if (blockBuilder == null) return null;
 
