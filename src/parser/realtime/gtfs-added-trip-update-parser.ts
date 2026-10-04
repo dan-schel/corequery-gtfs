@@ -61,8 +61,6 @@ export class GtfsAddedTripUpdateParser {
     tripUpdate: TripUpdateJson,
     scheduleData: GtfsScheduleData,
   ): GtfsAddedTrip | null {
-    // TODO: Test this.
-
     const gtfsTripId = tripUpdate.trip.tripId;
     if (gtfsTripId == null) {
       const Err = NecessaryFieldNotSuppliedForAddedTripError;
@@ -101,8 +99,6 @@ export class GtfsAddedTripUpdateParser {
       return null;
     }
 
-    // TODO: Report non-sequential stop sequences, like we do for scheduled
-    // trips?
     const sortedEntries = [...tripUpdate.stopTimeUpdate].sort(
       (a, b) => (a.stopSequence ?? 0) - (b.stopSequence ?? 0),
     );
@@ -137,6 +133,12 @@ export class GtfsAddedTripUpdateParser {
         const Err = StopTimeUpdateEntryReferencesUnmappedStopIdError;
         this._onError(new Err(tripUpdate, entry));
         return null;
+      }
+
+      if (entry.stopSequence !== i + 1) {
+        this._onError(
+          new NonSequentialStopTimeUpdateEntryError(tripUpdate, entry, i + 1),
+        );
       }
 
       const stopId = gtfsIdMetadata.stopId;
@@ -257,7 +259,8 @@ export type GtfsAddedTripUpdateParsingError =
   | StopTimeUpdateEntryReferencesUnmappedStopIdError
   | AddedTripStopTimeUpdateMissingTimeError
   | AddedTripReferencesUnmappedRouteIdError
-  | GtfsRouteMatchingError;
+  | GtfsRouteMatchingError
+  | NonSequentialStopTimeUpdateEntryError;
 
 export class NecessaryFieldNotSuppliedForAddedTripError {
   readonly type = "necessary-field-not-supplied-for-added-trip";
@@ -288,5 +291,14 @@ export class AddedTripReferencesUnmappedRouteIdError {
   constructor(
     readonly tripUpdate: TripUpdateJson,
     readonly gtfsRouteId: string,
+  ) {}
+}
+
+export class NonSequentialStopTimeUpdateEntryError {
+  readonly type = "non-sequential-stop-time-update-entry";
+  constructor(
+    readonly tripUpdate: TripUpdateJson,
+    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
+    readonly expectedStopSequence: number,
   ) {}
 }
