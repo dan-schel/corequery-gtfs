@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2026-10-03-suburban > Richmond, 2026-10-04T01:30:00+10:00, forwards > gives correct departures 1`] = `
+"
+4/10/26, 1:34 am   Flinders Street -> Werribee   No realtime data   (ID: "2026-10-03|02-SHM--69-T2-X226")
+4/10/26, 1:46 am   Lilydale                      No realtime data   (ID: "2026-10-03|02-LIL--69-T2-3285")
+4/10/26, 1:46 am   Flinders Street               No realtime data   (ID: "2026-10-03|02-LIL--69-T2-3288")
+4/10/26, 3:12 am   Frankston                     No realtime data   (ID: "2026-10-04|02-FKN--69-T3-4587")
+4/10/26, 3:14 am   Sandringham                   No realtime data   (ID: "2026-10-04|02-SHM--69-T3-X227")
+4/10/26, 3:16 am   Glen Waverley                 No realtime data   (ID: "2026-10-04|02-GWY--69-T3-2185")
+4/10/26, 3:26 am   Flinders Street               No realtime data   (ID: "2026-10-03|02-FKN--69-T2-4586")
+4/10/26, 3:28 am   Flinders Street               No realtime data   (ID: "2026-10-03|02-GWY--69-T2-2182")
+4/10/26, 3:34 am   Flinders Street -> Werribee   No realtime data   (ID: "2026-10-04|02-SHM--69-T3-X230")
+4/10/26, 3:45 am   Flinders Street               No realtime data   (ID: "2026-10-03|02-LIL--69-T2-3290")
+"
+`;
+
+exports[`2026-10-03-suburban > Richmond, 2026-10-11T01:30:00+11:00, forwards > gives correct departures 1`] = `
+"
+11/10/26, 1:34 am   Flinders Street -> Werribee        No realtime data   (ID: "2026-10-10|02-SHM--70-T2-X226")
+11/10/26, 1:46 am   Belgrave                           No realtime data   (ID: "2026-10-10|02-BEG--70-T2-3075")
+11/10/26, 1:46 am   Flinders Street -> Glen Waverley   No realtime data   (ID: "2026-10-10|02-LIL--70-T2-3288")
+11/10/26, 2:12 am   Frankston                          No realtime data   (ID: "2026-10-10|02-FKN--70-T2-4585")
+11/10/26, 2:14 am   Sandringham                        No realtime data   (ID: "2026-10-10|02-SHM--70-T2-X225")
+11/10/26, 2:16 am   Glen Waverley                      No realtime data   (ID: "2026-10-10|02-GWY--70-T2-2181")
+11/10/26, 2:26 am   Flinders Street                    No realtime data   (ID: "2026-10-10|02-FKN--70-T2-4586")
+11/10/26, 2:28 am   Flinders Street -> Lilydale        No realtime data   (ID: "2026-10-10|02-GWY--70-T2-2182")
+11/10/26, 2:34 am   Flinders Street -> Werribee        No realtime data   (ID: "2026-10-10|02-SHM--70-T2-X228")
+11/10/26, 2:45 am   Flinders Street                    No realtime data   (ID: "2026-10-10|02-LIL--70-T2-3290")
+"
+`;
+
+exports[`2026-10-03-suburban > parses with expected errors only 1`] = `
+"
+Schedule parsing errors:
+<none>
+
+Realtime parsing errors:
+- known-departure-times-entail-time-travel
+"
+`;

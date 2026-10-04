@@ -1,0 +1,1624 @@
+{
+  "tripUpdates": [
+    {
+      "trip": {
+        "tripId": "01-BDE--4-T2-8469",
+        "startTime": "18:20:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BDE:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 23,
+          "arrival": {
+            "delay": 270,
+            "time": "1791030390"
+          },
+          "stopId": "20291",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SWL--4-T2-8089",
+        "startTime": "18:40:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SWL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 12,
+          "arrival": {
+            "delay": 1836,
+            "time": "1791028236"
+          },
+          "departure": {
+            "delay": 1950,
+            "time": "1791028350"
+          },
+          "stopId": "49295",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-WBL--4-T2-8869",
+        "startTime": "19:07:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "CANCELED",
+        "routeId": "aus:vic:vic-01-WBL:"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8449",
+        "startTime": "19:40:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 19,
+          "arrival": {
+            "delay": -210,
+            "time": "1791028890"
+          },
+          "stopId": "20351",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8452",
+        "startTime": "19:51:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 16,
+          "arrival": {
+            "delay": 126,
+            "time": "1791028386"
+          },
+          "stopId": "22248",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 17,
+          "arrival": {
+            "delay": 126,
+            "time": "1791028986"
+          },
+          "stopId": "22247",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 18,
+          "arrival": {
+            "delay": 126,
+            "time": "1791029286"
+          },
+          "stopId": "22238",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8052",
+        "startTime": "19:59:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 13,
+          "arrival": {
+            "delay": 0,
+            "time": "1791029460"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8451",
+        "startTime": "20:20:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 13,
+          "arrival": {
+            "delay": 114,
+            "time": "1791028674"
+          },
+          "departure": {
+            "delay": 114,
+            "time": "1791028674"
+          },
+          "stopId": "20308",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8454",
+        "startTime": "20:31:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 13,
+          "arrival": {
+            "delay": -18,
+            "time": "1791028122"
+          },
+          "departure": {
+            "delay": 36,
+            "time": "1791028176"
+          },
+          "stopId": "22252",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 84,
+            "time": "1791029304"
+          },
+          "stopId": "22250",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 84,
+            "time": "1791030024"
+          },
+          "stopId": "22249",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 16,
+          "arrival": {
+            "delay": 84,
+            "time": "1791030744"
+          },
+          "stopId": "22248",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 17,
+          "arrival": {
+            "delay": 84,
+            "time": "1791031344"
+          },
+          "stopId": "22247",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 18,
+          "arrival": {
+            "delay": 84,
+            "time": "1791031644"
+          },
+          "stopId": "22238",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BAT--4-T2-8155",
+        "startTime": "20:35:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BAT:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 11,
+          "arrival": {
+            "delay": -18,
+            "time": "1791027522"
+          },
+          "departure": {
+            "delay": 54,
+            "time": "1791027594"
+          },
+          "stopId": "20292",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 12,
+          "arrival": {
+            "delay": -228,
+            "time": "1791028632"
+          },
+          "departure": {
+            "delay": 0,
+            "time": "1791029040"
+          },
+          "stopId": "20293",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SER--4-T2-8351",
+        "startTime": "20:37:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SER:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 11,
+          "arrival": {
+            "delay": 438,
+            "time": "1791029298"
+          },
+          "stopId": "20342",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8814",
+        "startTime": "20:41:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 222,
+            "time": "1791029142"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8053",
+        "startTime": "20:47:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 9,
+          "arrival": {
+            "delay": 78,
+            "time": "1791028818"
+          },
+          "departure": {
+            "delay": 78,
+            "time": "1791028878"
+          },
+          "stopId": "20320",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8809",
+        "startTime": "20:50:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 13,
+          "arrival": {
+            "delay": 72,
+            "time": "1791028812"
+          },
+          "departure": {
+            "delay": 72,
+            "time": "1791028812"
+          },
+          "stopId": "20344",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8453",
+        "startTime": "21:00:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 6,
+          "departure": {
+            "delay": 24,
+            "time": "1791028224"
+          },
+          "stopId": "22250",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 7,
+          "arrival": {
+            "delay": 84,
+            "time": "1791029364"
+          },
+          "departure": {
+            "delay": 84,
+            "time": "1791029364"
+          },
+          "stopId": "22252",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8816",
+        "startTime": "21:01:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 11,
+          "arrival": {
+            "delay": 642,
+            "time": "1791028842"
+          },
+          "departure": {
+            "delay": 642,
+            "time": "1791028842"
+          },
+          "stopId": "47648",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 13,
+          "arrival": {
+            "delay": 642,
+            "time": "1791029802"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 642,
+            "time": "1791030162"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8811",
+        "startTime": "21:10:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 9,
+          "arrival": {
+            "delay": 48,
+            "time": "1791028788"
+          },
+          "departure": {
+            "delay": 48,
+            "time": "1791028788"
+          },
+          "stopId": "20321",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8456",
+        "startTime": "21:11:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 7,
+          "arrival": {
+            "delay": 168,
+            "time": "1791028728"
+          },
+          "departure": {
+            "delay": 228,
+            "time": "1791028788"
+          },
+          "stopId": "20308",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 8,
+          "arrival": {
+            "delay": 240,
+            "time": "1791029220"
+          },
+          "departure": {
+            "delay": 240,
+            "time": "1791029220"
+          },
+          "stopId": "20324",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 240,
+            "time": "1791031860"
+          },
+          "stopId": "22250",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 240,
+            "time": "1791032580"
+          },
+          "stopId": "22249",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 16,
+          "arrival": {
+            "delay": 240,
+            "time": "1791033300"
+          },
+          "stopId": "22248",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 17,
+          "arrival": {
+            "delay": 240,
+            "time": "1791033900"
+          },
+          "stopId": "22247",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 18,
+          "arrival": {
+            "delay": 240,
+            "time": "1791034200"
+          },
+          "stopId": "22238",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8056",
+        "startTime": "21:14:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 5,
+          "arrival": {
+            "delay": 210,
+            "time": "1791028950"
+          },
+          "departure": {
+            "delay": 210,
+            "time": "1791028950"
+          },
+          "stopId": "20320",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 12,
+          "arrival": {
+            "delay": 210,
+            "time": "1791032850"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-ART--4-T2-8189",
+        "startTime": "21:15:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-ART:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 10,
+          "arrival": {
+            "delay": 144,
+            "time": "1791028944"
+          },
+          "departure": {
+            "delay": 144,
+            "time": "1791028944"
+          },
+          "stopId": "20290",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SER--4-T2-8356",
+        "startTime": "21:15:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SER:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 7,
+          "arrival": {
+            "delay": 210,
+            "time": "1791028590"
+          },
+          "departure": {
+            "delay": 210,
+            "time": "1791028590"
+          },
+          "stopId": "17204",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 9,
+          "arrival": {
+            "delay": 210,
+            "time": "1791029670"
+          },
+          "stopId": "20029",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 10,
+          "arrival": {
+            "delay": 210,
+            "time": "1791030090"
+          },
+          "stopId": "22254",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BAT--4-T2-8158",
+        "startTime": "21:17:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BAT:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 4,
+          "arrival": {
+            "delay": 48,
+            "time": "1791028848"
+          },
+          "departure": {
+            "delay": 48,
+            "time": "1791028908"
+          },
+          "stopId": "20290",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 11,
+          "arrival": {
+            "delay": 48,
+            "time": "1791031008"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 12,
+          "arrival": {
+            "delay": 48,
+            "time": "1791031368"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8818",
+        "startTime": "21:21:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 8,
+          "arrival": {
+            "delay": 810,
+            "time": "1791028950"
+          },
+          "departure": {
+            "delay": 810,
+            "time": "1791028950"
+          },
+          "stopId": "20321",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 810,
+            "time": "1791031290"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 810,
+            "time": "1791031650"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SNH--4-T2-8387",
+        "startTime": "21:37:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SNH:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 102,
+            "time": "1791028662"
+          },
+          "stopId": "22254",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 102,
+            "time": "1791029142"
+          },
+          "stopId": "20029",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8057",
+        "startTime": "21:51:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 588,
+            "time": "1791028848"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 588,
+            "time": "1791029328"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8813",
+        "startTime": "21:55:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791028500"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791028980"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791029280"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8455",
+        "startTime": "22:00:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791028800"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791029400"
+          },
+          "stopId": "22238",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791029640"
+          },
+          "stopId": "22247",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 4,
+          "departure": {
+            "delay": 0,
+            "time": "1791030120"
+          },
+          "stopId": "22248",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 5,
+          "departure": {
+            "delay": 0,
+            "time": "1791030720"
+          },
+          "stopId": "22249",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 6,
+          "departure": {
+            "delay": 0,
+            "time": "1791031800"
+          },
+          "stopId": "22250",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8820",
+        "startTime": "22:01:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791028860"
+          },
+          "stopId": "47641",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 0,
+            "time": "1791032880"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 0,
+            "time": "1791033240"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SER--4-T2-8358",
+        "startTime": "22:15:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SER:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791029700"
+          },
+          "stopId": "20342",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 9,
+          "arrival": {
+            "delay": 0,
+            "time": "1791033060"
+          },
+          "stopId": "20029",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 10,
+          "arrival": {
+            "delay": 0,
+            "time": "1791033480"
+          },
+          "stopId": "22254",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BAT--4-T2-8159",
+        "startTime": "22:16:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BAT:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791029760"
+          },
+          "stopId": "26524",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791030240"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791030540"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-SER--4-T2-8357",
+        "startTime": "22:37:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-SER:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791031020"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791032160"
+          },
+          "stopId": "22254",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791032640"
+          },
+          "stopId": "20029",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8815",
+        "startTime": "22:40:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791031200"
+          },
+          "stopId": "26524",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791031680"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791031980"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8822",
+        "startTime": "22:41:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791031260"
+          },
+          "stopId": "47641",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 4,
+          "arrival": {
+            "delay": -60,
+            "time": "1791031980"
+          },
+          "departure": {
+            "delay": 0,
+            "time": "1791032100"
+          },
+          "stopId": "20314",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 14,
+          "arrival": {
+            "delay": 0,
+            "time": "1791035280"
+          },
+          "stopId": "22241",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 15,
+          "arrival": {
+            "delay": 0,
+            "time": "1791035640"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8059",
+        "startTime": "22:51:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791031860"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791032340"
+          },
+          "stopId": "22240",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8457",
+        "startTime": "23:00:00",
+        "startDate": "20261003",
+        "scheduleRelationship": "SCHEDULED",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "stopTimeUpdate": [
+        {
+          "stopSequence": 1,
+          "departure": {
+            "delay": 0,
+            "time": "1791032400"
+          },
+          "stopId": "20043",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 2,
+          "departure": {
+            "delay": 0,
+            "time": "1791033000"
+          },
+          "stopId": "22238",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 3,
+          "departure": {
+            "delay": 0,
+            "time": "1791033240"
+          },
+          "stopId": "22247",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 4,
+          "departure": {
+            "delay": 0,
+            "time": "1791033720"
+          },
+          "stopId": "22248",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 5,
+          "departure": {
+            "delay": 0,
+            "time": "1791034320"
+          },
+          "stopId": "22249",
+          "scheduleRelationship": "SCHEDULED"
+        },
+        {
+          "stopSequence": 6,
+          "departure": {
+            "delay": 0,
+            "time": "1791035400"
+          },
+          "stopId": "22250",
+          "scheduleRelationship": "SCHEDULED"
+        }
+      ]
+    }
+  ],
+  "serviceAlerts": [],
+  "vehiclePositions": [
+    {
+      "trip": {
+        "tripId": "01-BDE--4-T2-8469",
+        "startTime": "18:20:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BDE:"
+      },
+      "position": {
+        "latitude": -37.88589859008789,
+        "longitude": 147.27464294433594,
+        "bearing": 74.0999984741211
+      },
+      "timestamp": "1791028877",
+      "vehicle": {
+        "id": "V2114"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-SWL--4-T2-8089",
+        "startTime": "18:40:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-SWL:"
+      },
+      "position": {
+        "latitude": -36.419673919677734,
+        "longitude": 144.22195434570312,
+        "bearing": 8.380000114440918
+      },
+      "timestamp": "1791028895",
+      "vehicle": {
+        "id": "N458"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8449",
+        "startTime": "19:40:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -38.19955062866211,
+        "longitude": 146.5353240966797,
+        "bearing": 72.62000274658203
+      },
+      "timestamp": "1791028883",
+      "vehicle": {
+        "id": "V2126"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8452",
+        "startTime": "19:51:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -37.83372116088867,
+        "longitude": 144.9932861328125,
+        "bearing": 9.470000267028809
+      },
+      "timestamp": "1791028904",
+      "vehicle": {
+        "id": "V1260"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8052",
+        "startTime": "19:59:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "position": {
+        "latitude": -37.798194885253906,
+        "longitude": 144.9153594970703,
+        "bearing": 99
+      },
+      "timestamp": "1791028898",
+      "vehicle": {
+        "id": "V2107"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8451",
+        "startTime": "20:20:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -38.14461898803711,
+        "longitude": 145.89308166503906,
+        "bearing": 120.83999633789062
+      },
+      "timestamp": "1791028888",
+      "vehicle": {
+        "id": "V1121"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8454",
+        "startTime": "20:31:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -38.036720275878906,
+        "longitude": 145.34156799316406,
+        "bearing": 304.1300048828125
+      },
+      "timestamp": "1791028896",
+      "vehicle": {
+        "id": "V1206"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-BAT--4-T2-8155",
+        "startTime": "20:35:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BAT:"
+      },
+      "position": {
+        "latitude": -37.55836868286133,
+        "longitude": 143.85910034179688,
+        "bearing": 301.3076171875
+      },
+      "timestamp": "1791028858",
+      "vehicle": {
+        "id": "V2227"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8053",
+        "startTime": "20:47:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "position": {
+        "latitude": -37.25812530517578,
+        "longitude": 144.4503936767578,
+        "bearing": 307.9800109863281
+      },
+      "timestamp": "1791028900",
+      "vehicle": {
+        "id": "V1240"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8814",
+        "startTime": "20:41:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -37.809207916259766,
+        "longitude": 144.94400024414062,
+        "bearing": 144.16000366210938
+      },
+      "timestamp": "1791028904",
+      "vehicle": {
+        "id": "V1150"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8809",
+        "startTime": "20:50:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -38.16155242919922,
+        "longitude": 144.36343383789062,
+        "bearing": 131.80999755859375
+      },
+      "timestamp": "1791028902",
+      "vehicle": {
+        "id": "V1246"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8453",
+        "startTime": "21:00:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -38.04400634765625,
+        "longitude": 145.3488006591797,
+        "bearing": 136.9600067138672
+      },
+      "timestamp": "1791028890",
+      "vehicle": {
+        "id": "V2130"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8816",
+        "startTime": "21:01:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -37.83226013183594,
+        "longitude": 144.69557189941406,
+        "bearing": 99.30000305175781
+      },
+      "timestamp": "1791028881",
+      "vehicle": {
+        "id": "V1107"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8811",
+        "startTime": "21:10:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -38.023681640625,
+        "longitude": 144.4128875732422,
+        "bearing": 221.55999755859375
+      },
+      "timestamp": "1791028893",
+      "vehicle": {
+        "id": "V1270"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8456",
+        "startTime": "21:11:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -38.1293830871582,
+        "longitude": 145.84597778320312,
+        "bearing": 296.2900085449219
+      },
+      "timestamp": "1791028858",
+      "vehicle": {
+        "id": "V1278"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-BGO--4-T2-8056",
+        "startTime": "21:14:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BGO:"
+      },
+      "position": {
+        "latitude": -37.256168365478516,
+        "longitude": 144.44607543945312,
+        "bearing": 116.05999755859375
+      },
+      "timestamp": "1791028898",
+      "vehicle": {
+        "id": "V2118"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-ART--4-T2-8189",
+        "startTime": "21:15:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-ART:"
+      },
+      "position": {
+        "latitude": -37.690181732177734,
+        "longitude": 144.44683837890625,
+        "bearing": 302.0899963378906
+      },
+      "timestamp": "1791028902",
+      "vehicle": {
+        "id": "V1242"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-SER--4-T2-8356",
+        "startTime": "21:15:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-SER:"
+      },
+      "position": {
+        "latitude": -37.47199630737305,
+        "longitude": 144.9957275390625,
+        "bearing": 187.92999267578125
+      },
+      "timestamp": "1791028860",
+      "vehicle": {
+        "id": "V1151"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-BAT--4-T2-8158",
+        "startTime": "21:17:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-BAT:"
+      },
+      "position": {
+        "latitude": -37.68794631958008,
+        "longitude": 144.43833923339844,
+        "bearing": 106.27999877929688
+      },
+      "timestamp": "1791028900",
+      "vehicle": {
+        "id": "V1141"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8818",
+        "startTime": "21:21:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -38.03983688354492,
+        "longitude": 144.39947509765625,
+        "bearing": 25.389999389648438
+      },
+      "timestamp": "1791028880",
+      "vehicle": {
+        "id": "V1138"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-SNH--4-T2-8387",
+        "startTime": "21:37:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-SNH:"
+      },
+      "position": {
+        "latitude": -37.64490509033203,
+        "longitude": 144.93409729003906,
+        "bearing": 9.119999885559082
+      },
+      "timestamp": "1791028881",
+      "vehicle": {
+        "id": "V1288"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8813",
+        "startTime": "21:55:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -37.81559371948242,
+        "longitude": 144.95091247558594,
+        "bearing": 144.31521606445312
+      },
+      "timestamp": "1791028906",
+      "vehicle": {
+        "id": "V1219"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-TRN--4-T2-8455",
+        "startTime": "22:00:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-TRN:"
+      },
+      "position": {
+        "latitude": -37.8200569152832,
+        "longitude": 144.95558166503906,
+        "bearing": 149.9600067138672
+      },
+      "timestamp": "1791028870",
+      "vehicle": {
+        "id": "V1174"
+      }
+    },
+    {
+      "trip": {
+        "tripId": "01-GEL--4-T2-8820",
+        "startTime": "22:01:00",
+        "startDate": "20261003",
+        "routeId": "aus:vic:vic-01-GEL:"
+      },
+      "position": {
+        "latitude": -38.215694427490234,
+        "longitude": 144.3076171875,
+        "bearing": 259.3689270019531
+      },
+      "timestamp": "1791028816",
+      "vehicle": {
+        "id": "V1177"
+      }
+    }
+  ]
+}

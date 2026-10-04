@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2026-10-03-regional > Southern Cross, 2026-10-04T00:00:00+10:00, forwards > gives correct departures 1`] = `
+"
+4/10/26, 12:04 am   Southern Cross   On time (*)        (ID: "2026-10-03|01-GEL--4-T2-8822")
+4/10/26, 12:10 am   Waurn Ponds      No realtime data   (ID: "2026-10-03|01-GEL--4-T2-8819")
+4/10/26, 12:16 am   Wendouree        No realtime data   (ID: "2026-10-03|01-BAT--4-T2-8165")
+4/10/26, 1:10 am    Waurn Ponds      No realtime data   (ID: "2026-10-03|01-GEL--4-T2-8821")
+4/10/26, 6:36 am    Seymour          No realtime data   (ID: "2026-10-04|01-SER--5-T3-8305")
+4/10/26, 7:04 am    Waurn Ponds      No realtime data   (ID: "2026-10-04|01-GEL--5-T3-8711")
+4/10/26, 7:07 am    Albury           No realtime data   (ID: "2026-10-04|01-ABY--5-T3-8605")
+4/10/26, 7:15 am    Wendouree        No realtime data   (ID: "2026-10-04|01-BAT--5-T3-8107")
+4/10/26, 7:32 am    Southern Cross   No realtime data   (ID: "2026-10-04|01-BAT--5-T3-8104")
+4/10/26, 7:36 am    Seymour          No realtime data   (ID: "2026-10-04|01-SER--5-T3-8309")
+"
+`;
+
+exports[`2026-10-03-regional > Southern Cross, 2026-10-11T00:00:00+11:00, forwards > gives correct departures 1`] = `
+"
+11/10/26, 12:04 am   Southern Cross   No realtime data   (ID: "2026-10-10|01-GEL--10-T2-8822")
+11/10/26, 12:10 am   Waurn Ponds      No realtime data   (ID: "2026-10-10|01-GEL--10-T2-8819")
+11/10/26, 12:16 am   Wendouree        No realtime data   (ID: "2026-10-10|01-BAT--10-T2-8165")
+11/10/26, 1:10 am    Waurn Ponds      No realtime data   (ID: "2026-10-10|01-GEL--10-T2-8821")
+11/10/26, 1:20 am    Southern Cross   No realtime data   (ID: "2026-10-10|01-BAT--10-T2-8190")
+11/10/26, 2:01 am    Southern Cross   No realtime data   (ID: "2026-10-10|01-BAT--10-T2-8192")
+11/10/26, 2:40 am    Southern Cross   No realtime data   (ID: "2026-10-10|01-BAT--10-T2-8194")
+11/10/26, 6:36 am    Seymour          No realtime data   (ID: "2026-10-11|01-SER--11-T3-8305")
+11/10/26, 7:04 am    Waurn Ponds      No realtime data   (ID: "2026-10-11|01-GEL--11-T3-8711")
+11/10/26, 7:07 am    Albury           No realtime data   (ID: "2026-10-11|01-ABY--11-T3-8605")
+"
+`;
+
+exports[`2026-10-03-regional > parses with expected errors only 1`] = `
+"
+Schedule parsing errors:
+<none>
+
+Realtime parsing errors:
+<none>
+"
+`;
