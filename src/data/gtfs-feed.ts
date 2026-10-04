@@ -1,4 +1,4 @@
-import type { TimezoneData } from "../config/timezone-data.js";
+import type { TimezoneConfig } from "../config/timezone-config.js";
 import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
 import { FilteringDeparturesIterator } from "../departures/iterator/filtering-departures-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
@@ -27,14 +27,14 @@ export class GtfsFeed {
   constructor(
     readonly scheduleData: GtfsScheduleData,
     readonly realtimeData: GtfsRealtimeData,
-    readonly timezoneData: TimezoneData,
+    readonly timezoneConfig: TimezoneConfig,
     readonly scheduledMovementsIndex: GtfsScheduledMovementsIndex,
   ) {}
 
   static fromNewScheduleData(
     scheduleData: GtfsScheduleData,
     realtimeData: GtfsRealtimeData,
-    timezoneData: TimezoneData,
+    timezoneConfig: TimezoneConfig,
   ) {
     const scheduledMovementsIndex =
       GtfsScheduledMovementsIndex.build(scheduleData);
@@ -42,7 +42,7 @@ export class GtfsFeed {
     return new GtfsFeed(
       scheduleData,
       realtimeData,
-      timezoneData,
+      timezoneConfig,
       scheduledMovementsIndex,
     );
   }
@@ -51,7 +51,7 @@ export class GtfsFeed {
     return new GtfsFeed(
       this.scheduleData,
       realtimeData,
-      this.timezoneData,
+      this.timezoneConfig,
       this.scheduledMovementsIndex,
     );
   }
@@ -106,7 +106,7 @@ export class GtfsFeed {
         stopId,
         this.scheduledMovementsIndex,
         this.realtimeData,
-        this.timezoneData,
+        this.timezoneConfig,
         iterationLimitHours,
       ),
       (result) => !this._isArrivalWhichContinues(result),

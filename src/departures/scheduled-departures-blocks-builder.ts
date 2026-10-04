@@ -6,7 +6,7 @@ import type {
 } from "./gtfs-scheduled-movements-index.js";
 import { ScheduledDeparturesBlock } from "./scheduled-departures-block.js";
 import type { PlainDateRange } from "../data/plain-date-range.js";
-import type { TimezoneData } from "../config/timezone-data.js";
+import type { TimezoneConfig } from "../config/timezone-config.js";
 
 export class ScheduledDeparturesBlocksBuilder {
   /** If given, all movements are guaranteed to occur at/after this time. */
@@ -17,7 +17,7 @@ export class ScheduledDeparturesBlocksBuilder {
 
   constructor(
     private readonly _movements: readonly GtfsScheduledMovementsIndexEntry[],
-    private readonly _timezoneData: TimezoneData,
+    private readonly _timezoneConfig: TimezoneConfig,
     private readonly _rangeEncompassingAllCalendars: PlainDateRange,
   ) {
     if (_movements.length === 0) throw new Error("No movements given.");
@@ -26,7 +26,7 @@ export class ScheduledDeparturesBlocksBuilder {
       const firstMovement = itsOk(_movements[0]);
       this.earliestPossibleMovementInstant = firstMovement.time.toInstant(
         _rangeEncompassingAllCalendars.start,
-        _timezoneData.timezone,
+        _timezoneConfig.timezone,
       );
     } else {
       this.earliestPossibleMovementInstant = null;
@@ -36,7 +36,7 @@ export class ScheduledDeparturesBlocksBuilder {
       const lastMovement = itsOk(_movements.at(-1));
       this.latestPossibleMovementInstant = lastMovement.time.toInstant(
         _rangeEncompassingAllCalendars.end,
-        _timezoneData.timezone,
+        _timezoneConfig.timezone,
       );
     } else {
       this.latestPossibleMovementInstant = null;
@@ -46,7 +46,7 @@ export class ScheduledDeparturesBlocksBuilder {
   static tryBuild(
     stopId: number,
     scheduledMovementsIndex: GtfsScheduledMovementsIndex,
-    timezoneData: TimezoneData,
+    timezoneConfig: TimezoneConfig,
   ): ScheduledDeparturesBlocksBuilder | null {
     const movements = scheduledMovementsIndex.getMovementsForStop(stopId);
 
@@ -59,7 +59,7 @@ export class ScheduledDeparturesBlocksBuilder {
 
     return new ScheduledDeparturesBlocksBuilder(
       movements,
-      timezoneData,
+      timezoneConfig,
       rangeEncompassingAllCalendars,
     );
   }
@@ -117,8 +117,8 @@ export class ScheduledDeparturesBlocksBuilder {
 
     ------------------------------------------------------------------------- */
 
-    const maxViableOffsetSecs = this._timezoneData.maximumViableOffsetSeconds;
-    const minViableOffsetSecs = this._timezoneData.minimumViableOffsetSeconds;
+    const maxViableOffsetSecs = this._timezoneConfig.maximumViableOffsetSeconds;
+    const minViableOffsetSecs = this._timezoneConfig.minimumViableOffsetSeconds;
 
     const firstMvmt = itsOk(this._movements[0]);
     const lastMvmt = itsOk(this._movements.at(-1));
@@ -246,7 +246,7 @@ export class ScheduledDeparturesBlocksBuilder {
     ) {
       if (!this._rangeEncompassingAllCalendars.includes(date)) continue;
 
-      const tz = this._timezoneData.timezone;
+      const tz = this._timezoneConfig.timezone;
       const block = ScheduledDeparturesBlock.build(this._movements, date, tz);
 
       // Use `touches`, not `intersects`, so that the first and last movements

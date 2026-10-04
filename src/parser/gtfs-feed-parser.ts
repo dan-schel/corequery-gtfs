@@ -13,14 +13,14 @@ import {
   type GtfsScheduleParsingError,
 } from "./schedule/gtfs-schedule-data-parser.js";
 import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
-import type { TimezoneData } from "../config/timezone-data.js";
+import type { TimezoneConfig } from "../config/timezone-config.js";
 
 export type GtfsFeedParserFields = {
   readonly lineRoutesMapping: LineRoutesMapping;
   readonly bonusLinesMapping: BonusLinesMapping;
   readonly lineGtfsIdMapping: LineGtfsIdMapping;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
-  readonly timezoneData: TimezoneData;
+  readonly timezoneConfig: TimezoneConfig;
   readonly onScheduleParsingError: (error: GtfsScheduleParsingError) => void;
   readonly onRealtimeParsingError: (
     error: GtfsRealtimeDataParsingError,
@@ -28,13 +28,13 @@ export type GtfsFeedParserFields = {
 };
 
 export class GtfsFeedParser {
-  private readonly _timezoneData: TimezoneData;
+  private readonly _timezoneConfig: TimezoneConfig;
 
   private readonly _scheduleParser: GtfsScheduleDataParser;
   private readonly _realtimeParser: GtfsRealtimeDataParser;
 
   constructor(fields: GtfsFeedParserFields) {
-    this._timezoneData = fields.timezoneData;
+    this._timezoneConfig = fields.timezoneConfig;
 
     this._scheduleParser = new GtfsScheduleDataParser({
       lineRoutesMapping: fields.lineRoutesMapping,
@@ -44,7 +44,7 @@ export class GtfsFeedParser {
       onError: fields.onScheduleParsingError,
     });
     this._realtimeParser = new GtfsRealtimeDataParser({
-      timezone: fields.timezoneData.timezone,
+      timezone: fields.timezoneConfig.timezone,
       stopGtfsIdMapping: fields.stopGtfsIdMapping,
       lineGtfsIdMapping: fields.lineGtfsIdMapping,
       lineRoutesMapping: fields.lineRoutesMapping,
@@ -60,7 +60,7 @@ export class GtfsFeedParser {
     return GtfsFeed.fromNewScheduleData(
       scheduleData,
       realtimeData,
-      this._timezoneData,
+      this._timezoneConfig,
     );
   }
 
