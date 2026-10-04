@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { TimezoneData } from "../../src/config/timezone-data.js";
+import type { TimezoneConfig } from "../../src/config/timezone-config.js";
 import { GtfsCalendar } from "../../src/data/gtfs-calendar.js";
 import { GtfsFeed } from "../../src/data/gtfs-feed.js";
 import { GtfsRealtimeData } from "../../src/data/gtfs-realtime-data.js";
@@ -8,7 +8,7 @@ import { GtfsScheduledTrip } from "../../src/data/trip/scheduled/gtfs-scheduled-
 import { GtfsStopTime } from "../../src/data/gtfs-stop-time.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../../src/data/gtfs-transfer.js";
 
-const TIMEZONE_DATA: TimezoneData = {
+const TIMEZONE_CONFIG: TimezoneConfig = {
   timezone: "UTC",
   minimumViableOffsetSeconds: 0,
   maximumViableOffsetSeconds: 0,
@@ -41,7 +41,7 @@ describe("GtfsFeed", () => {
       const feed = GtfsFeed.fromNewScheduleData(
         GtfsScheduleData.fromTrips([trip1, trip2]).withTransfers([transfer]),
         GtfsRealtimeData.empty,
-        TIMEZONE_DATA,
+        TIMEZONE_CONFIG,
       );
       const upheldTransfers = feed.getUpheldTransfersForTrip("1", serviceDay);
 
@@ -58,7 +58,7 @@ describe("GtfsFeed", () => {
       const feed = GtfsFeed.fromNewScheduleData(
         GtfsScheduleData.fromTrips([trip1, newTrip2]).withTransfers([transfer]),
         GtfsRealtimeData.empty,
-        TIMEZONE_DATA,
+        TIMEZONE_CONFIG,
       );
       const upheldTransfers = feed.getUpheldTransfersForTrip("1", serviceDay);
 

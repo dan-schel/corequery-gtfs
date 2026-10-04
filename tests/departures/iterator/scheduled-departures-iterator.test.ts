@@ -9,9 +9,9 @@ import { PlainDateRange } from "../../../src/data/plain-date-range.js";
 import { GtfsScheduledMovementsIndex } from "../../../src/departures/gtfs-scheduled-movements-index.js";
 import { ScheduledDeparturesBlocksBuilder } from "../../../src/departures/scheduled-departures-blocks-builder.js";
 import { ScheduledDeparturesIterator } from "../../../src/departures/iterator/scheduled-departures-iterator.js";
-import type { TimezoneData } from "../../../src/config/timezone-data.js";
+import type { TimezoneConfig } from "../../../src/config/timezone-config.js";
 
-export const MELBOURNE_TIMEZONE_DATA: TimezoneData = {
+export const MELBOURNE_TIMEZONE_CONFIG: TimezoneConfig = {
   timezone: "Australia/Melbourne",
   minimumViableOffsetSeconds: 10 * 60 * 60,
   maximumViableOffsetSeconds: 11 * 60 * 60,
@@ -272,7 +272,7 @@ function trip({
 function blockBuilder(trips: GtfsScheduledTrip[]) {
   const schedule = GtfsScheduleData.fromTrips(trips);
   const index = GtfsScheduledMovementsIndex.build(schedule);
-  const tz = MELBOURNE_TIMEZONE_DATA;
+  const tz = MELBOURNE_TIMEZONE_CONFIG;
   const builder = ScheduledDeparturesBlocksBuilder.tryBuild(1, index, tz);
   return itsOk(builder);
 }

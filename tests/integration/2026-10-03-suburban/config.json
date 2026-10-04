@@ -11518,7 +11518,7 @@
       ]
     }
   },
-  "timezoneData": {
+  "timezoneConfig": {
     "timezone": "Australia/Melbourne",
     "minimumViableOffsetSeconds": 36000,
     "maximumViableOffsetSeconds": 39600

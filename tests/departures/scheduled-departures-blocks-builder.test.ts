@@ -7,7 +7,7 @@ import { PlainDateRange } from "../../src/data/plain-date-range.js";
 import type { GtfsScheduledMovementsIndexEntry } from "../../src/departures/gtfs-scheduled-movements-index.js";
 import { ScheduledDeparturesBlocksBuilder } from "../../src/departures/scheduled-departures-blocks-builder.js";
 
-const MELBOURNE_TIMEZONE_DATA = {
+const MELBOURNE_TIMEZONE_CONFIG = {
   timezone: "Australia/Melbourne",
   minimumViableOffsetSeconds: 10 * 60 * 60,
   maximumViableOffsetSeconds: 11 * 60 * 60,
@@ -19,7 +19,7 @@ describe("ScheduledDeparturesBlocksBuilder", () => {
       expect(() => {
         new ScheduledDeparturesBlocksBuilder(
           [],
-          MELBOURNE_TIMEZONE_DATA,
+          MELBOURNE_TIMEZONE_CONFIG,
           PlainDateRange.infinite,
         );
       }).toThrow();
@@ -29,7 +29,7 @@ describe("ScheduledDeparturesBlocksBuilder", () => {
   describe("#allBlocksWithinTimeRange", () => {
     const builder = new ScheduledDeparturesBlocksBuilder(
       createMovements({ earliest: "05:18:00", latest: "26:08:00" }),
-      MELBOURNE_TIMEZONE_DATA,
+      MELBOURNE_TIMEZONE_CONFIG,
       PlainDateRange.infinite,
     );
 
@@ -220,7 +220,7 @@ describe("ScheduledDeparturesBlocksBuilder", () => {
     it("handles cases where the last movement is within the next service day", () => {
       const builder = new ScheduledDeparturesBlocksBuilder(
         createMovements({ earliest: "05:18:00", latest: "55:08:00" }),
-        MELBOURNE_TIMEZONE_DATA,
+        MELBOURNE_TIMEZONE_CONFIG,
         PlainDateRange.infinite,
       );
 
