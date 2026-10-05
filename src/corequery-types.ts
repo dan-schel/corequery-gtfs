@@ -29,7 +29,8 @@ export type ServiceFields<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > = {
   readonly sourceId: string;
   readonly intrasourceId: string;
@@ -47,7 +48,10 @@ export type ServiceFields<
   >[];
   readonly isCancelled: boolean;
 
-  readonly connections: readonly CorequeryServiceConnectionClass[];
+  readonly connections: readonly CorequeryServiceConnectionClasses<
+    CorequeryEntireVehicleFormsServiceConnectionClass,
+    CorequeryGenericServiceConnectionClass
+  >[];
 };
 
 // This is probably the dumbest code you've ever seen, but you've gotta admire
@@ -104,12 +108,25 @@ export type ServicePassingMovementFields = {
   readonly stopId: number;
 };
 
-export type ServiceConnectionFields = {
-  readonly type: ServiceConnectionType;
-  readonly direction: ServiceConnectionDirection;
+type CorequeryServiceConnectionClasses<
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
+> =
+  | CorequeryEntireVehicleFormsServiceConnectionClass
+  | CorequeryGenericServiceConnectionClass;
+
+export type EntireVehicleFormsServiceConnectionFields = {
+  readonly type: "entire-vehicle-forms-service";
+  readonly direction: "from-other" | "to-other";
   readonly otherServiceSourceId: string;
   readonly otherServiceIntrasourceId: string;
+};
 
+export type GenericServiceConnectionFields = {
+  readonly type: "other";
+  readonly direction: "from-other" | "to-other" | "bidirectional";
+  readonly otherServiceSourceId: string;
+  readonly otherServiceIntrasourceId: string;
   readonly movementIndex: number;
   readonly otherServiceMovementIndex: number;
 };
@@ -123,7 +140,3 @@ type ServiceLiveDataType = "scheduled" | "updated" | "added";
 
 type ServiceTimeType =
   "scheduled-time" | "provided-live-time" | "interpolated-live-time";
-
-type ServiceConnectionType = "entire-vehicle-forms-service" | "other";
-
-type ServiceConnectionDirection = "from-other" | "to-other" | "bidirectional";

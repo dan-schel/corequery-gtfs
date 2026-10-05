@@ -3,7 +3,8 @@ import type {
   DepartureFields,
   DeparturesIterationDirection,
   DeparturesIterator,
-  ServiceConnectionFields,
+  EntireVehicleFormsServiceConnectionFields,
+  GenericServiceConnectionFields,
   ServiceFields,
   ServiceOriginatingMovementFields,
   ServicePassingMovementFields,
@@ -28,7 +29,8 @@ type GtfsServiceSourceFields<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > = {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
@@ -46,7 +48,8 @@ type GtfsServiceSourceFields<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
 
@@ -68,9 +71,13 @@ type GtfsServiceSourceFields<
     fields: ServicePassingMovementFields,
   ) => CorequeryServicePassingMovementClass;
 
-  readonly buildServiceConnection: (
-    fields: ServiceConnectionFields,
-  ) => CorequeryServiceConnectionClass;
+  readonly buildServiceEntireVehicleFormsConnection: (
+    fields: EntireVehicleFormsServiceConnectionFields,
+  ) => CorequeryEntireVehicleFormsServiceConnectionClass;
+
+  readonly buildServiceGenericConnection: (
+    fields: GenericServiceConnectionFields,
+  ) => CorequeryGenericServiceConnectionClass;
 };
 
 export class GtfsServiceSource<
@@ -81,7 +88,8 @@ export class GtfsServiceSource<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > implements ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
@@ -96,7 +104,8 @@ export class GtfsServiceSource<
     CorequeryServiceRegularMovementClass,
     CorequeryServiceTerminatingMovementClass,
     CorequeryServicePassingMovementClass,
-    CorequeryServiceConnectionClass
+    CorequeryEntireVehicleFormsServiceConnectionClass,
+    CorequeryGenericServiceConnectionClass
   >;
 
   constructor(
@@ -108,7 +117,8 @@ export class GtfsServiceSource<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
   ) {
     this.sourceId = fields.sourceId;
@@ -124,7 +134,8 @@ export class GtfsServiceSource<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >({
       sourceId: fields.sourceId,
       gtfsSystem: fields.gtfsSystem,
@@ -135,7 +146,9 @@ export class GtfsServiceSource<
       buildServiceRegularMovement: fields.buildServiceRegularMovement,
       buildServiceTerminatingMovement: fields.buildServiceTerminatingMovement,
       buildServicePassingMovement: fields.buildServicePassingMovement,
-      buildServiceConnection: fields.buildServiceConnection,
+      buildServiceEntireVehicleFormsConnection:
+        fields.buildServiceEntireVehicleFormsConnection,
+      buildServiceGenericConnection: fields.buildServiceGenericConnection,
     });
   }
 
@@ -188,7 +201,8 @@ export class GtfsServiceSource<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >(iterator, this._converter, feed.timezoneConfig.timezone);
   }
 }

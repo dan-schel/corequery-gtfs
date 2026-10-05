@@ -9,7 +9,8 @@ export class ServiceConversionIterator<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > {
   private _convertedNextDeparture: CorequeryDepartureClass | null;
 
@@ -24,7 +25,8 @@ export class ServiceConversionIterator<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
     private readonly _timezone: string,
   ) {

@@ -64,7 +64,8 @@ export async function setupIntegrationTest(dirname: string) {
       type: "passing",
       ...fields,
     }),
-    buildServiceConnection: (fields) => fields,
+    buildServiceEntireVehicleFormsConnection: (fields) => fields,
+    buildServiceGenericConnection: (fields) => fields,
   });
 
   return { source, system };
