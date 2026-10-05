@@ -238,13 +238,3 @@ export class GtfsTripMovementsInterpolator {
     return result;
   }
 }
-
-// TODO: On the CoreQuery service page, add:
-//
-// "Real-time data has not been provided for all stops. Times marked with * are
-// estimates, extrapolated from the known times."
-//
-// or, alternatively:
-//
-// "Real-time data has not been provided for all stops. Times marked with * are
-// _estimated_ estimates, extrapolated from the _provided_ estimates."
