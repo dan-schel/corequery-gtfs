@@ -70,7 +70,7 @@ type CorequeryServiceMovementClasses<
 export type ServiceOriginatingMovementFields = {
   readonly stopId: number;
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
 
   readonly departureTimeType: ServiceTimeType;
   readonly departureTime: Temporal.Instant;
@@ -80,7 +80,7 @@ export type ServiceOriginatingMovementFields = {
 export type ServiceRegularMovementFields = {
   readonly stopId: number;
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
 
   readonly arrivalTimeType: ServiceTimeType;
   readonly arrivalTime: Temporal.Instant;
@@ -97,7 +97,7 @@ export type ServiceRegularMovementFields = {
 export type ServiceTerminatingMovementFields = {
   readonly stopId: number;
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
 
   readonly arrivalTimeType: ServiceTimeType;
   readonly arrivalTime: Temporal.Instant;

@@ -51,7 +51,7 @@ export class GtfsAddedTripOriginatingMovement implements IGtfsAddedTripServicing
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: this.positionId,
+      currentPositionId: this.positionId,
 
       departureTimeType: "provided-live-time",
       departureTime: this.departureTime,

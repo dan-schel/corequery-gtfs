@@ -505,8 +505,8 @@ describe("GtfsUpdatedTripUpdateParser", () => {
 
     expect(updatedFirstMovement.stopId).toBe(1);
     expect(updatedFirstMovement.originalPositionId).toBe(1);
-    expect(updatedFirstMovement.updatedPositionId).toBe(2);
+    expect(updatedFirstMovement.currentPositionId).toBe(2);
     expect(updatedFirstMovement.originalGtfsIdMetadata.id).toBe("1-PLATFORM-A");
-    expect(updatedFirstMovement.updatedGtfsIdMetadata.id).toBe("1-PLATFORM-B");
+    expect(updatedFirstMovement.currentGtfsIdMetadata.id).toBe("1-PLATFORM-B");
   });
 });

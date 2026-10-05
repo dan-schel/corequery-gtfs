@@ -20,8 +20,8 @@ export type GtfsScheduledTripServicingMovement =
 export type PromotionToUpdatedTripFields = {
   readonly arrivalTime: Temporal.Instant | null;
   readonly departureTime: Temporal.Instant | null;
-  readonly updatedPositionId: number | null;
-  readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
+  readonly currentPositionId: number | null;
+  readonly currentGtfsIdMetadata: StopGtfsIdMetadata;
   readonly serviceDay: Temporal.PlainDate;
   readonly timezone: string;
 };

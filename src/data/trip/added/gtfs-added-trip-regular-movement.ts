@@ -60,7 +60,7 @@ export class GtfsAddedTripRegularMovement implements IGtfsAddedTripServicingMove
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: this.positionId,
+      currentPositionId: this.positionId,
 
       arrivalTimeType: "provided-live-time",
       arrivalTime: this.arrivalTime,

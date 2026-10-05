@@ -6,41 +6,41 @@ import type { IGtfsUpdatedTripServicingMovement } from "./types.js";
 export type GtfsUpdatedTripTerminatingMovementFields = {
   readonly stopId: number;
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
 
   readonly scheduledArrivalTime: Temporal.Instant;
   readonly knownRealtimeArrivalTime: Temporal.Instant | null;
   readonly assumedRealtimeArrivalTime: Temporal.Instant | null;
 
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;
-  readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
+  readonly currentGtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 };
 
 export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServicingMovement {
   readonly stopId: number;
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
 
   readonly scheduledArrivalTime: Temporal.Instant;
   readonly knownRealtimeArrivalTime: Temporal.Instant | null;
   readonly assumedRealtimeArrivalTime: Temporal.Instant | null;
 
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;
-  readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
+  readonly currentGtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   constructor(fields: GtfsUpdatedTripTerminatingMovementFields) {
     this.stopId = fields.stopId;
     this.originalPositionId = fields.originalPositionId;
-    this.updatedPositionId = fields.updatedPositionId;
+    this.currentPositionId = fields.currentPositionId;
 
     this.scheduledArrivalTime = fields.scheduledArrivalTime;
     this.knownRealtimeArrivalTime = fields.knownRealtimeArrivalTime;
     this.assumedRealtimeArrivalTime = fields.assumedRealtimeArrivalTime;
 
     this.originalGtfsIdMetadata = fields.originalGtfsIdMetadata;
-    this.updatedGtfsIdMetadata = fields.updatedGtfsIdMetadata;
+    this.currentGtfsIdMetadata = fields.currentGtfsIdMetadata;
     this.gtfsStopSequence = fields.gtfsStopSequence;
   }
 
@@ -70,7 +70,7 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
     return {
       stopId: this.stopId,
       originalPositionId: this.originalPositionId,
-      updatedPositionId: this.updatedPositionId,
+      currentPositionId: this.currentPositionId,
 
       ...this._arrivalTimeCorequeryFields,
     };
@@ -118,9 +118,9 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
   asReplacedTripTerminatingMovement(): GtfsReplacedTripTerminatingMovement {
     return new GtfsReplacedTripTerminatingMovement({
       stopId: this.stopId,
-      positionId: this.updatedPositionId,
+      positionId: this.currentPositionId,
       arrivalTime: this.effectiveArrivalTime,
-      gtfsIdMetadata: this.updatedGtfsIdMetadata,
+      gtfsIdMetadata: this.currentGtfsIdMetadata,
       gtfsStopSequence: this.gtfsStopSequence,
     });
   }

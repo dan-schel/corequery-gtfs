@@ -68,8 +68,8 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
 
       knownRealtimeDepartureTime: null,
       assumedRealtimeDepartureTime: null,
-      updatedPositionId: this.positionId,
-      updatedGtfsIdMetadata: this.gtfsIdMetadata,
+      currentPositionId: this.positionId,
+      currentGtfsIdMetadata: this.gtfsIdMetadata,
     });
   }
 
@@ -88,8 +88,8 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
 
       knownRealtimeDepartureTime: values.departureTime,
       assumedRealtimeDepartureTime: null,
-      updatedPositionId: values.updatedPositionId,
-      updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
+      currentPositionId: values.currentPositionId,
+      currentGtfsIdMetadata: values.currentGtfsIdMetadata,
     });
   }
 
@@ -112,7 +112,7 @@ export class GtfsScheduledTripOriginatingMovement implements IGtfsScheduledTripS
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: this.positionId,
+      currentPositionId: this.positionId,
 
       departureTimeType: "scheduled-time",
       departureTime: this.departureTime.toInstant(serviceDay, timezone),

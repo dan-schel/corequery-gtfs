@@ -65,8 +65,8 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
 
       knownRealtimeArrivalTime: null,
       assumedRealtimeArrivalTime: null,
-      updatedPositionId: this.positionId,
-      updatedGtfsIdMetadata: this.gtfsIdMetadata,
+      currentPositionId: this.positionId,
+      currentGtfsIdMetadata: this.gtfsIdMetadata,
     });
   }
 
@@ -85,8 +85,8 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
 
       knownRealtimeArrivalTime: values.arrivalTime,
       assumedRealtimeArrivalTime: null,
-      updatedPositionId: values.updatedPositionId,
-      updatedGtfsIdMetadata: values.updatedGtfsIdMetadata,
+      currentPositionId: values.currentPositionId,
+      currentGtfsIdMetadata: values.currentGtfsIdMetadata,
     });
   }
 
@@ -109,7 +109,7 @@ export class GtfsScheduledTripTerminatingMovement implements IGtfsScheduledTripS
     return {
       stopId: this.stopId,
       originalPositionId: this.positionId,
-      updatedPositionId: this.positionId,
+      currentPositionId: this.positionId,
 
       arrivalTimeType: "scheduled-time",
       arrivalTime: this.arrivalTime.toInstant(serviceDay, timezone),

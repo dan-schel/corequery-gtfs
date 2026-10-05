@@ -163,7 +163,7 @@ export class GtfsUpdatedTripUpdateParser {
       if (isSkipped) {
         skippedMovementIndexes.add(movementIndex);
       } else {
-        const updatedPositionId =
+        const currentPositionId =
           gtfsIdMetadata.type === "positional"
             ? gtfsIdMetadata.positionId
             : null;
@@ -196,8 +196,8 @@ export class GtfsUpdatedTripUpdateParser {
           scheduledMovement.asUpdatedTripMovement({
             arrivalTime: realtimeArrivalTime,
             departureTime: realtimeDepartureTime,
-            updatedPositionId,
-            updatedGtfsIdMetadata: gtfsIdMetadata,
+            currentPositionId,
+            currentGtfsIdMetadata: gtfsIdMetadata,
             serviceDay,
             timezone: this._timezone,
           }),
