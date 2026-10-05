@@ -214,11 +214,6 @@ export class GtfsUpdatedTripUpdateParser {
 
     const interpolated = this._movementsInterpolator.interpolate(rawMovements);
     if (interpolated == null) {
-      // TODO: This keeps happening in the PTV feed. In all the cases I've seen
-      // so far, the arrival times are one minute later than the departure times
-      // (for whatever reason). I think I should apply a patch for it, rather
-      // than "fixing" it in corequery-gtfs.
-      //
       // TODO: Add a test for this.
       const Err = KnownDepartureTimesEntailTimeTravelError;
       this._onError(new Err(tripUpdate, rawMovements));
