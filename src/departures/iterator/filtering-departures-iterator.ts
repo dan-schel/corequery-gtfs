@@ -1,13 +1,15 @@
 import type { DeparturesIterationDirection } from "../../corequery-types.js";
 import {
-  DeparturesIterator,
-  DeparturesIteratorResult,
-} from "./departures-iterator.js";
+  GtfsDeparturesIterator,
+  GtfsDeparturesIteratorResult,
+} from "./gtfs-departures-iterator.js";
 
-export class FilteringDeparturesIterator extends DeparturesIterator {
+export class FilteringDeparturesIterator extends GtfsDeparturesIterator {
   constructor(
-    private readonly _iterator: DeparturesIterator,
-    private readonly _predicate: (result: DeparturesIteratorResult) => boolean,
+    private readonly _iterator: GtfsDeparturesIterator,
+    private readonly _predicate: (
+      result: GtfsDeparturesIteratorResult,
+    ) => boolean,
   ) {
     super();
   }
@@ -20,11 +22,11 @@ export class FilteringDeparturesIterator extends DeparturesIterator {
     this._takeUntilMatchesPredicate();
   }
 
-  override peek(): DeparturesIteratorResult | null {
+  override peek(): GtfsDeparturesIteratorResult | null {
     return this._iterator.peek();
   }
 
-  override take(): DeparturesIteratorResult {
+  override take(): GtfsDeparturesIteratorResult {
     const result = this._iterator.take();
     this._takeUntilMatchesPredicate();
     return result;

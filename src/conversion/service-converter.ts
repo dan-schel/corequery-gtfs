@@ -9,7 +9,7 @@ import type {
   ServiceConnectionFields,
 } from "../corequery-types.js";
 import { GtfsScheduledTrip } from "../data/trip/scheduled/gtfs-scheduled-trip.js";
-import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
+import type { GtfsDeparturesIteratorResult } from "../departures/iterator/gtfs-departures-iterator.js";
 import { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
 import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/types.js";
@@ -148,7 +148,7 @@ export class ServiceConverter<
   }
 
   convertDeparture(
-    result: DeparturesIteratorResult,
+    result: GtfsDeparturesIteratorResult,
     timezone: string,
   ): CorequeryDepartureClass {
     if (result.trip instanceof GtfsScheduledTrip) {

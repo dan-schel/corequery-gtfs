@@ -1,8 +1,8 @@
 import { assertNever, nonNull } from "@dan-schel/js-utils";
 import {
-  DeparturesIterator,
-  DeparturesIteratorResult,
-} from "./departures-iterator.js";
+  GtfsDeparturesIterator,
+  GtfsDeparturesIteratorResult,
+} from "./gtfs-departures-iterator.js";
 import { ScheduledDeparturesIterator } from "./scheduled-departures-iterator.js";
 import type { GtfsScheduledMovementsIndex } from "../gtfs-scheduled-movements-index.js";
 import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
@@ -10,13 +10,13 @@ import type { TimezoneConfig } from "../../config/timezone-config.js";
 import type { DeparturesIterationDirection } from "../../corequery-types.js";
 import { RealtimeDeparturesBlockIterator } from "./realtime-departures-block-iterator.js";
 
-export class ZipperDeparturesIterator extends DeparturesIterator {
+export class ZipperDeparturesIterator extends GtfsDeparturesIterator {
   private _direction: DeparturesIterationDirection;
-  private _nextIterator: DeparturesIterator | null;
+  private _nextIterator: GtfsDeparturesIterator | null;
   private _cutoff: Temporal.Instant | null;
 
   constructor(
-    private readonly _iterators: DeparturesIterator[],
+    private readonly _iterators: GtfsDeparturesIterator[],
     private readonly _iterationLimitHours: number | null,
   ) {
     super();
@@ -40,15 +40,15 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
     this._nextIterator = this._determineNextIterator();
   }
 
-  override peek(): DeparturesIteratorResult | null {
+  override peek(): GtfsDeparturesIteratorResult | null {
     return this._nextIterator?.peek() ?? null;
   }
 
-  peekAtIterator(): DeparturesIterator | null {
+  peekAtIterator(): GtfsDeparturesIterator | null {
     return this._nextIterator;
   }
 
-  override take(): DeparturesIteratorResult {
+  override take(): GtfsDeparturesIteratorResult {
     const iterator = this._nextIterator;
     if (iterator == null) throw new Error("Nothing to take.");
 
@@ -62,8 +62,8 @@ export class ZipperDeparturesIterator extends DeparturesIterator {
   private _determineNextIterator() {
     const cutoff = this._cutoff;
 
-    let best: DeparturesIteratorResult | null = null;
-    let bestIterator: DeparturesIterator | null = null;
+    let best: GtfsDeparturesIteratorResult | null = null;
+    let bestIterator: GtfsDeparturesIterator | null = null;
 
     for (const iterator of this._iterators) {
       const nextValue = iterator.peek();

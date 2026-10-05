@@ -1,4 +1,4 @@
-import type { DeparturesIterator } from "../departures/iterator/departures-iterator.js";
+import type { GtfsDeparturesIterator } from "../departures/iterator/gtfs-departures-iterator.js";
 import type { ServiceConverter } from "./service-converter.js";
 
 export class ServiceConversionIterator<
@@ -14,11 +14,7 @@ export class ServiceConversionIterator<
   private _convertedNextDeparture: CorequeryDepartureClass | null;
 
   constructor(
-    // TODO: There's two things called DeparturesIterator in this repo, which
-    // isn't ideal. Maybe this one could be prefixed with Gtfs, but it raises
-    // the larger question of whether anything in this repo need be prefixed
-    // with Gtfs given the package name.
-    private readonly _iterator: DeparturesIterator,
+    private readonly _iterator: GtfsDeparturesIterator,
 
     private readonly _converter: ServiceConverter<
       CorequeryDepartureClass,

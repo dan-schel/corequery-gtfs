@@ -1,18 +1,18 @@
 import { assertNever, itsOk } from "@dan-schel/js-utils";
 import {
-  DeparturesIterator,
-  type DeparturesIteratorResult,
-} from "./departures-iterator.js";
+  GtfsDeparturesIterator,
+  type GtfsDeparturesIteratorResult,
+} from "./gtfs-departures-iterator.js";
 import type { DeparturesBlock } from "../departures-block.js";
 import type { DeparturesIterationDirection } from "../../corequery-types.js";
 
 export abstract class DeparturesBlockIterator<
   BlockType extends DeparturesBlock,
   EntryType,
-> extends DeparturesIterator {
+> extends GtfsDeparturesIterator {
   private _index: number;
   private _direction: DeparturesIterationDirection;
-  private _nextValue: DeparturesIteratorResult | null;
+  private _nextValue: GtfsDeparturesIteratorResult | null;
 
   constructor(
     readonly block: BlockType,
@@ -42,11 +42,11 @@ export abstract class DeparturesBlockIterator<
     }
   }
 
-  override peek(): DeparturesIteratorResult | null {
+  override peek(): GtfsDeparturesIteratorResult | null {
     return this._nextValue;
   }
 
-  override take(): DeparturesIteratorResult {
+  override take(): GtfsDeparturesIteratorResult {
     const value = this.peek();
     if (value == null) throw new Error("Nothing to take.");
 
@@ -60,7 +60,7 @@ export abstract class DeparturesBlockIterator<
 
   protected abstract _convertEntryToResult(
     entry: EntryType,
-  ): DeparturesIteratorResult;
+  ): GtfsDeparturesIteratorResult;
 
   protected abstract _shouldSkipEntry(entry: EntryType): boolean;
 

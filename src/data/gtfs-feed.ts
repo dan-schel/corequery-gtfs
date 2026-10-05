@@ -1,5 +1,5 @@
 import type { TimezoneConfig } from "../config/timezone-config.js";
-import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
+import type { GtfsDeparturesIteratorResult } from "../departures/iterator/gtfs-departures-iterator.js";
 import { FilteringDeparturesIterator } from "../departures/iterator/filtering-departures-iterator.js";
 import { GtfsScheduledMovementsIndex } from "../departures/gtfs-scheduled-movements-index.js";
 import { ZipperDeparturesIterator } from "../departures/iterator/zipper-departures-iterator.js";
@@ -113,7 +113,9 @@ export class GtfsFeed {
     );
   }
 
-  private _isArrivalWhichContinues(result: DeparturesIteratorResult): boolean {
+  private _isArrivalWhichContinues(
+    result: GtfsDeparturesIteratorResult,
+  ): boolean {
     if (result.movement.type !== "terminating") return false;
 
     const transfers = this.getUpheldTransfersForTrip(
