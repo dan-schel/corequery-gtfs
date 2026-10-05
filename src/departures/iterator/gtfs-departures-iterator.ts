@@ -4,7 +4,7 @@ import type {
   GtfsTripServicingMovement,
 } from "../../data/trip/types.js";
 
-export class DeparturesIteratorResult {
+export class GtfsDeparturesIteratorResult {
   constructor(
     readonly trip: GtfsTrip,
     readonly serviceDay: Temporal.PlainDate,
@@ -14,13 +14,13 @@ export class DeparturesIteratorResult {
   ) {}
 }
 
-export abstract class DeparturesIterator {
+export abstract class GtfsDeparturesIterator {
   abstract set(
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
   ): void;
 
-  abstract peek(): DeparturesIteratorResult | null;
+  abstract peek(): GtfsDeparturesIteratorResult | null;
 
-  abstract take(): DeparturesIteratorResult;
+  abstract take(): GtfsDeparturesIteratorResult;
 }

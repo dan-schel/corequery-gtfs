@@ -6,10 +6,11 @@ import type {
   ServicePassingMovementFields,
   ServiceRegularMovementFields,
   ServiceTerminatingMovementFields,
-  ServiceConnectionFields,
+  EntireVehicleFormsServiceConnectionFields,
+  GenericServiceConnectionFields,
 } from "../corequery-types.js";
 import { GtfsScheduledTrip } from "../data/trip/scheduled/gtfs-scheduled-trip.js";
-import type { DeparturesIteratorResult } from "../departures/iterator/departures-iterator.js";
+import type { GtfsDeparturesIteratorResult } from "../departures/iterator/gtfs-departures-iterator.js";
 import { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
 import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/types.js";
@@ -27,7 +28,8 @@ export type ServiceConverterFields<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > = {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
@@ -43,7 +45,8 @@ export type ServiceConverterFields<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
 
@@ -65,9 +68,13 @@ export type ServiceConverterFields<
     fields: ServicePassingMovementFields,
   ) => CorequeryServicePassingMovementClass;
 
-  readonly buildServiceConnection: (
-    fields: ServiceConnectionFields,
-  ) => CorequeryServiceConnectionClass;
+  readonly buildServiceEntireVehicleFormsConnection: (
+    fields: EntireVehicleFormsServiceConnectionFields,
+  ) => CorequeryEntireVehicleFormsServiceConnectionClass;
+
+  readonly buildServiceGenericConnection: (
+    fields: GenericServiceConnectionFields,
+  ) => CorequeryGenericServiceConnectionClass;
 };
 
 export class ServiceConverter<
@@ -78,7 +85,8 @@ export class ServiceConverter<
   CorequeryServiceRegularMovementClass,
   CorequeryServiceTerminatingMovementClass,
   CorequeryServicePassingMovementClass,
-  CorequeryServiceConnectionClass,
+  CorequeryEntireVehicleFormsServiceConnectionClass,
+  CorequeryGenericServiceConnectionClass,
 > {
   private readonly _sourceId: string;
   private readonly _gtfsSystem: GtfsSystem;
@@ -94,7 +102,8 @@ export class ServiceConverter<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
   ) => CorequeryServiceClass;
 
@@ -116,9 +125,17 @@ export class ServiceConverter<
     fields: ServicePassingMovementFields,
   ) => CorequeryServicePassingMovementClass;
 
-  private readonly _buildServiceConnection: (
-    fields: ServiceConnectionFields,
-  ) => CorequeryServiceConnectionClass;
+  private readonly _buildServiceEntireVehicleFormsConnection: (
+    fields: EntireVehicleFormsServiceConnectionFields,
+  ) => CorequeryEntireVehicleFormsServiceConnectionClass;
+
+  // We're only extracting the "entire vehicle forms"-type connections in the
+  // GTFS data so far, but one day (probably if V/Line starts providing them) we
+  // might have other types of connections as well, e.g. Maryborough trains
+  // joining Ararat trains.
+  private readonly _buildServiceGenericConnection: (
+    fields: GenericServiceConnectionFields,
+  ) => CorequeryGenericServiceConnectionClass;
 
   constructor(
     fields: ServiceConverterFields<
@@ -129,7 +146,8 @@ export class ServiceConverter<
       CorequeryServiceRegularMovementClass,
       CorequeryServiceTerminatingMovementClass,
       CorequeryServicePassingMovementClass,
-      CorequeryServiceConnectionClass
+      CorequeryEntireVehicleFormsServiceConnectionClass,
+      CorequeryGenericServiceConnectionClass
     >,
   ) {
     this._sourceId = fields.sourceId;
@@ -144,11 +162,13 @@ export class ServiceConverter<
     this._buildServiceTerminatingMovement =
       fields.buildServiceTerminatingMovement;
     this._buildServicePassingMovement = fields.buildServicePassingMovement;
-    this._buildServiceConnection = fields.buildServiceConnection;
+    this._buildServiceEntireVehicleFormsConnection =
+      fields.buildServiceEntireVehicleFormsConnection;
+    this._buildServiceGenericConnection = fields.buildServiceGenericConnection;
   }
 
   convertDeparture(
-    result: DeparturesIteratorResult,
+    result: GtfsDeparturesIteratorResult,
     timezone: string,
   ): CorequeryDepartureClass {
     if (result.trip instanceof GtfsScheduledTrip) {
@@ -191,10 +211,6 @@ export class ServiceConverter<
   ): CorequeryServiceClass {
     const id = new CorequeryIntrasourceId(trip.gtfsTripId, serviceDay);
 
-    // TODO: Consider pushing this onto the scheduled trip class, and likewise
-    // for the realtime trip methods below. (Pass the converter as a parameter,
-    // or create some sort of ConversionContext class to pass, so that
-    // GtfsScheduledTrip has access to the _buildTags, etc. methods?)
     return this._buildService({
       sourceId: this._sourceId,
       intrasourceId: id.toString(),
@@ -337,22 +353,17 @@ export class ServiceConverter<
         if (transfer instanceof GtfsEntireVehicleFormsServiceTransfer) {
           const fromMe = transfer.fromTripId === trip.gtfsTripId;
           const otherTripId = fromMe ? transfer.toTripId : transfer.fromTripId;
-          const otherTrip = feed.requireTrip(otherTripId, serviceDay);
 
           // Note: We don't need to check if the other trip is cancelled now,
           // since the transfer would be broken already in that case.
 
           const isid = new CorequeryIntrasourceId(otherTripId, serviceDay);
-          const myFinalMovementIndex = trip.movements.length - 1;
-          const otherFinalMovementIndex = otherTrip.movements.length;
 
-          return this._buildServiceConnection({
+          return this._buildServiceEntireVehicleFormsConnection({
             type: "entire-vehicle-forms-service",
             direction: fromMe ? "to-other" : "from-other",
             otherServiceSourceId: this._sourceId,
             otherServiceIntrasourceId: isid.toString(),
-            movementIndex: fromMe ? myFinalMovementIndex : 0,
-            otherServiceMovementIndex: fromMe ? 0 : otherFinalMovementIndex,
           });
         } else {
           assertNever(transfer);

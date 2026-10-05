@@ -212,7 +212,7 @@ function orig(
   return new GtfsUpdatedTripOriginatingMovement({
     stopId: 1,
     originalPositionId: null,
-    updatedPositionId: null,
+    currentPositionId: null,
 
     scheduledDepartureTime: time(scheduledDepartureTime),
     knownRealtimeDepartureTime: optionalTime(knownRealtimeDepartureTime),
@@ -223,7 +223,7 @@ function orig(
       id: "stop-1",
       stopId: 1,
     },
-    updatedGtfsIdMetadata: {
+    currentGtfsIdMetadata: {
       type: "general",
       id: "stop-1",
       stopId: 1,
@@ -241,7 +241,7 @@ function rglr(
   return new GtfsUpdatedTripRegularMovement({
     stopId: 1,
     originalPositionId: null,
-    updatedPositionId: null,
+    currentPositionId: null,
 
     scheduledArrivalTime: time(scheduledArrivalTime),
     knownRealtimeArrivalTime: optionalTime(knownRealtimeArrivalTime),
@@ -259,7 +259,7 @@ function rglr(
       id: "stop-1",
       stopId: 1,
     },
-    updatedGtfsIdMetadata: {
+    currentGtfsIdMetadata: {
       type: "general",
       id: "stop-1",
       stopId: 1,
@@ -277,7 +277,7 @@ function term(
   return new GtfsUpdatedTripTerminatingMovement({
     stopId: 1,
     originalPositionId: null,
-    updatedPositionId: null,
+    currentPositionId: null,
 
     scheduledArrivalTime: time(scheduledArrivalTime),
     knownRealtimeArrivalTime: optionalTime(knownRealtimeArrivalTime),
@@ -288,7 +288,7 @@ function term(
       id: "stop-1",
       stopId: 1,
     },
-    updatedGtfsIdMetadata: {
+    currentGtfsIdMetadata: {
       type: "general",
       id: "stop-1",
       stopId: 1,

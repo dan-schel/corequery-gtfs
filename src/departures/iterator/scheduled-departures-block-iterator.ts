@@ -1,5 +1,5 @@
 import type { ScheduledDeparturesBlock } from "../scheduled-departures-block.js";
-import { DeparturesIteratorResult } from "./departures-iterator.js";
+import { GtfsDeparturesIteratorResult } from "./gtfs-departures-iterator.js";
 import type { GtfsRealtimeData } from "../../data/gtfs-realtime-data.js";
 import { DeparturesBlockIterator } from "./departures-block-iterator.js";
 import type { GtfsScheduledMovementsIndexEntry } from "../gtfs-scheduled-movements-index.js";
@@ -17,8 +17,8 @@ export class ScheduledDeparturesBlockIterator extends DeparturesBlockIterator<
 
   protected override _convertEntryToResult(
     entry: GtfsScheduledMovementsIndexEntry,
-  ): DeparturesIteratorResult {
-    return new DeparturesIteratorResult(
+  ): GtfsDeparturesIteratorResult {
+    return new GtfsDeparturesIteratorResult(
       entry.trip,
       this.block.serviceDay,
       entry.time.toInstant(this.block.serviceDay, this.block.timezone),

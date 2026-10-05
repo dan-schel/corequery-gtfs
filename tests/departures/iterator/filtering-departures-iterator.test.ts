@@ -2,9 +2,9 @@ import { it, describe, expect } from "vitest";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import {
-  DeparturesIteratorResult,
-  DeparturesIterator,
-} from "../../../src/departures/iterator/departures-iterator.js";
+  GtfsDeparturesIteratorResult,
+  GtfsDeparturesIterator,
+} from "../../../src/departures/iterator/gtfs-departures-iterator.js";
 import { FilteringDeparturesIterator } from "../../../src/departures/iterator/filtering-departures-iterator.js";
 import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
 
@@ -103,7 +103,7 @@ function departure({ instant, tripId }: { instant: string; tripId: string }) {
     terminationTime: stopTime.plus({ minutes: 5 }),
   });
 
-  return new DeparturesIteratorResult(
+  return new GtfsDeparturesIteratorResult(
     trip,
     serviceDay,
     instantObj,
@@ -112,8 +112,8 @@ function departure({ instant, tripId }: { instant: string; tripId: string }) {
   );
 }
 
-class DummyIterator extends DeparturesIterator {
-  constructor(readonly items: DeparturesIteratorResult[]) {
+class DummyIterator extends GtfsDeparturesIterator {
+  constructor(readonly items: GtfsDeparturesIteratorResult[]) {
     super();
   }
 
@@ -122,11 +122,11 @@ class DummyIterator extends DeparturesIterator {
     _direction: DeparturesIterationDirection,
   ): void {}
 
-  override peek(): DeparturesIteratorResult | null {
+  override peek(): GtfsDeparturesIteratorResult | null {
     return this.items[0] ?? null;
   }
 
-  override take(): DeparturesIteratorResult {
+  override take(): GtfsDeparturesIteratorResult {
     const result = this.items.shift();
     if (result == null) throw new Error();
     return result;

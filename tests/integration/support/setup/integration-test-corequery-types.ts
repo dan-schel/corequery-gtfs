@@ -1,6 +1,7 @@
 import type {
   DepartureFields,
-  ServiceConnectionFields,
+  EntireVehicleFormsServiceConnectionFields,
+  GenericServiceConnectionFields,
   ServiceFields,
   ServiceOriginatingMovementFields,
   ServicePassingMovementFields,
@@ -17,7 +18,8 @@ export type IntegrationTestServiceSource = GtfsServiceSource<
   IntegrationTestServiceRegularMovement,
   IntegrationTestServiceTerminatingMovement,
   IntegrationTestServicePassingMovement,
-  IntegrationTestServiceConnection
+  IntegrationTestEntireVehicleFormsServiceConnection,
+  IntegrationTestGenericServiceConnection
 >;
 
 export type IntegrationTestDeparture = DepartureFields<IntegrationTestService>;
@@ -28,7 +30,8 @@ export type IntegrationTestService = ServiceFields<
   IntegrationTestServiceRegularMovement,
   IntegrationTestServiceTerminatingMovement,
   IntegrationTestServicePassingMovement,
-  IntegrationTestServiceConnection
+  IntegrationTestEntireVehicleFormsServiceConnection,
+  IntegrationTestGenericServiceConnection
 >;
 
 type IntegrationTestTags = Set<number>;
@@ -49,4 +52,7 @@ type IntegrationTestServicePassingMovement = {
   type: "passing";
 } & ServicePassingMovementFields;
 
-type IntegrationTestServiceConnection = ServiceConnectionFields;
+type IntegrationTestEntireVehicleFormsServiceConnection =
+  EntireVehicleFormsServiceConnectionFields;
+
+type IntegrationTestGenericServiceConnection = GenericServiceConnectionFields;

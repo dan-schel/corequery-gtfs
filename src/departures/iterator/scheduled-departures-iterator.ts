@@ -1,8 +1,8 @@
 import { assertNever, removeIf } from "@dan-schel/js-utils";
 import {
-  DeparturesIterator,
-  type DeparturesIteratorResult,
-} from "./departures-iterator.js";
+  GtfsDeparturesIterator,
+  type GtfsDeparturesIteratorResult,
+} from "./gtfs-departures-iterator.js";
 import { BoundedInstantRange } from "../../data/bounded-instant-range.js";
 import { ScheduledDeparturesBlockIterator } from "./scheduled-departures-block-iterator.js";
 import type { GtfsScheduledMovementsIndex } from "../gtfs-scheduled-movements-index.js";
@@ -18,7 +18,7 @@ type ScheduledDeparturesIteratorOptions = {
   readonly maximumNumberOfScans: number | null;
 };
 
-export class ScheduledDeparturesIterator extends DeparturesIterator {
+export class ScheduledDeparturesIterator extends GtfsDeparturesIterator {
   private _direction: DeparturesIterationDirection;
   private _searchRange: SearchRange | null;
   private _iterators: ScheduledDeparturesBlockIterator[];
@@ -97,11 +97,11 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
     this._determineIteratorWithNextValue();
   }
 
-  peek(): DeparturesIteratorResult | null {
+  peek(): GtfsDeparturesIteratorResult | null {
     return this._nextIterator?.peek() ?? null;
   }
 
-  take(): DeparturesIteratorResult {
+  take(): GtfsDeparturesIteratorResult {
     const iterator = this._nextIterator;
     if (iterator == null) throw new Error("Nothing to take.");
 
@@ -177,7 +177,7 @@ export class ScheduledDeparturesIterator extends DeparturesIterator {
   }
 
   private _getBestOfCurrentIterators() {
-    let best: DeparturesIteratorResult | null = null;
+    let best: GtfsDeparturesIteratorResult | null = null;
     let bestIterator: ScheduledDeparturesBlockIterator | null = null;
 
     for (const iterator of this._iterators) {

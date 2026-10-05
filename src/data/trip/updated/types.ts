@@ -27,9 +27,9 @@ export type IGtfsUpdatedTripMovement = {
 
 export type IGtfsUpdatedTripServicingMovement = IGtfsUpdatedTripMovement & {
   readonly originalPositionId: number | null;
-  readonly updatedPositionId: number | null;
+  readonly currentPositionId: number | null;
   readonly originalGtfsIdMetadata: StopGtfsIdMetadata;
-  readonly updatedGtfsIdMetadata: StopGtfsIdMetadata;
+  readonly currentGtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   get isServicing(): true;

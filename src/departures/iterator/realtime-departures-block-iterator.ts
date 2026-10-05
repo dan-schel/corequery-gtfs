@@ -1,4 +1,4 @@
-import { DeparturesIteratorResult } from "./departures-iterator.js";
+import { GtfsDeparturesIteratorResult } from "./gtfs-departures-iterator.js";
 import {
   RealtimeDeparturesBlock,
   type RealtimeDeparturesBlockEntry,
@@ -26,8 +26,8 @@ export class RealtimeDeparturesBlockIterator extends DeparturesBlockIterator<
 
   protected override _convertEntryToResult(
     entry: RealtimeDeparturesBlockEntry,
-  ): DeparturesIteratorResult {
-    return new DeparturesIteratorResult(
+  ): GtfsDeparturesIteratorResult {
+    return new GtfsDeparturesIteratorResult(
       entry.trip,
       entry.trip.serviceDay,
       entry.instant,
