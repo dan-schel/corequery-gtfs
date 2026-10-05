@@ -191,10 +191,6 @@ export class ServiceConverter<
   ): CorequeryServiceClass {
     const id = new CorequeryIntrasourceId(trip.gtfsTripId, serviceDay);
 
-    // TODO: Consider pushing this onto the scheduled trip class, and likewise
-    // for the realtime trip methods below. (Pass the converter as a parameter,
-    // or create some sort of ConversionContext class to pass, so that
-    // GtfsScheduledTrip has access to the _buildTags, etc. methods?)
     return this._buildService({
       sourceId: this._sourceId,
       intrasourceId: id.toString(),
