@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 01: works, when the delay increases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 01: works, when the delay increases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -17,7 +17,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 02: works, when the delay decreases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 02: works, when the delay decreases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -34,7 +34,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 03: works, when the service goes from late to early 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 03: works, when the service goes from late to early 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -51,7 +51,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 04: works, when only the termination time is given 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 04: works, when only the termination time is given 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -68,7 +68,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 05: works, when only the origination time is given 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 05: works, when only the origination time is given 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -85,7 +85,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 06: works, when arrival times differ from departure times, and delay decreases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 06: works, when arrival times differ from departure times, and delay decreases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -98,7 +98,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 07: works, when arrival times differ from departure times, and delay increases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 07: works, when arrival times differ from departure times, and delay increases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -111,7 +111,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (follow-spec) > 08: works, when passing movements are included 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`follow-spec\` mode > 08: works, when passing movements are included 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -134,7 +134,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 01: works, when the delay increases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 01: works, when the delay increases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -151,7 +151,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 02: works, when the delay decreases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 02: works, when the delay decreases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -168,7 +168,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 03: works, when the service goes from late to early 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 03: works, when the service goes from late to early 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -185,7 +185,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 04: works, when only the termination time is given 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 04: works, when only the termination time is given 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -202,7 +202,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 05: works, when only the origination time is given 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 05: works, when only the origination time is given 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -219,7 +219,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 06: works, when arrival times differ from departure times, and delay decreases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 06: works, when arrival times differ from departure times, and delay decreases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -232,7 +232,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 07: works, when arrival times differ from departure times, and delay increases over time 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 07: works, when arrival times differ from departure times, and delay increases over time 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
@@ -245,7 +245,7 @@ S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP
 "
 `;
 
-exports[`GtfsTripMovementsInterpolator (lerp) > 08: works, when passing movements are included 1`] = `
+exports[`GtfsTripMovementsInterpolator > in \`lerp\` mode > 08: works, when passing movements are included 1`] = `
 "
 
 S-ARR       S-DEP       | K-ARR       K-DEP       | A-ARR       A-DEP

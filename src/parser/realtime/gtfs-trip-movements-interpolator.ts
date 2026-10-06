@@ -1,4 +1,5 @@
 import { itsOk, map } from "@dan-schel/js-utils";
+import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
 import type {
   GtfsUpdatedTripMovement,
   GtfsUpdatedTripServicingMovement,
@@ -50,11 +51,11 @@ import type {
 // available to CoreQuery too so it can reflect it in the UI.
 
 export type GtfsTripMovementsInterpolatorFields = {
-  readonly interpolationMode: "follow-spec" | "lerp";
+  readonly interpolationMode: GtfsInterpolationMode;
 };
 
 export class GtfsTripMovementsInterpolator {
-  private readonly _interpolationMode: "follow-spec" | "lerp";
+  private readonly _interpolationMode: GtfsInterpolationMode;
 
   constructor(fields: GtfsTripMovementsInterpolatorFields) {
     this._interpolationMode = fields.interpolationMode;

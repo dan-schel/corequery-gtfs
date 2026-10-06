@@ -1,4 +1,8 @@
-import type { GtfsConfig, TimezoneConfig } from "./config/index.js";
+import type {
+  GtfsConfig,
+  GtfsInterpolationMode,
+  TimezoneConfig,
+} from "./config/index.js";
 import type { GtfsFeed } from "./data/gtfs-feed.js";
 import { LineGtfsIdMapping } from "./data/ids/line-gtfs-id-mapping.js";
 import { StopGtfsIdMapping } from "./data/ids/stop-gtfs-id-mapping.js";
@@ -18,20 +22,22 @@ export class GtfsSystem {
   private _realtimeParsingErrors: GtfsRealtimeDataParsingError[];
 
   constructor(
-    private readonly _lineGtfsIdMapping: LineGtfsIdMapping,
-    private readonly _stopGtfsIdMapping: StopGtfsIdMapping,
-    private readonly _lineRoutesMapping: LineRoutesMapping,
-    private readonly _bonusLinesMapping: BonusLinesMapping,
-    private readonly _timezoneConfig: TimezoneConfig,
+    lineGtfsIdMapping: LineGtfsIdMapping,
+    stopGtfsIdMapping: StopGtfsIdMapping,
+    lineRoutesMapping: LineRoutesMapping,
+    bonusLinesMapping: BonusLinesMapping,
+    timezoneConfig: TimezoneConfig,
+    interpolationMode: GtfsInterpolationMode,
   ) {
     this._parser = new GtfsFeedParser({
-      lineRoutesMapping: this._lineRoutesMapping,
-      bonusLinesMapping: this._bonusLinesMapping,
-      lineGtfsIdMapping: this._lineGtfsIdMapping,
-      stopGtfsIdMapping: this._stopGtfsIdMapping,
-      timezoneConfig: this._timezoneConfig,
+      lineRoutesMapping,
+      bonusLinesMapping,
+      lineGtfsIdMapping,
+      stopGtfsIdMapping,
+      timezoneConfig,
       onScheduleParsingError: (error) => this._onScheduledParsingError(error),
       onRealtimeParsingError: (error) => this._onRealtimeParsingError(error),
+      interpolationMode,
     });
 
     this._feed = null;
@@ -46,6 +52,7 @@ export class GtfsSystem {
       LineRoutesMapping.build(config.lineRoutesMapping),
       BonusLinesMapping.build(config.bonusLinesMapping ?? {}),
       config.timezoneConfig,
+      config.interpolationMode ?? "follow-spec",
     );
   }
 

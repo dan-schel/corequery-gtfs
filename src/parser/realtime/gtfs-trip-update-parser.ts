@@ -16,6 +16,7 @@ import {
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
+import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
 
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const TRIP_UPDATE_SCHEDULE_RELATIONSHIP_CANCELLED = "CANCELED";
@@ -28,6 +29,7 @@ export type GtfsTripUpdateParserFields = {
   readonly lineGtfsIdMapping: LineGtfsIdMapping;
   readonly lineRoutesMapping: LineRoutesMapping;
   readonly bonusLinesMapping: BonusLinesMapping;
+  readonly interpolationMode: GtfsInterpolationMode;
   readonly onError: (error: GtfsTripUpdateParsingError) => void;
 };
 
@@ -47,6 +49,7 @@ export class GtfsTripUpdateParser {
       lineGtfsIdMapping: fields.lineGtfsIdMapping,
       lineRoutesMapping: fields.lineRoutesMapping,
       bonusLinesMapping: fields.bonusLinesMapping,
+      interpolationMode: fields.interpolationMode,
       onError: this._onError,
     });
     this._cancelledTripParser = new GtfsCancelledTripUpdateParser({

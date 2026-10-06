@@ -17,6 +17,7 @@ import type { GtfsReplacedTripMovement } from "../../data/trip/replaced/types.js
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
+import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
 import {
   GtfsRouteMatcher,
   type GtfsRouteMatchingError,
@@ -41,6 +42,7 @@ export type GtfsUpdatedTripUpdateParserFields = {
   readonly lineGtfsIdMapping: LineGtfsIdMapping;
   readonly lineRoutesMapping: LineRoutesMapping;
   readonly bonusLinesMapping: BonusLinesMapping;
+  readonly interpolationMode: GtfsInterpolationMode;
   readonly onError: (error: GtfsUpdatedTripUpdateParsingError) => void;
 };
 
@@ -64,7 +66,7 @@ export class GtfsUpdatedTripUpdateParser {
       onError: this._onError,
     });
     this._movementsInterpolator = new GtfsTripMovementsInterpolator({
-      interpolationMode: "follow-spec",
+      interpolationMode: fields.interpolationMode,
     });
     this._routeMatcher = new GtfsRouteMatcher({
       onError: this._onError,

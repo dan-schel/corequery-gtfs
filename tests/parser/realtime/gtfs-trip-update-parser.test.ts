@@ -54,6 +54,7 @@ describe("GtfsTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -112,6 +113,7 @@ describe("GtfsTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 

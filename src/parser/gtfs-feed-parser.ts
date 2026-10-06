@@ -14,6 +14,7 @@ import {
 } from "./schedule/gtfs-schedule-data-parser.js";
 import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
 import type { TimezoneConfig } from "../config/timezone-config.js";
+import type { GtfsInterpolationMode } from "../config/gtfs-config.js";
 
 export type GtfsFeedParserFields = {
   readonly lineRoutesMapping: LineRoutesMapping;
@@ -21,6 +22,8 @@ export type GtfsFeedParserFields = {
   readonly lineGtfsIdMapping: LineGtfsIdMapping;
   readonly stopGtfsIdMapping: StopGtfsIdMapping;
   readonly timezoneConfig: TimezoneConfig;
+  readonly interpolationMode: GtfsInterpolationMode;
+
   readonly onScheduleParsingError: (error: GtfsScheduleParsingError) => void;
   readonly onRealtimeParsingError: (
     error: GtfsRealtimeDataParsingError,
@@ -49,6 +52,7 @@ export class GtfsFeedParser {
       lineGtfsIdMapping: fields.lineGtfsIdMapping,
       lineRoutesMapping: fields.lineRoutesMapping,
       bonusLinesMapping: fields.bonusLinesMapping,
+      interpolationMode: fields.interpolationMode,
       onError: fields.onRealtimeParsingError,
     });
   }
