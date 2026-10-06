@@ -218,7 +218,6 @@ export class GtfsUpdatedTripUpdateParser {
 
     const interpolated = this._movementsInterpolator.interpolate(rawMovements);
     if (interpolated == null) {
-      // TODO: Add a test for this.
       const Err = KnownDepartureTimesEntailTimeTravelError;
       this._onError(new Err(tripUpdate, rawMovements));
       return null;
@@ -232,8 +231,6 @@ export class GtfsUpdatedTripUpdateParser {
         isCancelled: false,
       });
     } else {
-      // TODO: Test this.
-
       const survivingMovements = interpolated.filter(
         (movement, index) =>
           movement.isServicing && !skippedMovementIndexes.has(index),
