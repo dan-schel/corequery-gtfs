@@ -6,13 +6,26 @@ import { GtfsUpdatedTripRegularMovement } from "../../../src/data/trip/updated/g
 import type { GtfsUpdatedTripMovement } from "../../../src/data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "../../../src/parser/realtime/gtfs-trip-movements-interpolator.js";
 import { itsOk } from "@dan-schel/js-utils";
+import type { GtfsInterpolationMode } from "../../../src/config/gtfs-config.js";
 
 const nullTime = "--:--" as const;
 type NullTime = typeof nullTime;
 
 describe("GtfsTripMovementsInterpolator", () => {
+  describe("in `follow-spec` mode", () => {
+    declareInterpolationTests("follow-spec");
+  });
+
+  describe("in `lerp` mode", () => {
+    declareInterpolationTests("lerp");
+  });
+});
+
+function declareInterpolationTests(interpolationMode: GtfsInterpolationMode) {
   it("01: works, when the delay increases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
@@ -31,7 +44,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("02: works, when the delay decreases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
@@ -50,7 +65,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("03: works, when the service goes from late to early", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
@@ -69,7 +86,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("04: works, when only the termination time is given", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
@@ -88,7 +107,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("05: works, when only the origination time is given", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:30"),
@@ -107,7 +128,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("06: works, when arrival times differ from departure times, and delay decreases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:30"),
@@ -122,7 +145,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("07: works, when arrival times differ from departure times, and delay increases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "08:00"),
@@ -137,7 +162,9 @@ describe("GtfsTripMovementsInterpolator", () => {
   });
 
   it("08: works, when passing movements are included", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
+    const interpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode,
+    });
     const interpolated = interpolator.interpolate([
       //   Scheduled:        Realtime:
       orig("--:--", "08:00", "--:--", "--:--"),
@@ -160,7 +187,7 @@ describe("GtfsTripMovementsInterpolator", () => {
     expectMovementsToMatchSnapshot(interpolated);
     ensureNoTimeTravel(interpolated);
   });
-});
+}
 
 function expectMovementsToMatchSnapshot(
   movements: readonly GtfsUpdatedTripMovement[] | null,

@@ -64,6 +64,7 @@ describe("GtfsRealtimeDataParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -120,6 +121,7 @@ describe("GtfsRealtimeDataParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -137,7 +139,7 @@ describe("GtfsRealtimeDataParser", () => {
         toTripId: TRIP_2.gtfsTripId,
       }),
     ];
-    const schedule = SCHEDULE.withTransfers(transfers);
+    const schedule = SCHEDULE.with({ transfers });
     const parsed = parser.parse(realtimeFeed, schedule);
 
     expect(errors).toHaveLength(0);

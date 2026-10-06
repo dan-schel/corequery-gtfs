@@ -59,10 +59,13 @@ const timezoneConfigSchema = z.object({
   maximumViableOffsetSeconds: z.number(),
 });
 
+const interpolationModeSchema = z.enum(["follow-spec", "lerp"]);
+
 export const configJsonSchema: z.ZodType<GtfsConfig> = z.object({
   lineGtfsIds: lineGtfsIdsSchema,
   stopGtfsIds: stopGtfsIdsSchema,
   lineRoutesMapping: lineRoutesMappingSchema,
   bonusLinesMapping: bonusLinesMappingSchema.optional(),
   timezoneConfig: timezoneConfigSchema,
+  interpolationMode: interpolationModeSchema.optional(),
 });

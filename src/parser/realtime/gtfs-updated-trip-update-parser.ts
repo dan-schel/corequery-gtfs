@@ -17,6 +17,7 @@ import type { GtfsReplacedTripMovement } from "../../data/trip/replaced/types.js
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
+import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
 import {
   GtfsRouteMatcher,
   type GtfsRouteMatchingError,
@@ -41,6 +42,7 @@ export type GtfsUpdatedTripUpdateParserFields = {
   readonly lineGtfsIdMapping: LineGtfsIdMapping;
   readonly lineRoutesMapping: LineRoutesMapping;
   readonly bonusLinesMapping: BonusLinesMapping;
+  readonly interpolationMode: GtfsInterpolationMode;
   readonly onError: (error: GtfsUpdatedTripUpdateParsingError) => void;
 };
 
@@ -63,7 +65,9 @@ export class GtfsUpdatedTripUpdateParser {
     this._tripIdentifier = new GtfsScheduledTripIdentifier({
       onError: this._onError,
     });
-    this._movementsInterpolator = new GtfsTripMovementsInterpolator();
+    this._movementsInterpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode: fields.interpolationMode,
+    });
     this._routeMatcher = new GtfsRouteMatcher({
       onError: this._onError,
       lineRoutesMapping: fields.lineRoutesMapping,
@@ -214,7 +218,6 @@ export class GtfsUpdatedTripUpdateParser {
 
     const interpolated = this._movementsInterpolator.interpolate(rawMovements);
     if (interpolated == null) {
-      // TODO: Add a test for this.
       const Err = KnownDepartureTimesEntailTimeTravelError;
       this._onError(new Err(tripUpdate, rawMovements));
       return null;
@@ -228,8 +231,6 @@ export class GtfsUpdatedTripUpdateParser {
         isCancelled: false,
       });
     } else {
-      // TODO: Test this.
-
       const survivingMovements = interpolated.filter(
         (movement, index) =>
           movement.isServicing && !skippedMovementIndexes.has(index),

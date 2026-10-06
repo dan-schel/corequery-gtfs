@@ -7,7 +7,9 @@ import { LineGtfsIdCollection } from "../../../src/data/ids/line-gtfs-id-collect
 import { LineGtfsIdMapping } from "../../../src/data/ids/line-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
+import { GtfsReplacedTrip } from "../../../src/data/trip/replaced/gtfs-replaced-trip.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
+import { GtfsScheduledTripRegularMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 import {
   type GtfsUpdatedTripUpdateParsingError,
@@ -79,6 +81,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -125,6 +128,107 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     ).toBe(true);
   });
 
+  it("reports updates whose known times entail time travel", () => {
+    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
+    const parser = new GtfsUpdatedTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
+      onError: (e) => errors.push(e),
+    });
+
+    const tripUpdate = {
+      trip: TRIP_DESCRIPTOR,
+      stopTimeUpdate: [
+        {
+          stopSequence: 1,
+          stopId: "stop-1",
+          departure: { delay: 120 },
+          scheduleRelationship: "SCHEDULED",
+        },
+        {
+          stopSequence: 2,
+          stopId: "stop-2",
+          arrival: { delay: -120 },
+          scheduleRelationship: "SCHEDULED",
+        },
+      ],
+    };
+
+    const parsed = parser.parse(tripUpdate, SCHEDULE);
+
+    expect(parsed).toBeNull();
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.type).toBe("known-departure-times-entail-time-travel");
+  });
+
+  it("parses skipped stops as a replaced trip", () => {
+    const trip = TRIP.with({
+      movements: [
+        TRIP.origination.with({
+          stopId: 3,
+          gtfsIdMetadata: { type: "general", id: "stop-3", stopId: 3 },
+        }),
+        new GtfsScheduledTripRegularMovement({
+          stopId: 1,
+          positionId: null,
+          arrivalTime: GtfsStopTime.parse("00:01:20"),
+          departureTime: GtfsStopTime.parse("00:01:30"),
+          picksUp: true,
+          dropsOff: true,
+          gtfsIdMetadata: { type: "general", id: "stop-1", stopId: 1 },
+          gtfsStopSequence: 2,
+        }),
+        TRIP.termination.with({
+          gtfsStopSequence: 3,
+        }),
+      ],
+    });
+    const schedule = GtfsScheduleData.fromTrips([trip]);
+    const stopGtfsIdMapping = new StopGtfsIdMapping(
+      new Map([
+        [1, StopGtfsIdCollection.simple(1, "stop-1")],
+        [2, StopGtfsIdCollection.simple(2, "stop-2")],
+        [3, StopGtfsIdCollection.simple(3, "stop-3")],
+      ]),
+    );
+
+    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
+    const parser = new GtfsUpdatedTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
+      onError: (e) => errors.push(e),
+    });
+
+    const tripUpdate = {
+      trip: TRIP_DESCRIPTOR,
+      stopTimeUpdate: [
+        {
+          stopSequence: 1,
+          stopId: "stop-3",
+          scheduleRelationship: "SKIPPED",
+        },
+      ],
+    };
+
+    const parsed = parser.parse(tripUpdate, schedule);
+
+    expect(errors).toEqual([]);
+    if (!(parsed instanceof GtfsReplacedTrip)) throw new Error();
+    expect(parsed.movements.map((movement) => movement.type)).toEqual([
+      "originating",
+      "terminating",
+    ]);
+    expect(parsed.movements.map((movement) => movement.stopId)).toEqual([1, 2]);
+  });
+
   it("reports scheduled updates without stopTimeUpdate fields", () => {
     const errors: GtfsUpdatedTripUpdateParsingError[] = [];
     const parser = new GtfsUpdatedTripUpdateParser({
@@ -133,6 +237,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -156,6 +261,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -181,6 +287,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -214,6 +321,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -247,6 +355,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -287,6 +396,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -320,6 +430,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -351,6 +462,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -382,6 +494,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -419,6 +532,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 
@@ -490,6 +604,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
       lineRoutesMapping: LINE_ROUTES_MAPPING,
       bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
       onError: (e) => errors.push(e),
     });
 

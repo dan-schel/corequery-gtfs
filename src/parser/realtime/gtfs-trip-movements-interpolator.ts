@@ -1,4 +1,5 @@
 import { itsOk, map } from "@dan-schel/js-utils";
+import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
 import type {
   GtfsUpdatedTripMovement,
   GtfsUpdatedTripServicingMovement,
@@ -11,8 +12,25 @@ import type {
 // mins late leaving Traralgon, and will be 2 mins late arriving at Southern
 // Cross too.
 //
-// If we know a few stop time updates, we expolate to the edges, and interpolate
-// between the known values, e.g.:
+// If we know a few stop time updates, we carry delays forward between the known
+// values (following the GTFS-RT spec), and extrapolate to the edges (which is
+// AGAINST the GTFS-RT spec, but I think it's reasonable, and I think I've seen
+// Google Maps do it anyway).
+//
+// - East Pakenham   7 mins late   <-- extrapolated
+// - Pakenham        7 mins late   <-- extrapolated
+// - Cardinia Road   7 mins late   <-------------------- known
+// - Officer         7 mins late   <-- carried forward
+// - Beaconsfield    7 mins late   <-- carried forward
+// - Berwick         7 mins late   <-- carried forward
+// - Narre Warren    3 mins late   <-------------------- known
+// - Hallam          3 mins late   <-- extrapolated
+// - Dandenong       3 mins late   <-- extrapolated
+//
+// Spec: https://gtfs.org/documentation/realtime/feed-entities/trip-updates/
+//
+// A previous version of this class (before I read the spec properly!) used
+// linear interpolation between known delay values, like so:
 //
 // - East Pakenham   7 mins late   <-- extrapolated
 // - Pakenham        7 mins late   <-- extrapolated
@@ -24,29 +42,25 @@ import type {
 // - Hallam          3 mins late   <-- extrapolated
 // - Dandenong       3 mins late   <-- extrapolated
 //
+// When I finally read the spec, I fixed it, but thought it might still be
+// worthwhile to keep the old implementation, just to see if in practice it
+// might yield better results, hence `interpolationMode`.
+//
 // Interpolated times are stored in the `assumedRealtime...` times, rather than
-// `knownRealtime...` times to distinguish them.
+// `knownRealtime...` times to distinguish them, this distinction is made
+// available to CoreQuery too so it can reflect it in the UI.
 
-// TODO: According to the GTFS spec:
-//
-// "If one or more stops are missing along the trip the delay from the update
-// (or, if only time is provided in the update, a delay computed by comparing
-// the time against the GTFS schedule time) is propagated to all subsequent
-// stops. This means that updating a stop time for a certain stop will change
-// all subsequent stops in the absence of any other information. Note that
-// updates with a schedule relationship of SKIPPED will not stop delay
-// propagation, but updates with schedule relationships of SCHEDULED (also the
-// default value if schedule relationship is not provided) or NO_DATA will."
-//
-// It doesn't mention what happens for movements preceding the first stop
-// update, so I think the extrapolation we do here is still worthwhile, but
-// maybe we should consider dropping the linear interpolation between updates to
-// align with the spec.
-//
-// In case I missed something, I should also read the rest of:
-// https://gtfs.org/documentation/realtime/feed-entities/trip-updates/
+export type GtfsTripMovementsInterpolatorFields = {
+  readonly interpolationMode: GtfsInterpolationMode;
+};
 
 export class GtfsTripMovementsInterpolator {
+  private readonly _interpolationMode: GtfsInterpolationMode;
+
+  constructor(fields: GtfsTripMovementsInterpolatorFields) {
+    this._interpolationMode = fields.interpolationMode;
+  }
+
   interpolate(
     movements: readonly GtfsUpdatedTripMovement[],
   ): readonly GtfsUpdatedTripMovement[] | null {
@@ -81,7 +95,7 @@ export class GtfsTripMovementsInterpolator {
       const prev = delayValues[iPrev] ?? null;
       const next = delayValues[iNext] ?? null;
 
-      if (prev != null && next != null) {
+      if (this._interpolationMode === "lerp" && prev != null && next != null) {
         // Even at the nanosecond level, avoiding Math.round is impossible,
         // since Temporal.Duration requires integer nanoseconds, but
         // interpolation can always produce fractional nanoseconds (just like
