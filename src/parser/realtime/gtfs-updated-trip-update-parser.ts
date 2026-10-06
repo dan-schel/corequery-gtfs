@@ -63,7 +63,9 @@ export class GtfsUpdatedTripUpdateParser {
     this._tripIdentifier = new GtfsScheduledTripIdentifier({
       onError: this._onError,
     });
-    this._movementsInterpolator = new GtfsTripMovementsInterpolator();
+    this._movementsInterpolator = new GtfsTripMovementsInterpolator({
+      interpolationMode: "follow-spec",
+    });
     this._routeMatcher = new GtfsRouteMatcher({
       onError: this._onError,
       lineRoutesMapping: fields.lineRoutesMapping,

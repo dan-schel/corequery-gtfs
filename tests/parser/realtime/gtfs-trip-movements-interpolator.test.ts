@@ -10,157 +10,176 @@ import { itsOk } from "@dan-schel/js-utils";
 const nullTime = "--:--" as const;
 type NullTime = typeof nullTime;
 
-describe("GtfsTripMovementsInterpolator", () => {
-  it("01: works, when the delay increases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "--:--"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      rglr("08:10", "08:10", "08:22", "08:22"),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "08:54", "08:54"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      term("08:40", "--:--", "--:--", "--:--"),
-    ]);
+describe.each(["follow-spec", "lerp"] as const)(
+  "GtfsTripMovementsInterpolator (%s)",
+  (interpolationMode) => {
+    it("01: works, when the delay increases over time", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "--:--"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        rglr("08:10", "08:10", "08:22", "08:22"),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "08:54", "08:54"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        term("08:40", "--:--", "--:--", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("02: works, when the delay decreases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "--:--"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      rglr("08:10", "08:10", "08:22", "08:22"),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "08:30", "08:30"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      term("08:40", "--:--", "--:--", "--:--"),
-    ]);
+    it("02: works, when the delay decreases over time", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "--:--"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        rglr("08:10", "08:10", "08:22", "08:22"),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "08:30", "08:30"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        term("08:40", "--:--", "--:--", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("03: works, when the service goes from late to early", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "--:--"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      rglr("08:10", "08:10", "08:16", "08:16"),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "08:24", "08:24"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      term("08:40", "--:--", "--:--", "--:--"),
-    ]);
+    it("03: works, when the service goes from late to early", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "--:--"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        rglr("08:10", "08:10", "08:16", "08:16"),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "08:24", "08:24"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        term("08:40", "--:--", "--:--", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("04: works, when only the termination time is given", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "--:--"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      rglr("08:10", "08:10", "--:--", "--:--"),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "--:--", "--:--"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      term("08:40", "--:--", "08:45", "--:--"),
-    ]);
+    it("04: works, when only the termination time is given", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "--:--"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        rglr("08:10", "08:10", "--:--", "--:--"),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "--:--", "--:--"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        term("08:40", "--:--", "08:45", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("05: works, when only the origination time is given", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "08:30"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      rglr("08:10", "08:10", "--:--", "--:--"),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "--:--", "--:--"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      term("08:40", "--:--", "--:--", "--:--"),
-    ]);
+    it("05: works, when only the origination time is given", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "08:30"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        rglr("08:10", "08:10", "--:--", "--:--"),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "--:--", "--:--"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        term("08:40", "--:--", "--:--", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("06: works, when arrival times differ from departure times, and delay decreases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "08:30"),
-      rglr("08:10", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "--:--", "--:--"),
-      rglr("08:35", "08:50", "--:--", "--:--"),
-      term("09:00", "--:--", "09:00", "--:--"),
-    ]);
+    it("06: works, when arrival times differ from departure times, and delay decreases over time", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "08:30"),
+        rglr("08:10", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "--:--", "--:--"),
+        rglr("08:35", "08:50", "--:--", "--:--"),
+        term("09:00", "--:--", "09:00", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("07: works, when arrival times differ from departure times, and delay increases over time", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "08:00"),
-      rglr("08:10", "08:25", "--:--", "--:--"),
-      rglr("08:30", "08:30", "--:--", "--:--"),
-      rglr("08:35", "08:50", "--:--", "--:--"),
-      term("09:00", "--:--", "09:30", "--:--"),
-    ]);
+    it("07: works, when arrival times differ from departure times, and delay increases over time", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "08:00"),
+        rglr("08:10", "08:25", "--:--", "--:--"),
+        rglr("08:30", "08:30", "--:--", "--:--"),
+        rglr("08:35", "08:50", "--:--", "--:--"),
+        term("09:00", "--:--", "09:30", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
 
-  it("08: works, when passing movements are included", () => {
-    const interpolator = new GtfsTripMovementsInterpolator();
-    const interpolated = interpolator.interpolate([
-      //   Scheduled:        Realtime:
-      orig("--:--", "08:00", "--:--", "--:--"),
-      rglr("08:05", "08:05", "--:--", "--:--"),
-      pass(),
-      rglr("08:10", "08:10", "08:22", "08:22"),
-      pass(),
-      rglr("08:15", "08:15", "--:--", "--:--"),
-      rglr("08:20", "08:20", "--:--", "--:--"),
-      rglr("08:25", "08:25", "--:--", "--:--"),
-      pass(),
-      pass(),
-      pass(),
-      rglr("08:30", "08:30", "08:54", "08:54"),
-      rglr("08:35", "08:35", "--:--", "--:--"),
-      pass(),
-      term("08:40", "--:--", "--:--", "--:--"),
-    ]);
+    it("08: works, when passing movements are included", () => {
+      const interpolator = new GtfsTripMovementsInterpolator({
+        interpolationMode,
+      });
+      const interpolated = interpolator.interpolate([
+        //   Scheduled:        Realtime:
+        orig("--:--", "08:00", "--:--", "--:--"),
+        rglr("08:05", "08:05", "--:--", "--:--"),
+        pass(),
+        rglr("08:10", "08:10", "08:22", "08:22"),
+        pass(),
+        rglr("08:15", "08:15", "--:--", "--:--"),
+        rglr("08:20", "08:20", "--:--", "--:--"),
+        rglr("08:25", "08:25", "--:--", "--:--"),
+        pass(),
+        pass(),
+        pass(),
+        rglr("08:30", "08:30", "08:54", "08:54"),
+        rglr("08:35", "08:35", "--:--", "--:--"),
+        pass(),
+        term("08:40", "--:--", "--:--", "--:--"),
+      ]);
 
-    expectMovementsToMatchSnapshot(interpolated);
-    ensureNoTimeTravel(interpolated);
-  });
-});
+      expectMovementsToMatchSnapshot(interpolated);
+      ensureNoTimeTravel(interpolated);
+    });
+  },
+);
 
 function expectMovementsToMatchSnapshot(
   movements: readonly GtfsUpdatedTripMovement[] | null,
