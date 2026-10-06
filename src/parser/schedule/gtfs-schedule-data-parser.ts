@@ -46,12 +46,12 @@ export class GtfsScheduleDataParser {
     const { parsedTrips, parsedTransfers, ignoredTripIds } =
       this._tripParser.parse(trips, stopTimes, transfers, parsedCalendars);
 
-    return new GtfsScheduleData(
-      parsedTrips,
-      parsedCalendars,
-      parsedTransfers,
+    return new GtfsScheduleData({
+      trips: parsedTrips,
+      calendars: parsedCalendars,
+      transfers: parsedTransfers,
       ignoredTripIds,
-    );
+    });
   }
 }
 

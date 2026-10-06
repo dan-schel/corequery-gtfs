@@ -39,7 +39,9 @@ describe("GtfsFeed", () => {
       const serviceDay = Temporal.PlainDate.from("2026-09-12");
 
       const feed = GtfsFeed.fromNewScheduleData(
-        GtfsScheduleData.fromTrips([trip1, trip2]).withTransfers([transfer]),
+        GtfsScheduleData.fromTrips([trip1, trip2]).with({
+          transfers: [transfer],
+        }),
         GtfsRealtimeData.empty,
         TIMEZONE_CONFIG,
       );
@@ -56,7 +58,9 @@ describe("GtfsFeed", () => {
       });
 
       const feed = GtfsFeed.fromNewScheduleData(
-        GtfsScheduleData.fromTrips([trip1, newTrip2]).withTransfers([transfer]),
+        GtfsScheduleData.fromTrips([trip1, newTrip2]).with({
+          transfers: [transfer],
+        }),
         GtfsRealtimeData.empty,
         TIMEZONE_CONFIG,
       );

@@ -187,7 +187,7 @@ describe("GtfsScheduledTripIdentifier", () => {
     });
 
     const tripDescriptor = { ...TRIP_DESCRIPTOR, tripId: "missing-trip" };
-    const schedule = SCHEDULE.withIgnoredTripIds(["missing-trip"]);
+    const schedule = SCHEDULE.with({ ignoredTripIds: ["missing-trip"] });
     const result = identifier.identify(tripDescriptor, schedule);
 
     expect(result).toBeNull();
