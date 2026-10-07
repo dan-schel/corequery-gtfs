@@ -1,3 +1,4 @@
+import { listifyAnd } from "@dan-schel/js-utils";
 import type {
   StopTimeUpdateJson,
   TripDescriptorJson,
@@ -101,7 +102,7 @@ export class DuplicateCalendarIdError {
   constructor(readonly subsequentRowWithDuplicateId: CalendarCsvRow) {}
 
   formatDebugMessage() {
-    return `Calendar with ID "${this.subsequentRowWithDuplicateId.service_id}" seen twice.`;
+    return `Calendar with ID "${this.subsequentRowWithDuplicateId.service_id}" seen multiple times.`;
   }
 }
 
@@ -119,7 +120,7 @@ export class UnexpectedCalendarDateExceptionTypeError {
   constructor(readonly row: CalendarDatesCsvRow) {}
 
   formatDebugMessage() {
-    return `Calendar date exception for service "${this.row.service_id}" on "${this.row.date.toString()}" has unexpected type "${this.row.exception_type}".`;
+    return `Exception for calendar "${this.row.service_id}" on "${this.row.date.toString()}" has unexpected exception_type "${this.row.exception_type}".`;
   }
 }
 
@@ -128,7 +129,7 @@ export class MultipleExceptionsForSameDateError {
   constructor(readonly subsequentRowForSameDate: CalendarDatesCsvRow) {}
 
   formatDebugMessage() {
-    return `Calendar service "${this.subsequentRowForSameDate.service_id}" has multiple exceptions on "${this.subsequentRowForSameDate.date.toString()}".`;
+    return `Calendar with ID "${this.subsequentRowForSameDate.service_id}" has multiple exceptions on the same date "${this.subsequentRowForSameDate.date.toString()}".`;
   }
 }
 
@@ -146,7 +147,7 @@ export class DuplicateTripIdError {
   constructor(readonly subsequentRowWithDuplicateId: TripsCsvRow) {}
 
   formatDebugMessage() {
-    return `Trip with ID "${this.subsequentRowWithDuplicateId.trip_id}" seen twice.`;
+    return `Trip with ID "${this.subsequentRowWithDuplicateId.trip_id}" seen multiple times.`;
   }
 }
 
@@ -155,7 +156,7 @@ export class TripReferencesNonExistentCalendarError {
   constructor(readonly trip: TripsCsvRow) {}
 
   formatDebugMessage() {
-    return `Trip "${this.trip.trip_id}" references non-existent service "${this.trip.service_id}".`;
+    return `Trip "${this.trip.trip_id}" references non-existent calendar "${this.trip.service_id}".`;
   }
 }
 
@@ -164,7 +165,7 @@ export class TripReferencesUnmappedRouteIdError {
   constructor(readonly trip: TripsCsvRow) {}
 
   formatDebugMessage() {
-    return `Trip "${this.trip.trip_id}" references unmapped route "${this.trip.route_id}".`;
+    return `Trip "${this.trip.trip_id}" references unmapped GTFS route ID "${this.trip.route_id}".`;
   }
 }
 
@@ -173,7 +174,7 @@ export class StopTimeReferencesUnmappedStopIdError {
   constructor(readonly stopTime: StopTimesCsvRow) {}
 
   formatDebugMessage() {
-    return `Stop time for trip "${this.stopTime.trip_id}" references unmapped stop "${this.stopTime.stop_id}".`;
+    return `Stop time on trip "${this.stopTime.trip_id}" references unmapped GTFS stop ID "${this.stopTime.stop_id}".`;
   }
 }
 
@@ -182,7 +183,7 @@ export class UnexpectedPickupTypeError {
   constructor(readonly stopTime: StopTimesCsvRow) {}
 
   formatDebugMessage() {
-    return `Stop time for trip "${this.stopTime.trip_id}" at stop "${this.stopTime.stop_id}" has unexpected pickup type "${this.stopTime.pickup_type}".`;
+    return `Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected pickup_type "${this.stopTime.pickup_type}".`;
   }
 }
 
@@ -191,16 +192,16 @@ export class UnexpectedDropOffTypeError {
   constructor(readonly stopTime: StopTimesCsvRow) {}
 
   formatDebugMessage() {
-    return `Stop time for trip "${this.stopTime.trip_id}" at stop "${this.stopTime.stop_id}" has unexpected drop-off type "${this.stopTime.drop_off_type}".`;
+    return `Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected drop_off_type "${this.stopTime.drop_off_type}".`;
   }
 }
 
 export class InvalidStopSequenceError {
-  readonly type = "stop-sequence-duplicated";
+  readonly type = "invalid-stop-sequence";
   constructor(readonly stopTimes: StopTimesCsv) {}
 
   formatDebugMessage() {
-    return `Stop times for trip "${this.stopTimes[0]?.trip_id}" have an invalid stop sequence.`;
+    return `Stop times on trip "${this.stopTimes[0]?.trip_id}" have an invalid stop sequence.`;
   }
 }
 
@@ -209,7 +210,7 @@ export class MultipleStopSequencesError {
   constructor(readonly stopTimes: StopTimesCsv) {}
 
   formatDebugMessage() {
-    return `Stop times for trip "${this.stopTimes[0]?.trip_id}" have multiple entries for a stop sequence.`;
+    return `Stop times on trip "${this.stopTimes[0]?.trip_id}" have multiple sequences of entries.`;
   }
 }
 
@@ -218,8 +219,7 @@ export class NoMatchingRouteError {
   constructor(readonly stopIds: readonly number[]) {}
 
   formatDebugMessage() {
-    const stopIds = this.stopIds.map((stopId) => `"${stopId}"`).join(", ");
-    return `No route matches stops ${stopIds}.`;
+    return `No route matches stops ${listifyAnd(this.stopIds.map((x) => x.toFixed()))}.`;
   }
 }
 
@@ -243,7 +243,7 @@ export class TransferIsNotFromTerminusError {
   ) {}
 
   formatDebugMessage() {
-    return `Transfer from trip "${this.fromTrip.gtfsTripId}" does not start at its terminus.`;
+    return `Transfer from trip "${this.fromTrip.gtfsTripId}" does not transfer "from" its terminus.`;
   }
 }
 
@@ -255,7 +255,7 @@ export class TransferIsNotToOriginError {
   ) {}
 
   formatDebugMessage() {
-    return `Transfer to trip "${this.toTrip.gtfsTripId}" does not end at its origin.`;
+    return `Transfer to trip "${this.toTrip.gtfsTripId}" does not transfer "to" its origin.`;
   }
 }
 
@@ -285,7 +285,7 @@ export class TransferIsNotSameStopAndPositionError {
   constructor(readonly transfer: TransfersCsvRow) {}
 
   formatDebugMessage() {
-    return `Transfer from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}" changes stop or position.`;
+    return `Transfer from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}" does not occur at the same stop and/or position.`;
   }
 }
 
@@ -294,7 +294,7 @@ export class TransferCrossesCalendarsError {
   constructor(readonly transfer: TransfersCsvRow) {}
 
   formatDebugMessage() {
-    return `Transfer from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}" crosses service calendars.`;
+    return `Transfer made from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}", which aren't on the same calendar.`;
   }
 }
 
@@ -303,7 +303,7 @@ export class TransferRequiresTimeTravelError {
   constructor(readonly transfer: TransfersCsvRow) {}
 
   formatDebugMessage() {
-    return `Transfer from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}" requires time travel.`;
+    return `Transfer from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}" would require time travel.`;
   }
 }
 
@@ -315,7 +315,7 @@ export class NecessaryFieldNotSuppliedForAddedTripError {
   ) {}
 
   formatDebugMessage() {
-    return `Added trip update for trip "${this.tripUpdate.trip.tripId}" is missing "${this.field}".`;
+    return `Trip update for trip "${this.tripUpdate.trip.tripId}" is missing "${this.field}".`;
   }
 }
 
@@ -327,7 +327,7 @@ export class AddedTripIdDuplicatesScheduledTripIdError {
   ) {}
 
   formatDebugMessage() {
-    return `Added trip update for trip "${this.tripId}" duplicates a scheduled trip ID.`;
+    return `Added trip update uses ID "${this.tripId}", which is already used by a scheduled trip.`;
   }
 }
 
@@ -339,7 +339,7 @@ export class AddedTripStopTimeUpdateMissingTimeError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" has no required time.`;
+    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" is missing a required time field.`;
   }
 }
 
@@ -351,7 +351,7 @@ export class AddedTripReferencesUnmappedRouteIdError {
   ) {}
 
   formatDebugMessage() {
-    return `Added trip update for trip "${this.tripUpdate.trip.tripId}" references unmapped route "${this.gtfsRouteId}".`;
+    return `Trip update for trip "${this.tripUpdate.trip.tripId}" references unmapped GTFS route ID "${this.gtfsRouteId}".`;
   }
 }
 
@@ -364,7 +364,7 @@ export class NonSequentialStopTimeUpdateEntryError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time updates in trip update "${this.tripUpdate.trip.tripId}" did not form a regular sequence.`;
+    return `Stop time updates on trip update "${this.tripUpdate.trip.tripId}" did not form a regular sequence.`;
   }
 }
 
@@ -385,7 +385,7 @@ export class UnsupportedStopTimeUpdateEntryScheduleRelationshipError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" has unsupported relationship "${this.stopTimeUpdateEntry.scheduleRelationship}".`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" has unsupported relationship "${this.stopTimeUpdateEntry.scheduleRelationship}".`;
   }
 }
 
@@ -398,7 +398,7 @@ export class NecessaryFieldNotInStopTimeUpdateEntryError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" is missing "${this.field}".`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" is missing ${this.field}.`;
   }
 }
 
@@ -410,7 +410,7 @@ export class StopTimeUpdateEntryReferencesUnmappedStopIdError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" references unmapped stop "${this.stopTimeUpdateEntry.stopId}".`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" references unmapped GTFS stop ID "${this.stopTimeUpdateEntry.stopId}".`;
   }
 }
 
@@ -424,7 +424,7 @@ export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" references non-existent stop sequence "${this.stopTimeUpdateEntry.stopSequence}".`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" references non-existent movement, with stop sequence "${this.stopTimeUpdateEntry.stopSequence}".`;
   }
 }
 
@@ -438,7 +438,7 @@ export class MultipleStopTimeUpdateEntriesForSameMovementIndexError {
   ) {}
 
   formatDebugMessage() {
-    return `Trip update for trip "${this.tripUpdate.trip.tripId}" has multiple entries for stop sequence "${this.stopTimeUpdateEntry.stopSequence}".`;
+    return `Trip update on trip "${this.tripUpdate.trip.tripId}" has multiple entries for stop sequence "${this.stopTimeUpdateEntry.stopSequence}".`;
   }
 }
 
@@ -454,7 +454,7 @@ export class StopTimeUpdateEntryChangesStopError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" changes stop "${this.matchedTrip.movements[this.matchedMovementIndex]?.stopId}".`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" changes stop at index ${this.matchedMovementIndex} to a different stop entirely.`;
   }
 }
 
@@ -467,7 +467,7 @@ export class NeitherTimeNorDelayGivenError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" has neither time nor delay.`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" has neither time nor delay.`;
   }
 }
 
@@ -482,7 +482,7 @@ export class TimeAndDelayDisagreeWithEachOtherError {
   ) {}
 
   formatDebugMessage() {
-    return `Time and delay disagree in trip update "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}".`;
+    return `Time and delay value disagree on trip update "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}".`;
   }
 }
 
@@ -494,7 +494,7 @@ export class NeitherArrivalNorDepartureGivenError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time update for trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" has neither arrival nor departure.`;
+    return `Stop time update on trip "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}" has neither arrival nor departure times.`;
   }
 }
 
@@ -506,7 +506,7 @@ export class KnownDepartureTimesEntailTimeTravelError {
   ) {}
 
   formatDebugMessage() {
-    return `Known departure times in trip update "${this.tripUpdate.trip.tripId}" entail time travel.`;
+    return `The real-time time values given on trip update "${this.tripUpdate.trip.tripId}" would entail time travel.`;
   }
 }
 
@@ -518,7 +518,7 @@ export class TooFewSurvivingServicingMovementsError {
   ) {}
 
   formatDebugMessage() {
-    return `Trip update "${this.tripUpdate.trip.tripId}" leaves fewer than two stops in the replaced trip.`;
+    return `Trip update "${this.tripUpdate.trip.tripId}" leaves fewer than two movements when all skipped movements are removed.`;
   }
 }
 
@@ -533,7 +533,7 @@ export class NecessaryFieldNotInTripDescriptorError {
   ) {}
 
   formatDebugMessage() {
-    return `Trip descriptor for trip "${this.tripDescriptor.tripId}" is missing "${this.field}".`;
+    return `Trip descriptor for trip "${this.tripDescriptor.tripId}" is missing ${this.field}.`;
   }
 }
 
@@ -554,7 +554,7 @@ export class TripDoesNotOccurOnStartDateError {
   ) {}
 
   formatDebugMessage() {
-    return `Trip "${this.trip.gtfsTripId}" does not run on "${String(this.tripDescriptor.startDate)}".`;
+    return `Trip update given on trip "${this.trip.gtfsTripId}" on "${this.tripDescriptor.startDate?.toString()}", but it doesn't run that day.`;
   }
 }
 
@@ -567,7 +567,7 @@ export class TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError {
   ) {}
 
   formatDebugMessage() {
-    return `Trip descriptor for trip "${this.tripDescriptor.tripId}" has a start time that does not match the schedule.`;
+    return `Start time given on trip descriptor for trip "${this.tripDescriptor.tripId}" does not match the origin time on the schedule.`;
   }
 }
 
