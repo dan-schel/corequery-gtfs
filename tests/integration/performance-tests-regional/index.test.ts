@@ -8,19 +8,189 @@ describe("performance-tests-regional", async () => {
   const { source, system } = await setupIntegrationTest(import.meta.dirname);
   const stopNameMapping = await createStopNameMapping(import.meta.dirname);
 
+  // TODO: Remove this.
   it("parses with expected errors only", () => {
     expectParsingErrorsToMatchSnapshot(system);
   });
 
-  describe("Flinders Street, 2026-10-07T20:39:00+11:00, forwards", () => {
-    it("gives correct departures", async () => {
+  // Southern Cross - A highly-serviced stop scenario.
+
+  describe("Southern Cross, 2026-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
       await expectDeparturesToMatchSnapshot({
         source,
         stopNameMapping,
-        stopName: "Flinders Street",
+        stopName: "Southern Cross",
         instant: "2026-10-07T20:39:00+11:00",
         direction: "forwards",
-        maxResults: 10,
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Southern Cross, 2026-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Southern Cross, 2027-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Southern Cross, 2027-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Southern Cross, 2025-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Southern Cross, 2025-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Southern Cross",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  // Bairnsdale - A lowly-serviced stop scenario.
+
+  describe("Bairnsdale, 2026-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Bairnsdale, 2026-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Bairnsdale, 2027-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Bairnsdale, 2027-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Bairnsdale, 2025-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Bairnsdale, 2025-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Bairnsdale",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
         formatTimezone: "Australia/Melbourne",
         maxConnectionsToFollow: 1,
       });

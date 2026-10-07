@@ -8,19 +8,189 @@ describe("performance-tests-suburban", async () => {
   const { source, system } = await setupIntegrationTest(import.meta.dirname);
   const stopNameMapping = await createStopNameMapping(import.meta.dirname);
 
+  // TODO: Remove this.
   it("parses with expected errors only", () => {
     expectParsingErrorsToMatchSnapshot(system);
   });
 
+  // Flinders Street - A highly-serviced stop scenario.
+
   describe("Flinders Street, 2026-10-07T20:39:00+11:00, forwards", () => {
-    it("gives correct departures", async () => {
+    it("completes in reasonable time", async () => {
       await expectDeparturesToMatchSnapshot({
         source,
         stopNameMapping,
         stopName: "Flinders Street",
         instant: "2026-10-07T20:39:00+11:00",
         direction: "forwards",
-        maxResults: 10,
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Flinders Street, 2026-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Flinders Street, 2027-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Flinders Street, 2027-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Flinders Street, 2025-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Flinders Street, 2025-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Flinders Street",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  // Clayton - A normally-serviced stop scenario.
+
+  describe("Clayton, 2026-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Clayton, 2026-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2026-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Clayton, 2027-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Clayton, 2027-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2027-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Clayton, 2025-10-07T20:39:00+11:00, forwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "forwards",
+        maxResults: 50,
+        formatTimezone: "Australia/Melbourne",
+        maxConnectionsToFollow: 1,
+      });
+    });
+  });
+
+  describe("Clayton, 2025-10-07T20:39:00+11:00, backwards", () => {
+    it("completes in reasonable time", async () => {
+      await expectDeparturesToMatchSnapshot({
+        source,
+        stopNameMapping,
+        stopName: "Clayton",
+        instant: "2025-10-07T20:39:00+11:00",
+        direction: "backwards",
+        maxResults: 50,
         formatTimezone: "Australia/Melbourne",
         maxConnectionsToFollow: 1,
       });
