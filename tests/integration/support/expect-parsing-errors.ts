@@ -22,6 +22,5 @@ function formatErrorList(error: ParsingError[]) {
 }
 
 function formatParsingError(error: ParsingError): string {
-  // TODO: Need richer detail about the error, e.g. which trip, which stop, etc.
-  return error.type;
+  return error.formatDebugMessage();
 }
