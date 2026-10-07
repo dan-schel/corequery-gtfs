@@ -3,7 +3,8 @@ import { setupIntegrationTest } from "../support/setup/index.js";
 import { createStopNameMapping } from "../support/create-stop-name-mapping.js";
 import { expectDeparturesToMatchSnapshot } from "../support/expect-departures.js";
 
-describe("performance-tests-suburban", async () => {
+// I don't wanna strain CI too much. Only run these when comparing performance.
+describe.skip("performance-tests-suburban", async () => {
   const { source } = await setupIntegrationTest(import.meta.dirname);
   const stopNameMapping = await createStopNameMapping(import.meta.dirname);
 
