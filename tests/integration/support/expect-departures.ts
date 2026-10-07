@@ -17,6 +17,7 @@ export async function expectDeparturesToMatchSnapshot({
   maxResults,
   formatTimezone,
   maxConnectionsToFollow,
+  iterationCount = 1,
 }: {
   source: IntegrationTestServiceSource;
   stopNameMapping: StopNameMapping;
@@ -26,22 +27,32 @@ export async function expectDeparturesToMatchSnapshot({
   maxResults: number;
   formatTimezone: string;
   maxConnectionsToFollow: number;
+  iterationCount?: number;
 }) {
   const stopId = stopNameMapping.requireId(stopName);
-  const iterator = source.getDeparturesIterator(
-    stopId,
-    Temporal.Instant.from(instant),
-    direction,
-  );
 
+  let departures: IntegrationTestDeparture[] = [];
+  for (let iteration = 0; iteration < iterationCount; iteration++) {
+    const iterator = source.getDeparturesIterator(
+      stopId,
+      Temporal.Instant.from(instant),
+      direction,
+    );
+    departures = [];
+
+    for (let i = 0; i < maxResults; i++) {
+      const departure = await iterator.peek();
+      if (departure == null) break;
+
+      await iterator.take();
+      departures.push(departure);
+    }
+  }
+
+  // Format only the final traversal so repeated runs measure iteration work.
   const results: string[][] = [];
 
-  for (let i = 0; i < maxResults; i++) {
-    const departure = await iterator.peek();
-    if (departure == null) break;
-
-    await iterator.take();
-
+  for (const departure of departures) {
     results.push(
       await formatDeparture(
         departure,
