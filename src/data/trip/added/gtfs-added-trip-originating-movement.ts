@@ -5,7 +5,10 @@ import type { IGtfsAddedTripServicingMovement } from "./types.js";
 export type GtfsAddedTripOriginatingMovementFields = {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+
+  readonly scheduledDepartureTime: Temporal.Instant | null;
+  readonly knownRealtimeDepartureTime: Temporal.Instant;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 };
@@ -13,14 +16,20 @@ export type GtfsAddedTripOriginatingMovementFields = {
 export class GtfsAddedTripOriginatingMovement implements IGtfsAddedTripServicingMovement {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+
+  readonly scheduledDepartureTime: Temporal.Instant | null;
+  readonly knownRealtimeDepartureTime: Temporal.Instant;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   constructor(fields: GtfsAddedTripOriginatingMovementFields) {
     this.stopId = fields.stopId;
     this.positionId = fields.positionId;
-    this.departureTime = fields.departureTime;
+
+    this.scheduledDepartureTime = fields.scheduledDepartureTime;
+    this.knownRealtimeDepartureTime = fields.knownRealtimeDepartureTime;
+
     this.gtfsIdMetadata = fields.gtfsIdMetadata;
     this.gtfsStopSequence = fields.gtfsStopSequence;
   }
@@ -44,7 +53,7 @@ export class GtfsAddedTripOriginatingMovement implements IGtfsAddedTripServicing
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return this.departureTime;
+    return this.knownRealtimeDepartureTime;
   }
 
   asCorequeryFields(): ServiceOriginatingMovementFields {
@@ -54,8 +63,8 @@ export class GtfsAddedTripOriginatingMovement implements IGtfsAddedTripServicing
       currentPositionId: this.positionId,
 
       departureTimeType: "provided-live-time",
-      departureTime: this.departureTime,
-      formerDepartureTime: null,
+      departureTime: this.knownRealtimeDepartureTime,
+      formerDepartureTime: this.scheduledDepartureTime,
     };
   }
 }

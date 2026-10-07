@@ -177,7 +177,9 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
     return new GtfsReplacedTripOriginatingMovement({
       stopId: this.stopId,
       positionId: this.currentPositionId,
-      departureTime: this.effectiveDepartureTime,
+      scheduledDepartureTime: this.scheduledDepartureTime,
+      knownRealtimeDepartureTime: this.knownRealtimeDepartureTime,
+      assumedRealtimeDepartureTime: this.assumedRealtimeDepartureTime,
       gtfsIdMetadata: this.currentGtfsIdMetadata,
       gtfsStopSequence: this.gtfsStopSequence,
     });
@@ -187,8 +189,12 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
     return new GtfsReplacedTripRegularMovement({
       stopId: this.stopId,
       positionId: this.currentPositionId,
-      arrivalTime: this.effectiveArrivalTime,
-      departureTime: this.effectiveDepartureTime,
+      scheduledArrivalTime: this.scheduledArrivalTime,
+      knownRealtimeArrivalTime: this.knownRealtimeArrivalTime,
+      assumedRealtimeArrivalTime: this.assumedRealtimeArrivalTime,
+      scheduledDepartureTime: this.scheduledDepartureTime,
+      knownRealtimeDepartureTime: this.knownRealtimeDepartureTime,
+      assumedRealtimeDepartureTime: this.assumedRealtimeDepartureTime,
       picksUp: this.picksUp,
       dropsOff: this.dropsOff,
       gtfsIdMetadata: this.currentGtfsIdMetadata,
@@ -200,7 +206,9 @@ export class GtfsUpdatedTripRegularMovement implements IGtfsUpdatedTripServicing
     return new GtfsReplacedTripTerminatingMovement({
       stopId: this.stopId,
       positionId: this.currentPositionId,
-      arrivalTime: this.effectiveArrivalTime,
+      scheduledArrivalTime: this.scheduledArrivalTime,
+      knownRealtimeArrivalTime: this.knownRealtimeArrivalTime,
+      assumedRealtimeArrivalTime: this.assumedRealtimeArrivalTime,
       gtfsIdMetadata: this.currentGtfsIdMetadata,
       gtfsStopSequence: this.gtfsStopSequence,
     });

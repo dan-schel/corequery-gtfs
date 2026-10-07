@@ -120,7 +120,9 @@ export class GtfsUpdatedTripOriginatingMovement implements IGtfsUpdatedTripServi
     return new GtfsReplacedTripOriginatingMovement({
       stopId: this.stopId,
       positionId: this.currentPositionId,
-      departureTime: this.effectiveDepartureTime,
+      scheduledDepartureTime: this.scheduledDepartureTime,
+      knownRealtimeDepartureTime: this.knownRealtimeDepartureTime,
+      assumedRealtimeDepartureTime: this.assumedRealtimeDepartureTime,
       gtfsIdMetadata: this.currentGtfsIdMetadata,
       gtfsStopSequence: this.gtfsStopSequence,
     });

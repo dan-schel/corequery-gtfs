@@ -5,7 +5,11 @@ import type { IGtfsReplacedTripServicingMovement } from "./types.js";
 export type GtfsReplacedTripOriginatingMovementFields = {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+
+  readonly scheduledDepartureTime: Temporal.Instant;
+  readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 };
@@ -13,14 +17,22 @@ export type GtfsReplacedTripOriginatingMovementFields = {
 export class GtfsReplacedTripOriginatingMovement implements IGtfsReplacedTripServicingMovement {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+
+  readonly scheduledDepartureTime: Temporal.Instant;
+  readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   constructor(fields: GtfsReplacedTripOriginatingMovementFields) {
     this.stopId = fields.stopId;
     this.positionId = fields.positionId;
-    this.departureTime = fields.departureTime;
+
+    this.scheduledDepartureTime = fields.scheduledDepartureTime;
+    this.knownRealtimeDepartureTime = fields.knownRealtimeDepartureTime;
+    this.assumedRealtimeDepartureTime = fields.assumedRealtimeDepartureTime;
+
     this.gtfsIdMetadata = fields.gtfsIdMetadata;
     this.gtfsStopSequence = fields.gtfsStopSequence;
   }
@@ -44,7 +56,7 @@ export class GtfsReplacedTripOriginatingMovement implements IGtfsReplacedTripSer
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return this.departureTime;
+    return this.effectiveDepartureTime;
   }
 
   asCorequeryFields(): ServiceOriginatingMovementFields {
@@ -53,9 +65,37 @@ export class GtfsReplacedTripOriginatingMovement implements IGtfsReplacedTripSer
       originalPositionId: this.positionId,
       currentPositionId: this.positionId,
 
-      departureTimeType: "provided-live-time",
-      departureTime: this.departureTime,
-      formerDepartureTime: null,
+      ...this._departureTimeCorequeryFields,
     };
+  }
+
+  private get _departureTimeCorequeryFields() {
+    if (this.knownRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "provided-live-time" as const,
+        departureTime: this.knownRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else if (this.assumedRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "interpolated-live-time" as const,
+        departureTime: this.assumedRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else {
+      return {
+        departureTimeType: "scheduled-time" as const,
+        departureTime: this.scheduledDepartureTime,
+        formerDepartureTime: null,
+      };
+    }
+  }
+
+  get effectiveDepartureTime() {
+    return (
+      this.knownRealtimeDepartureTime ??
+      this.assumedRealtimeDepartureTime ??
+      this.scheduledDepartureTime
+    );
   }
 }

@@ -5,7 +5,10 @@ import type { IGtfsAddedTripServicingMovement } from "./types.js";
 export type GtfsAddedTripTerminatingMovementFields = {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly arrivalTime: Temporal.Instant;
+
+  readonly scheduledArrivalTime: Temporal.Instant | null;
+  readonly knownRealtimeArrivalTime: Temporal.Instant;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 };
@@ -13,14 +16,20 @@ export type GtfsAddedTripTerminatingMovementFields = {
 export class GtfsAddedTripTerminatingMovement implements IGtfsAddedTripServicingMovement {
   readonly stopId: number;
   readonly positionId: number | null;
-  readonly arrivalTime: Temporal.Instant;
+
+  readonly scheduledArrivalTime: Temporal.Instant | null;
+  readonly knownRealtimeArrivalTime: Temporal.Instant;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   constructor(fields: GtfsAddedTripTerminatingMovementFields) {
     this.stopId = fields.stopId;
     this.positionId = fields.positionId;
-    this.arrivalTime = fields.arrivalTime;
+
+    this.scheduledArrivalTime = fields.scheduledArrivalTime;
+    this.knownRealtimeArrivalTime = fields.knownRealtimeArrivalTime;
+
     this.gtfsIdMetadata = fields.gtfsIdMetadata;
     this.gtfsStopSequence = fields.gtfsStopSequence;
   }
@@ -44,7 +53,7 @@ export class GtfsAddedTripTerminatingMovement implements IGtfsAddedTripServicing
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return this.arrivalTime;
+    return this.knownRealtimeArrivalTime;
   }
 
   asCorequeryFields(): ServiceTerminatingMovementFields {
@@ -54,8 +63,8 @@ export class GtfsAddedTripTerminatingMovement implements IGtfsAddedTripServicing
       currentPositionId: this.positionId,
 
       arrivalTimeType: "provided-live-time",
-      arrivalTime: this.arrivalTime,
-      formerArrivalTime: null,
+      arrivalTime: this.knownRealtimeArrivalTime,
+      formerArrivalTime: this.scheduledArrivalTime,
     };
   }
 }
