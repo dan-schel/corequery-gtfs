@@ -118,7 +118,8 @@ export class GtfsUpdatedTripTerminatingMovement implements IGtfsUpdatedTripServi
   asReplacedTripTerminatingMovement(): GtfsReplacedTripTerminatingMovement {
     return new GtfsReplacedTripTerminatingMovement({
       stopId: this.stopId,
-      positionId: this.currentPositionId,
+      originalPositionId: this.originalPositionId,
+      currentPositionId: this.currentPositionId,
       scheduledArrivalTime: this.scheduledArrivalTime,
       knownRealtimeArrivalTime: this.knownRealtimeArrivalTime,
       assumedRealtimeArrivalTime: this.assumedRealtimeArrivalTime,

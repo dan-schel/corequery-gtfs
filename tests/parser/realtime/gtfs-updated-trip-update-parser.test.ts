@@ -229,7 +229,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     expect(parsed.movements.map((movement) => movement.stopId)).toEqual([1, 2]);
   });
 
-  it("preserves scheduled and realtime times in replaced trips", () => {
+  it("preserves times and position IDs in replaced trips", () => {
     const trip = TRIP.with({
       movements: [
         TRIP.origination.with({
@@ -238,12 +238,17 @@ describe("GtfsUpdatedTripUpdateParser", () => {
         }),
         new GtfsScheduledTripRegularMovement({
           stopId: 1,
-          positionId: null,
+          positionId: 1,
           arrivalTime: GtfsStopTime.parse("00:01:20"),
           departureTime: GtfsStopTime.parse("00:01:30"),
           picksUp: true,
           dropsOff: true,
-          gtfsIdMetadata: { type: "general", id: "stop-1", stopId: 1 },
+          gtfsIdMetadata: {
+            type: "positional",
+            id: "1-PLATFORM-A",
+            stopId: 1,
+            positionId: 1,
+          },
           gtfsStopSequence: 2,
         }),
         TRIP.termination.with({
@@ -252,9 +257,13 @@ describe("GtfsUpdatedTripUpdateParser", () => {
       ],
     });
     const schedule = GtfsScheduleData.fromTrips([trip]);
+    const stop1PositionalIds = new Map([
+      [1, ["1-PLATFORM-A"]],
+      [2, ["1-PLATFORM-B"]],
+    ]);
     const stopGtfsIdMapping = new StopGtfsIdMapping(
       new Map([
-        [1, StopGtfsIdCollection.simple(1, "stop-1")],
+        [1, new StopGtfsIdCollection(1, ["stop-1"], stop1PositionalIds)],
         [2, StopGtfsIdCollection.simple(2, "stop-2")],
         [3, StopGtfsIdCollection.simple(3, "stop-3")],
       ]),
@@ -281,7 +290,7 @@ describe("GtfsUpdatedTripUpdateParser", () => {
         },
         {
           stopSequence: 2,
-          stopId: "stop-1",
+          stopId: "1-PLATFORM-B",
           departure: { delay: 120 },
           scheduleRelationship: "SCHEDULED",
         },
@@ -296,16 +305,20 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     const toInstant = (time: string) =>
       GtfsStopTime.parse(time).toInstant(TRIP_DESCRIPTOR.startDate, TIMEZONE);
 
-    expect(parsed.origination.asCorequeryFields()).toMatchObject({
-      departureTimeType: "provided-live-time",
-      departureTime: toInstant("00:03:30"),
-      formerDepartureTime: toInstant("00:01:30"),
-    });
-    expect(parsed.termination.asCorequeryFields()).toMatchObject({
-      arrivalTimeType: "interpolated-live-time",
-      arrivalTime: toInstant("00:04:00"),
-      formerArrivalTime: toInstant("00:02:00"),
-    });
+    const { origination, termination } = parsed;
+    expect(origination.originalPositionId).toBe(1);
+    expect(origination.currentPositionId).toBe(2);
+    expect(origination.scheduledDepartureTime).toEqual(toInstant("00:01:30"));
+    expect(origination.knownRealtimeDepartureTime).toEqual(
+      toInstant("00:03:30"),
+    );
+    expect(origination.assumedRealtimeDepartureTime).toBeNull();
+
+    expect(termination.scheduledArrivalTime).toEqual(toInstant("00:02:00"));
+    expect(termination.knownRealtimeArrivalTime).toBeNull();
+    expect(termination.assumedRealtimeArrivalTime).toEqual(
+      toInstant("00:04:00"),
+    );
   });
 
   it("reports scheduled updates without stopTimeUpdate fields", () => {

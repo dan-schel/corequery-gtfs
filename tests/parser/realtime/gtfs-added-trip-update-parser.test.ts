@@ -164,24 +164,30 @@ describe("GtfsAddedTripUpdateParser", () => {
     const middleMovement = parsed.movements[1];
     if (middleMovement?.type !== "regular") throw new Error();
 
-    expect(parsed.origination.asCorequeryFields()).toMatchObject({
-      departureTimeType: "provided-live-time",
-      departureTime: Temporal.Instant.from("2026-09-25T09:00:00Z"),
-      formerDepartureTime: Temporal.Instant.from("2026-09-25T08:59:00Z"),
-    });
-    expect(middleMovement.asCorequeryFields()).toMatchObject({
-      arrivalTimeType: "provided-live-time",
-      arrivalTime: Temporal.Instant.from("2026-09-25T09:30:00Z"),
-      formerArrivalTime: Temporal.Instant.from("2026-09-25T09:28:00Z"),
-      departureTimeType: "provided-live-time",
-      departureTime: Temporal.Instant.from("2026-09-25T09:31:00Z"),
-      formerDepartureTime: Temporal.Instant.from("2026-09-25T09:28:00Z"),
-    });
-    expect(parsed.termination.asCorequeryFields()).toMatchObject({
-      arrivalTimeType: "provided-live-time",
-      arrivalTime: Temporal.Instant.from("2026-09-25T10:00:00Z"),
-      formerArrivalTime: Temporal.Instant.from("2026-09-25T10:01:00Z"),
-    });
+    expect(parsed.origination.knownRealtimeDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:00:00Z"),
+    );
+    expect(parsed.origination.scheduledDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T08:59:00Z"),
+    );
+    expect(middleMovement.knownRealtimeArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:30:00Z"),
+    );
+    expect(middleMovement.scheduledArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:28:00Z"),
+    );
+    expect(middleMovement.knownRealtimeDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:31:00Z"),
+    );
+    expect(middleMovement.scheduledDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:28:00Z"),
+    );
+    expect(parsed.termination.knownRealtimeArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T10:00:00Z"),
+    );
+    expect(parsed.termination.scheduledArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T10:01:00Z"),
+    );
   });
 
   it("applies stop_time_properties pickup and drop-off types", () => {
