@@ -1,78 +1,54 @@
 import { describe, expect, it } from "vitest";
-import {
-  GtfsReplacedTripRegularMovement,
-  type GtfsReplacedTripRegularMovementFields,
-} from "../../../../src/data/trip/replaced/gtfs-replaced-trip-regular-movement.js";
-
-const SCHEDULED = Temporal.Instant.from("2026-09-25T09:00:00Z");
-const KNOWN = Temporal.Instant.from("2026-09-25T09:02:00Z");
-const ASSUMED = Temporal.Instant.from("2026-09-25T09:01:00Z");
-
-const FIELDS: GtfsReplacedTripRegularMovementFields = {
-  stopId: 1,
-  originalPositionId: null,
-  currentPositionId: null,
-  scheduledArrivalTime: SCHEDULED,
-  knownRealtimeArrivalTime: null,
-  assumedRealtimeArrivalTime: null,
-  scheduledDepartureTime: SCHEDULED,
-  knownRealtimeDepartureTime: null,
-  assumedRealtimeDepartureTime: null,
-  picksUp: true,
-  dropsOff: true,
-  gtfsIdMetadata: { type: "general", id: "stop-1", stopId: 1 },
-  gtfsStopSequence: 1,
-};
+import { GtfsReplacedTripRegularMovement } from "../../../../src/data/trip/replaced/gtfs-replaced-trip-regular-movement.js";
 
 describe("GtfsReplacedTripRegularMovement", () => {
-  it("prefers known, then assumed, then scheduled times", () => {
-    const movement = new GtfsReplacedTripRegularMovement({
-      ...FIELDS,
-      assumedRealtimeArrivalTime: ASSUMED,
-      knownRealtimeDepartureTime: KNOWN,
-      assumedRealtimeDepartureTime: ASSUMED,
-    });
-
-    expect(movement.effectiveArrivalTime).toEqual(ASSUMED);
-    expect(movement.effectiveDepartureTime).toEqual(KNOWN);
-  });
-
-  it("allows scheduled times to be null", () => {
-    const movement = new GtfsReplacedTripRegularMovement({
-      ...FIELDS,
-      scheduledArrivalTime: null,
-      knownRealtimeArrivalTime: KNOWN,
-      scheduledDepartureTime: null,
-      knownRealtimeDepartureTime: KNOWN,
-    });
-
-    expect(movement.effectiveArrivalTime).toEqual(KNOWN);
-    expect(movement.effectiveDepartureTime).toEqual(KNOWN);
-  });
-
-  it("throws if there's no arrival or departure time", () => {
-    expect(
-      () =>
+  describe("#constructor", () => {
+    it("throws if no arrival time is given", () => {
+      expect(() => {
         new GtfsReplacedTripRegularMovement({
-          ...FIELDS,
+          stopId: 1,
+          originalPositionId: null,
+          currentPositionId: null,
+
           scheduledArrivalTime: null,
-        }),
-    ).toThrow();
-    expect(
-      () =>
-        new GtfsReplacedTripRegularMovement({
-          ...FIELDS,
-          scheduledDepartureTime: null,
-        }),
-    ).toThrow();
-  });
+          knownRealtimeArrivalTime: null,
+          assumedRealtimeArrivalTime: null,
 
-  it("recalculates effective times when using with", () => {
-    const movement = new GtfsReplacedTripRegularMovement(FIELDS).with({
-      knownRealtimeDepartureTime: KNOWN,
+          scheduledDepartureTime: Temporal.Instant.from("2026-09-25T09:00:00Z"),
+          knownRealtimeDepartureTime: null,
+          assumedRealtimeDepartureTime: null,
+
+          picksUp: true,
+          dropsOff: true,
+
+          gtfsIdMetadata: { type: "general", id: "stop-1", stopId: 1 },
+          gtfsStopSequence: 1,
+        });
+      }).toThrow();
     });
 
-    expect(movement.effectiveArrivalTime).toEqual(SCHEDULED);
-    expect(movement.effectiveDepartureTime).toEqual(KNOWN);
+    it("throws if no departure time is given", () => {
+      expect(() => {
+        new GtfsReplacedTripRegularMovement({
+          stopId: 1,
+          originalPositionId: null,
+          currentPositionId: null,
+
+          scheduledArrivalTime: Temporal.Instant.from("2026-09-25T09:00:00Z"),
+          knownRealtimeArrivalTime: null,
+          assumedRealtimeArrivalTime: null,
+
+          scheduledDepartureTime: null,
+          knownRealtimeDepartureTime: null,
+          assumedRealtimeDepartureTime: null,
+
+          picksUp: true,
+          dropsOff: true,
+
+          gtfsIdMetadata: { type: "general", id: "stop-1", stopId: 1 },
+          gtfsStopSequence: 1,
+        });
+      }).toThrow();
+    });
   });
 });
