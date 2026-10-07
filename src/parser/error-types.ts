@@ -129,7 +129,7 @@ export class MultipleExceptionsForSameDateError {
   constructor(readonly subsequentRowForSameDate: CalendarDatesCsvRow) {}
 
   formatDebugMessage() {
-    return `Calendar with ID "${this.subsequentRowForSameDate.service_id}" has multiple exceptions on the same date "${this.subsequentRowForSameDate.date.toString()}".`;
+    return `[LOGGING, NOT AN ERROR] Calendar with ID "${this.subsequentRowForSameDate.service_id}" has multiple exceptions on the same date "${this.subsequentRowForSameDate.date.toString()}".`;
   }
 }
 
@@ -183,7 +183,7 @@ export class UnexpectedPickupTypeError {
   constructor(readonly stopTime: StopTimesCsvRow) {}
 
   formatDebugMessage() {
-    return `Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected pickup_type "${this.stopTime.pickup_type}".`;
+    return `[LOGGING, NOT AN ERROR] Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected pickup_type "${this.stopTime.pickup_type}".`;
   }
 }
 
@@ -192,7 +192,7 @@ export class UnexpectedDropOffTypeError {
   constructor(readonly stopTime: StopTimesCsvRow) {}
 
   formatDebugMessage() {
-    return `Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected drop_off_type "${this.stopTime.drop_off_type}".`;
+    return `[LOGGING, NOT AN ERROR] Stop time on trip "${this.stopTime.trip_id}" at GTFS stop ID "${this.stopTime.stop_id}" has unexpected drop_off_type "${this.stopTime.drop_off_type}".`;
   }
 }
 
@@ -294,7 +294,7 @@ export class TransferCrossesCalendarsError {
   constructor(readonly transfer: TransfersCsvRow) {}
 
   formatDebugMessage() {
-    return `Transfer made from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}", which aren't on the same calendar.`;
+    return `[LOGGING, NOT AN ERROR] Transfer made from trip "${this.transfer.from_trip_id}" to trip "${this.transfer.to_trip_id}", which aren't on the same calendar.`;
   }
 }
 
@@ -364,7 +364,7 @@ export class NonSequentialStopTimeUpdateEntryError {
   ) {}
 
   formatDebugMessage() {
-    return `Stop time updates on trip update "${this.tripUpdate.trip.tripId}" did not form a regular sequence.`;
+    return `[LOGGING, NOT AN ERROR] Stop time updates on trip update "${this.tripUpdate.trip.tripId}" did not form a regular sequence.`;
   }
 }
 
@@ -482,7 +482,7 @@ export class TimeAndDelayDisagreeWithEachOtherError {
   ) {}
 
   formatDebugMessage() {
-    return `Time and delay value disagree on trip update "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}".`;
+    return `[LOGGING, NOT AN ERROR] Time and delay value disagree on trip update "${this.tripUpdate.trip.tripId}" at stop "${this.stopTimeUpdateEntry.stopId}".`;
   }
 }
 
@@ -567,7 +567,7 @@ export class TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError {
   ) {}
 
   formatDebugMessage() {
-    return `Start time given on trip descriptor for trip "${this.tripDescriptor.tripId}" does not match the origin time on the schedule.`;
+    return `[LOGGING, NOT AN ERROR] Start time given on trip descriptor for trip "${this.tripDescriptor.tripId}" does not match the origin time on the schedule.`;
   }
 }
 

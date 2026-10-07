@@ -36,6 +36,6 @@ Schedule parsing errors:
 <none>
 
 Realtime parsing errors:
-- Known departure times in trip update "02-WER--69-T2-6501" entail time travel.
+- The real-time time values given on trip update "02-WER--69-T2-6501" would entail time travel.
 "
 `;
