@@ -7,11 +7,11 @@ import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collect
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
+import { GtfsTripUpdateParser } from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
 import {
   type GtfsTripUpdateParsingError,
-  GtfsTripUpdateParser,
   UnsupportedTripUpdateScheduleRelationshipError,
-} from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
+} from "../../../src/parser/error-types.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 
 const TIMEZONE = "Australia/Melbourne";

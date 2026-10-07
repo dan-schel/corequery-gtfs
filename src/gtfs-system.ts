@@ -9,8 +9,10 @@ import { StopGtfsIdMapping } from "./data/ids/stop-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "./data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "./data/route/line-routes-mapping.js";
 import { GtfsFeedParser } from "./parser/gtfs-feed-parser.js";
-import type { GtfsRealtimeDataParsingError } from "./parser/realtime/gtfs-realtime-data-parser.js";
-import type { GtfsScheduleParsingError } from "./parser/schedule/gtfs-schedule-data-parser.js";
+import type {
+  GtfsRealtimeDataParsingError,
+  GtfsScheduleParsingError,
+} from "./parser/error-types.js";
 import type { RealtimeDataJson } from "./data/raw/realtime-data-json.js";
 import type { GtfsFeedCsv } from "./data/raw/schedule-csvs.js";
 

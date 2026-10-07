@@ -1,6 +1,12 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
-import type { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import type { TripDescriptorJson } from "../../data/raw/realtime-data-json.js";
+import {
+  NecessaryFieldNotInTripDescriptorError,
+  TripDescriptorReferencesNonExistentTripIdError,
+  TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError,
+  TripDoesNotOccurOnStartDateError,
+  type GtfsScheduledTripIdentificationError,
+} from "../error-types.js";
 
 export type GtfsScheduledTripIdentifierFields = {
   readonly onError: (error: GtfsScheduledTripIdentificationError) => void;
@@ -72,43 +78,4 @@ export class GtfsScheduledTripIdentifier {
 
     return { trip, serviceDay: tripDescriptor.startDate };
   }
-}
-
-export type GtfsScheduledTripIdentificationError =
-  | NecessaryFieldNotInTripDescriptorError
-  | TripDescriptorReferencesNonExistentTripIdError
-  | TripDoesNotOccurOnStartDateError
-  | TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError;
-
-// Naming "necessary" rather that "required" since "required" implies that it
-// breaks the GTFS-RT spec, but in reality it's just that we don't support other
-// methods of identifying the trip yet.
-export class NecessaryFieldNotInTripDescriptorError {
-  readonly type = "necessary-field-not-in-trip-descriptor";
-  constructor(
-    readonly tripDescriptor: TripDescriptorJson,
-    readonly field: "tripId" | "startDate",
-  ) {}
-}
-
-export class TripDescriptorReferencesNonExistentTripIdError {
-  readonly type = "trip-descriptor-references-non-existent-trip-id";
-  constructor(readonly tripDescriptor: TripDescriptorJson) {}
-}
-
-export class TripDoesNotOccurOnStartDateError {
-  readonly type = "trip-does-not-occur-on-start-date";
-  constructor(
-    readonly tripDescriptor: TripDescriptorJson,
-    readonly trip: GtfsScheduledTrip,
-  ) {}
-}
-
-export class TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError {
-  readonly type =
-    "trip-descriptor-start-time-does-not-match-trip-origin-stop-time";
-  constructor(
-    readonly tripDescriptor: TripDescriptorJson,
-    readonly trip: GtfsScheduledTrip,
-  ) {}
 }

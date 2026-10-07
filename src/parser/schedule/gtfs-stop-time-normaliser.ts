@@ -1,4 +1,9 @@
 import type { StopTimesCsv } from "../../data/raw/schedule-csvs.js";
+import {
+  InvalidStopSequenceError,
+  MultipleStopSequencesError,
+  type GtfsStopTimeNormalisationError,
+} from "../error-types.js";
 
 export type GtfsStopTimeNormaliserFields = {
   readonly onError: (error: GtfsStopTimeNormalisationError) => void;
@@ -128,22 +133,4 @@ export class GtfsStopTimeNormaliser {
       return false;
     });
   }
-}
-
-export type GtfsStopTimeNormalisationError =
-  InvalidStopSequenceError | MultipleStopSequencesError;
-
-export class InvalidStopSequenceError {
-  readonly type = "stop-sequence-duplicated";
-  constructor(readonly stopTimes: StopTimesCsv) {}
-
-  // The trip_id is accessible, e.g.:
-  // get tripId() {
-  //   return this.stopTimes[0]?.trip_id ?? null;
-  // }
-}
-
-export class MultipleStopSequencesError {
-  readonly type = "multiple-stop-sequences";
-  constructor(readonly stopTimes: StopTimesCsv) {}
 }

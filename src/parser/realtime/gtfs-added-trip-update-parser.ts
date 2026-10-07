@@ -1,7 +1,6 @@
 import { itsOk } from "@dan-schel/js-utils";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type {
-  StopTimeUpdateJson,
   TripUpdateJson,
   UpdatedTimeJson,
 } from "../../data/raw/realtime-data-json.js";
@@ -15,15 +14,18 @@ import type {
   GtfsAddedTripServicingMovement,
 } from "../../data/trip/added/types.js";
 import {
+  AddedTripIdDuplicatesScheduledTripIdError,
+  AddedTripReferencesUnmappedRouteIdError,
+  AddedTripStopTimeUpdateMissingTimeError,
+  NecessaryFieldNotSuppliedForAddedTripError,
   NecessaryFieldNotInStopTimeUpdateEntryError,
   NoStopTimeUpdateFieldGivenError,
+  NonSequentialStopTimeUpdateEntryError,
   StopTimeUpdateEntryReferencesUnmappedStopIdError,
   UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
-} from "./gtfs-trip-update-parser-common-error-types.js";
-import {
-  GtfsRouteMatcher,
-  type GtfsRouteMatchingError,
-} from "../gtfs-route-matcher.js";
+  type GtfsAddedTripUpdateParsingError,
+} from "../error-types.js";
+import { GtfsRouteMatcher } from "../gtfs-route-matcher.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
@@ -261,57 +263,4 @@ export class GtfsAddedTripUpdateParser {
 
     return { scheduledTime, knownRealtimeTime };
   }
-}
-
-export type GtfsAddedTripUpdateParsingError =
-  | NecessaryFieldNotSuppliedForAddedTripError
-  | AddedTripIdDuplicatesScheduledTripIdError
-  | NoStopTimeUpdateFieldGivenError
-  | UnsupportedStopTimeUpdateEntryScheduleRelationshipError
-  | NecessaryFieldNotInStopTimeUpdateEntryError
-  | StopTimeUpdateEntryReferencesUnmappedStopIdError
-  | AddedTripStopTimeUpdateMissingTimeError
-  | AddedTripReferencesUnmappedRouteIdError
-  | GtfsRouteMatchingError
-  | NonSequentialStopTimeUpdateEntryError;
-
-export class NecessaryFieldNotSuppliedForAddedTripError {
-  readonly type = "necessary-field-not-supplied-for-added-trip";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly field: "tripId" | "routeId" | "startDate",
-  ) {}
-}
-
-export class AddedTripIdDuplicatesScheduledTripIdError {
-  readonly type = "added-trip-id-duplicates-scheduled-trip-id";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly tripId: string,
-  ) {}
-}
-
-export class AddedTripStopTimeUpdateMissingTimeError {
-  readonly type = "added-trip-stop-time-update-missing-time";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-  ) {}
-}
-
-export class AddedTripReferencesUnmappedRouteIdError {
-  readonly type = "trip-references-unmapped-route-id";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly gtfsRouteId: string,
-  ) {}
-}
-
-export class NonSequentialStopTimeUpdateEntryError {
-  readonly type = "non-sequential-stop-time-update-entry";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly expectedStopSequence: number,
-  ) {}
 }

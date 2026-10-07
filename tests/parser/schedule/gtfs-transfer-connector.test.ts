@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { GtfsCalendar } from "../../../src/data/gtfs-calendar.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
+import { GtfsTransferParser } from "../../../src/parser/schedule/gtfs-transfer-parser.js";
 import {
   type GtfsTransferParsingError,
-  GtfsTransferParser,
   TransferIsNotInSeatTransferError,
   TransferReferencesNonExistentTrip,
   TransferIsNotFromTerminusError,
@@ -13,7 +13,7 @@ import {
   TransferIsNotSameStopAndPositionError,
   TransferCrossesCalendarsError,
   TransferRequiresTimeTravelError,
-} from "../../../src/parser/schedule/gtfs-transfer-parser.js";
+} from "../../../src/parser/error-types.js";
 
 describe("GtfsTransferParser", () => {
   const TRIP_A = makeTripA("1", "2");

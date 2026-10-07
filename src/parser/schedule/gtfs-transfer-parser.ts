@@ -1,13 +1,21 @@
-import type {
-  TransfersCsv,
-  TransfersCsvRow,
-} from "../../data/raw/schedule-csvs.js";
+import type { TransfersCsv } from "../../data/raw/schedule-csvs.js";
 import { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
 import {
   GtfsEntireVehicleFormsServiceTransfer,
   type GtfsTransfer,
 } from "../../data/gtfs-transfer.js";
 import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js";
+import {
+  TransferCrossesCalendarsError,
+  TransferIsNotFromTerminusError,
+  TransferIsNotInSeatTransferError,
+  TransferIsNotSameStopAndPositionError,
+  TransferIsNotToOriginError,
+  TransferReferencesNonExistentTrip,
+  TransferReferencesTripAlreadyConnectedError,
+  TransferRequiresTimeTravelError,
+  type GtfsTransferParsingError,
+} from "../error-types.js";
 
 const TRANSFER_TYPE_IN_SEAT_TRANSFER = 4;
 
@@ -159,66 +167,4 @@ export class GtfsTransferParser {
           t.toTripId === toTrip.gtfsTripId,
       );
   }
-}
-
-export type GtfsTransferParsingError =
-  | TransferReferencesNonExistentTrip
-  | TransferIsNotFromTerminusError
-  | TransferIsNotToOriginError
-  | TransferReferencesTripAlreadyConnectedError
-  | TransferIsNotInSeatTransferError
-  | TransferIsNotSameStopAndPositionError
-  | TransferCrossesCalendarsError
-  | TransferRequiresTimeTravelError;
-
-export class TransferReferencesNonExistentTrip {
-  readonly type = "transfer-references-non-existent-trip";
-  constructor(
-    readonly transfer: TransfersCsvRow,
-    readonly field: "from_trip_id" | "to_trip_id",
-  ) {}
-}
-
-export class TransferIsNotFromTerminusError {
-  readonly type = "transfer-is-not-from-terminus";
-  constructor(
-    readonly transfer: TransfersCsvRow,
-    readonly fromTrip: GtfsScheduledTrip,
-  ) {}
-}
-
-export class TransferIsNotToOriginError {
-  readonly type = "transfer-is-not-to-origin";
-  constructor(
-    readonly transfer: TransfersCsvRow,
-    readonly toTrip: GtfsScheduledTrip,
-  ) {}
-}
-
-export class TransferReferencesTripAlreadyConnectedError {
-  readonly type = "transfer-references-trip-already-connected";
-  constructor(
-    readonly transfer: TransfersCsvRow,
-    readonly tripWithExistingConnection: GtfsScheduledTrip,
-  ) {}
-}
-
-export class TransferIsNotInSeatTransferError {
-  readonly type = "transfer-is-not-in-seat-transfer";
-  constructor(readonly transfer: TransfersCsvRow) {}
-}
-
-export class TransferIsNotSameStopAndPositionError {
-  readonly type = "transfer-is-not-same-stop-and-position";
-  constructor(readonly transfer: TransfersCsvRow) {}
-}
-
-export class TransferCrossesCalendarsError {
-  readonly type = "transfer-crosses-calendars";
-  constructor(readonly transfer: TransfersCsvRow) {}
-}
-
-export class TransferRequiresTimeTravelError {
-  readonly type = "transfer-requires-time-travel";
-  constructor(readonly transfer: TransfersCsvRow) {}
 }

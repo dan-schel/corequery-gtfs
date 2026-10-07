@@ -12,7 +12,7 @@ import { GtfsRealtimeDataParser } from "../../../src/parser/realtime/gtfs-realti
 import {
   type GtfsTripUpdateParsingError,
   UnsupportedTripUpdateScheduleRelationshipError,
-} from "../../../src/parser/realtime/gtfs-trip-update-parser.js";
+} from "../../../src/parser/error-types.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../../../src/data/gtfs-transfer.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
 

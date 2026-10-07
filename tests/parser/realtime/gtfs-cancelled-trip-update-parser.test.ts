@@ -3,10 +3,8 @@ import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
-import {
-  type GtfsCancelledTripUpdateParsingError,
-  GtfsCancelledTripUpdateParser,
-} from "../../../src/parser/realtime/gtfs-cancelled-trip-update-parser.js";
+import { GtfsCancelledTripUpdateParser } from "../../../src/parser/realtime/gtfs-cancelled-trip-update-parser.js";
+import type { GtfsCancelledTripUpdateParsingError } from "../../../src/parser/error-types.js";
 
 const TIMEZONE = "Australia/Melbourne";
 

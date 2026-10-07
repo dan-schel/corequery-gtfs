@@ -9,18 +9,9 @@ import type {
 } from "../../data/raw/schedule-csvs.js";
 import type { GtfsCalendar } from "../../data/gtfs-calendar.js";
 import { GtfsScheduledTrip } from "../../data/trip/scheduled/gtfs-scheduled-trip.js";
-import {
-  GtfsStopTimeNormaliser,
-  type GtfsStopTimeNormalisationError,
-} from "./gtfs-stop-time-normaliser.js";
-import {
-  GtfsRouteMatcher,
-  type GtfsRouteMatchingError,
-} from "../gtfs-route-matcher.js";
-import {
-  type GtfsTransferParsingError,
-  GtfsTransferParser,
-} from "./gtfs-transfer-parser.js";
+import { GtfsStopTimeNormaliser } from "./gtfs-stop-time-normaliser.js";
+import { GtfsRouteMatcher } from "../gtfs-route-matcher.js";
+import { GtfsTransferParser } from "./gtfs-transfer-parser.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type {
@@ -28,6 +19,16 @@ import type {
   GtfsScheduledTripServicingMovement,
 } from "../../data/trip/scheduled/types.js";
 import { itsOk } from "@dan-schel/js-utils";
+import {
+  DuplicateTripIdError,
+  StopTimeReferencesNonExistentTripError,
+  StopTimeReferencesUnmappedStopIdError,
+  TripReferencesNonExistentCalendarError,
+  TripReferencesUnmappedRouteIdError,
+  UnexpectedDropOffTypeError,
+  UnexpectedPickupTypeError,
+  type GtfsTripParsingError,
+} from "../error-types.js";
 import { GtfsScheduledTripOriginatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
 import { GtfsScheduledTripTerminatingMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
 import { GtfsScheduledTripRegularMovement } from "../../data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
@@ -281,51 +282,4 @@ export class GtfsTripParser {
       return true;
     }
   }
-}
-
-export type GtfsTripParsingError =
-  | StopTimeReferencesNonExistentTripError
-  | DuplicateTripIdError
-  | TripReferencesNonExistentCalendarError
-  | TripReferencesUnmappedRouteIdError
-  | GtfsStopTimeNormalisationError
-  | GtfsRouteMatchingError
-  | GtfsTransferParsingError
-  | StopTimeReferencesUnmappedStopIdError
-  | UnexpectedPickupTypeError
-  | UnexpectedDropOffTypeError;
-
-export class StopTimeReferencesNonExistentTripError {
-  readonly type = "stop-time-references-non-existent-trip";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
-}
-
-export class DuplicateTripIdError {
-  readonly type = "duplicate-trip-id";
-  constructor(readonly subsequentRowWithDuplicateId: TripsCsvRow) {}
-}
-
-export class TripReferencesNonExistentCalendarError {
-  readonly type = "trip-references-non-existent-calendar";
-  constructor(readonly trip: TripsCsvRow) {}
-}
-
-export class TripReferencesUnmappedRouteIdError {
-  readonly type = "trip-references-unmapped-route-id";
-  constructor(readonly trip: TripsCsvRow) {}
-}
-
-export class StopTimeReferencesUnmappedStopIdError {
-  readonly type = "stop-time-references-unmapped-stop-id";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
-}
-
-export class UnexpectedPickupTypeError {
-  readonly type = "unexpected-pickup-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
-}
-
-export class UnexpectedDropOffTypeError {
-  readonly type = "unexpected-drop-off-type";
-  constructor(readonly stopTime: StopTimesCsvRow) {}
 }
