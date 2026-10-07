@@ -229,6 +229,98 @@ describe("GtfsUpdatedTripUpdateParser", () => {
     expect(parsed.movements.map((movement) => movement.stopId)).toEqual([1, 2]);
   });
 
+  it("preserves times and position IDs in replaced trips", () => {
+    const trip = TRIP.with({
+      movements: [
+        TRIP.origination.with({
+          stopId: 3,
+          gtfsIdMetadata: { type: "general", id: "stop-3", stopId: 3 },
+        }),
+        new GtfsScheduledTripRegularMovement({
+          stopId: 1,
+          positionId: 1,
+          arrivalTime: GtfsStopTime.parse("00:01:20"),
+          departureTime: GtfsStopTime.parse("00:01:30"),
+          picksUp: true,
+          dropsOff: true,
+          gtfsIdMetadata: {
+            type: "positional",
+            id: "1-PLATFORM-A",
+            stopId: 1,
+            positionId: 1,
+          },
+          gtfsStopSequence: 2,
+        }),
+        TRIP.termination.with({
+          gtfsStopSequence: 3,
+        }),
+      ],
+    });
+    const schedule = GtfsScheduleData.fromTrips([trip]);
+    const stop1PositionalIds = new Map([
+      [1, ["1-PLATFORM-A"]],
+      [2, ["1-PLATFORM-B"]],
+    ]);
+    const stopGtfsIdMapping = new StopGtfsIdMapping(
+      new Map([
+        [1, new StopGtfsIdCollection(1, ["stop-1"], stop1PositionalIds)],
+        [2, StopGtfsIdCollection.simple(2, "stop-2")],
+        [3, StopGtfsIdCollection.simple(3, "stop-3")],
+      ]),
+    );
+
+    const errors: GtfsUpdatedTripUpdateParsingError[] = [];
+    const parser = new GtfsUpdatedTripUpdateParser({
+      timezone: TIMEZONE,
+      stopGtfsIdMapping,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping: LINE_ROUTES_MAPPING,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      interpolationMode: "follow-spec",
+      onError: (e) => errors.push(e),
+    });
+
+    const tripUpdate = {
+      trip: TRIP_DESCRIPTOR,
+      stopTimeUpdate: [
+        {
+          stopSequence: 1,
+          stopId: "stop-3",
+          scheduleRelationship: "SKIPPED",
+        },
+        {
+          stopSequence: 2,
+          stopId: "1-PLATFORM-B",
+          departure: { delay: 120 },
+          scheduleRelationship: "SCHEDULED",
+        },
+      ],
+    };
+
+    const parsed = parser.parse(tripUpdate, schedule);
+
+    expect(errors).toEqual([]);
+    if (!(parsed instanceof GtfsReplacedTrip)) throw new Error();
+
+    const toInstant = (time: string) =>
+      GtfsStopTime.parse(time).toInstant(TRIP_DESCRIPTOR.startDate, TIMEZONE);
+
+    const { origination, termination } = parsed;
+    expect(origination.originalPositionId).toBe(1);
+    expect(origination.currentPositionId).toBe(2);
+    expect(origination.scheduledDepartureTime).toEqual(toInstant("00:01:30"));
+    expect(origination.knownRealtimeDepartureTime).toEqual(
+      toInstant("00:03:30"),
+    );
+    expect(origination.assumedRealtimeDepartureTime).toBeNull();
+
+    expect(termination.scheduledArrivalTime).toEqual(toInstant("00:02:00"));
+    expect(termination.knownRealtimeArrivalTime).toBeNull();
+    expect(termination.assumedRealtimeArrivalTime).toEqual(
+      toInstant("00:04:00"),
+    );
+  });
+
   it("reports scheduled updates without stopTimeUpdate fields", () => {
     const errors: GtfsUpdatedTripUpdateParsingError[] = [];
     const parser = new GtfsUpdatedTripUpdateParser({

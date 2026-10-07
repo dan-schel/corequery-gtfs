@@ -3,6 +3,7 @@ import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type {
   StopTimeUpdateJson,
   TripUpdateJson,
+  UpdatedTimeJson,
 } from "../../data/raw/realtime-data-json.js";
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import { GtfsAddedTripOriginatingMovement } from "../../data/trip/added/gtfs-added-trip-originating-movement.js";
@@ -146,69 +147,53 @@ export class GtfsAddedTripUpdateParser {
       const positionId =
         gtfsIdMetadata.type === "positional" ? gtfsIdMetadata.positionId : null;
 
-      // TODO: PTV still seems to provide delay values for "ADDED" trips, from
-      // which we could infer scheduled times for these added trips. The added
-      // trip movement classes don't currently support scheduled vs realtime
-      // times because I assumed GTFS-RT wouldn't supply scheduled times for
-      // added trips, but it looks like that's wrong!
       if (i === 0) {
-        const departureTimestamp = entry.departure?.time;
-        if (departureTimestamp == null) {
+        const departure = this._parseTime(entry.departure ?? null);
+        if (departure == null) {
           const Err = AddedTripStopTimeUpdateMissingTimeError;
           this._onError(new Err(tripUpdate, entry));
           return null;
         }
-
-        const departureTime = Temporal.Instant.fromEpochMilliseconds(
-          departureTimestamp * 1000,
-        );
 
         servicingMovements.push(
           new GtfsAddedTripOriginatingMovement({
             stopId,
             positionId,
-            departureTime,
+            scheduledDepartureTime: departure.scheduledTime,
+            knownRealtimeDepartureTime: departure.knownRealtimeTime,
             gtfsIdMetadata,
             gtfsStopSequence: entry.stopSequence,
           }),
         );
       } else if (i === sortedEntries.length - 1) {
-        const arrivalTimestamp = entry.arrival?.time;
-        if (arrivalTimestamp == null) {
+        const arrival = this._parseTime(entry.arrival ?? null);
+        if (arrival == null) {
           const Err = AddedTripStopTimeUpdateMissingTimeError;
           this._onError(new Err(tripUpdate, entry));
           return null;
         }
-
-        const arrivalTime = Temporal.Instant.fromEpochMilliseconds(
-          arrivalTimestamp * 1000,
-        );
 
         servicingMovements.push(
           new GtfsAddedTripTerminatingMovement({
             stopId,
             positionId,
-            arrivalTime,
+            scheduledArrivalTime: arrival.scheduledTime,
+            knownRealtimeArrivalTime: arrival.knownRealtimeTime,
             gtfsIdMetadata,
             gtfsStopSequence: entry.stopSequence,
           }),
         );
       } else {
-        const departureTimestamp = entry.departure?.time;
-        const arrivalTimestamp = (entry.arrival ?? entry.departure)?.time;
+        const departure = this._parseTime(entry.departure ?? null);
+        const arrival = this._parseTime(
+          entry.arrival ?? entry.departure ?? null,
+        );
 
-        if (arrivalTimestamp == null || departureTimestamp == null) {
+        if (arrival == null || departure == null) {
           const Err = AddedTripStopTimeUpdateMissingTimeError;
           this._onError(new Err(tripUpdate, entry));
           return null;
         }
-
-        const arrivalTime = Temporal.Instant.fromEpochMilliseconds(
-          arrivalTimestamp * 1000,
-        );
-        const departureTime = Temporal.Instant.fromEpochMilliseconds(
-          departureTimestamp * 1000,
-        );
 
         // I'm not sure if V/Line actually supplies `stop_time_properties`
         // (experimental field). If not, we might need to handle it manually.
@@ -226,8 +211,10 @@ export class GtfsAddedTripUpdateParser {
           new GtfsAddedTripRegularMovement({
             stopId,
             positionId,
-            arrivalTime,
-            departureTime,
+            scheduledArrivalTime: arrival.scheduledTime,
+            knownRealtimeArrivalTime: arrival.knownRealtimeTime,
+            scheduledDepartureTime: departure.scheduledTime,
+            knownRealtimeDepartureTime: departure.knownRealtimeTime,
             gtfsIdMetadata,
             gtfsStopSequence: entry.stopSequence,
 
@@ -254,6 +241,25 @@ export class GtfsAddedTripUpdateParser {
       serviceTags: routeMatch.serviceTags,
       color: routeMatch.color,
     });
+  }
+
+  private _parseTime(updatedTime: UpdatedTimeJson | null) {
+    if (updatedTime?.time == null) return null;
+
+    const knownRealtimeTime = Temporal.Instant.fromEpochMilliseconds(
+      updatedTime.time * 1000,
+    );
+
+    // Added trips have no scheduled trip to pull scheduled times from, but PTV
+    // still supplies a delay alongside the time, so we can work backwards from
+    // it. The GTFS-RT spec doesn't require `delay` for added trips, so this may
+    // be null.
+    const scheduledTime =
+      updatedTime.delay != null
+        ? knownRealtimeTime.subtract({ seconds: updatedTime.delay })
+        : null;
+
+    return { scheduledTime, knownRealtimeTime };
   }
 }
 

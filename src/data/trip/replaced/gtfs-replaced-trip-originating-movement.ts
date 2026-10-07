@@ -4,25 +4,48 @@ import type { IGtfsReplacedTripServicingMovement } from "./types.js";
 
 export type GtfsReplacedTripOriginatingMovementFields = {
   readonly stopId: number;
-  readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+  readonly originalPositionId: number | null;
+  readonly currentPositionId: number | null;
+
+  readonly scheduledDepartureTime: Temporal.Instant | null;
+  readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 };
 
 export class GtfsReplacedTripOriginatingMovement implements IGtfsReplacedTripServicingMovement {
   readonly stopId: number;
-  readonly positionId: number | null;
-  readonly departureTime: Temporal.Instant;
+  readonly originalPositionId: number | null;
+  readonly currentPositionId: number | null;
+
+  readonly scheduledDepartureTime: Temporal.Instant | null;
+  readonly knownRealtimeDepartureTime: Temporal.Instant | null;
+  readonly assumedRealtimeDepartureTime: Temporal.Instant | null;
+  readonly effectiveDepartureTime: Temporal.Instant;
+
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 
   constructor(fields: GtfsReplacedTripOriginatingMovementFields) {
     this.stopId = fields.stopId;
-    this.positionId = fields.positionId;
-    this.departureTime = fields.departureTime;
+    this.originalPositionId = fields.originalPositionId;
+    this.currentPositionId = fields.currentPositionId;
+
+    this.scheduledDepartureTime = fields.scheduledDepartureTime;
+    this.knownRealtimeDepartureTime = fields.knownRealtimeDepartureTime;
+    this.assumedRealtimeDepartureTime = fields.assumedRealtimeDepartureTime;
+
     this.gtfsIdMetadata = fields.gtfsIdMetadata;
     this.gtfsStopSequence = fields.gtfsStopSequence;
+
+    const effectiveDepartureTime =
+      this.knownRealtimeDepartureTime ??
+      this.assumedRealtimeDepartureTime ??
+      this.scheduledDepartureTime;
+    if (effectiveDepartureTime == null) throw new Error("No departure time.");
+    this.effectiveDepartureTime = effectiveDepartureTime;
   }
 
   with(
@@ -44,18 +67,42 @@ export class GtfsReplacedTripOriginatingMovement implements IGtfsReplacedTripSer
   }
 
   get timeRelevantToDeparturesAlgorithm() {
-    return this.departureTime;
+    return this.effectiveDepartureTime;
   }
 
   asCorequeryFields(): ServiceOriginatingMovementFields {
     return {
       stopId: this.stopId,
-      originalPositionId: this.positionId,
-      currentPositionId: this.positionId,
+      originalPositionId: this.originalPositionId,
+      currentPositionId: this.currentPositionId,
 
-      departureTimeType: "provided-live-time",
-      departureTime: this.departureTime,
-      formerDepartureTime: null,
+      ...this._departureTimeCorequeryFields,
     };
+  }
+
+  private get _departureTimeCorequeryFields() {
+    if (this.knownRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "provided-live-time" as const,
+        departureTime: this.knownRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else if (this.assumedRealtimeDepartureTime !== null) {
+      return {
+        departureTimeType: "interpolated-live-time" as const,
+        departureTime: this.assumedRealtimeDepartureTime,
+        formerDepartureTime: this.scheduledDepartureTime,
+      };
+    } else {
+      return {
+        departureTimeType: "scheduled-time" as const,
+
+        // Given the others must be null at this point, the effective time must
+        // equal the scheduled time.
+        departureTime: this.effectiveDepartureTime,
+
+        formerDepartureTime: null,
+      };
+    }
   }
 }

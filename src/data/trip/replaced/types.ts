@@ -24,7 +24,8 @@ export type IGtfsReplacedTripMovement = {
 };
 
 export type IGtfsReplacedTripServicingMovement = IGtfsReplacedTripMovement & {
-  readonly positionId: number | null;
+  readonly originalPositionId: number | null;
+  readonly currentPositionId: number | null;
   readonly gtfsIdMetadata: StopGtfsIdMetadata;
   readonly gtfsStopSequence: number;
 

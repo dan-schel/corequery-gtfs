@@ -98,11 +98,95 @@ describe("GtfsAddedTripUpdateParser", () => {
     if (parsed == null) throw new Error("Expected an added trip.");
     if (!(parsed instanceof GtfsAddedTrip)) throw new Error();
     expect(parsed.gtfsTripId).toBe(TRIP_DESCRIPTOR.tripId);
-    expect(parsed.origination.departureTime).toEqual(
+    expect(parsed.origination.knownRealtimeDepartureTime).toEqual(
       Temporal.Instant.from("2026-09-25T09:00:00Z"),
     );
-    expect(parsed.termination.arrivalTime).toEqual(
+    expect(parsed.origination.scheduledDepartureTime).toBeNull();
+    expect(parsed.termination.knownRealtimeArrivalTime).toEqual(
       Temporal.Instant.from("2026-09-25T09:30:00Z"),
+    );
+    expect(parsed.termination.scheduledArrivalTime).toBeNull();
+  });
+
+  it("infers scheduled times from delay values", () => {
+    const errors: GtfsAddedTripUpdateParsingError[] = [];
+    const lineRoutesMapping = LineRoutesMapping.build({
+      [LINE_ID]: [
+        {
+          color: "blue",
+          serviceTags: [],
+          stops: [
+            { stopId: 1, collapseInStoppingPatterns: false },
+            { stopId: 2, collapseInStoppingPatterns: false },
+            { stopId: 3, collapseInStoppingPatterns: false },
+          ],
+        },
+      ],
+    });
+    const parser = new GtfsAddedTripUpdateParser({
+      stopGtfsIdMapping: STOP_MAPPING,
+      lineGtfsIdMapping: LINE_GTFS_ID_MAPPING,
+      lineRoutesMapping,
+      bonusLinesMapping: BONUS_LINES_MAPPING,
+      onError: (e) => errors.push(e),
+    });
+
+    const parsed = parser.parse(
+      {
+        trip: TRIP_DESCRIPTOR,
+        stopTimeUpdate: [
+          {
+            stopSequence: 1,
+            stopId: "stop-1",
+            departure: { time: T1, delay: 60 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 2,
+            stopId: "stop-2",
+            arrival: { time: T2, delay: 120 },
+            departure: { time: T2 + 60, delay: 180 },
+            scheduleRelationship: "SCHEDULED",
+          },
+          {
+            stopSequence: 3,
+            stopId: "stop-3",
+            arrival: { time: T3, delay: -60 },
+            scheduleRelationship: "SCHEDULED",
+          },
+        ],
+      },
+      SCHEDULE,
+    );
+
+    expect(errors).toEqual([]);
+    if (parsed == null) throw new Error("Expected an added trip.");
+    const middleMovement = parsed.movements[1];
+    if (middleMovement?.type !== "regular") throw new Error();
+
+    expect(parsed.origination.knownRealtimeDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:00:00Z"),
+    );
+    expect(parsed.origination.scheduledDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T08:59:00Z"),
+    );
+    expect(middleMovement.knownRealtimeArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:30:00Z"),
+    );
+    expect(middleMovement.scheduledArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:28:00Z"),
+    );
+    expect(middleMovement.knownRealtimeDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:31:00Z"),
+    );
+    expect(middleMovement.scheduledDepartureTime).toEqual(
+      Temporal.Instant.from("2026-09-25T09:28:00Z"),
+    );
+    expect(parsed.termination.knownRealtimeArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T10:00:00Z"),
+    );
+    expect(parsed.termination.scheduledArrivalTime).toEqual(
+      Temporal.Instant.from("2026-09-25T10:01:00Z"),
     );
   });
 
