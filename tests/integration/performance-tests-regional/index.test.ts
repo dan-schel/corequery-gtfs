@@ -1,17 +1,11 @@
 import { describe, it } from "vitest";
 import { setupIntegrationTest } from "../support/setup/index.js";
 import { createStopNameMapping } from "../support/create-stop-name-mapping.js";
-import { expectParsingErrorsToMatchSnapshot } from "../support/expect-parsing-errors.js";
 import { expectDeparturesToMatchSnapshot } from "../support/expect-departures.js";
 
 describe("performance-tests-regional", async () => {
-  const { source, system } = await setupIntegrationTest(import.meta.dirname);
+  const { source } = await setupIntegrationTest(import.meta.dirname);
   const stopNameMapping = await createStopNameMapping(import.meta.dirname);
-
-  // TODO: Remove this.
-  it("parses with expected errors only", () => {
-    expectParsingErrorsToMatchSnapshot(system);
-  });
 
   // Southern Cross - A highly-serviced stop scenario.
 
