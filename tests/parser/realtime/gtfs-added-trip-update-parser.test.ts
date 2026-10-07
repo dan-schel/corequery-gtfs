@@ -9,16 +9,16 @@ import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js
 import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
 import { GtfsAddedTrip } from "../../../src/data/trip/added/gtfs-added-trip.js";
+import { GtfsAddedTripUpdateParser } from "../../../src/parser/realtime/gtfs-added-trip-update-parser.js";
 import {
   type GtfsAddedTripUpdateParsingError,
-  GtfsAddedTripUpdateParser,
   AddedTripIdDuplicatesScheduledTripIdError,
   AddedTripReferencesUnmappedRouteIdError,
   AddedTripStopTimeUpdateMissingTimeError,
   NecessaryFieldNotSuppliedForAddedTripError,
   NonSequentialStopTimeUpdateEntryError,
-} from "../../../src/parser/realtime/gtfs-added-trip-update-parser.js";
-import { NoStopTimeUpdateFieldGivenError } from "../../../src/parser/realtime/gtfs-trip-update-parser-common-error-types.js";
+  NoStopTimeUpdateFieldGivenError,
+} from "../../../src/parser/error-types.js";
 
 const LINE_ID = 1;
 const BONUS_LINE_ID = 2;

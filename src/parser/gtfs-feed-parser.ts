@@ -4,14 +4,12 @@ import type { StopGtfsIdMapping } from "../data/ids/stop-gtfs-id-mapping.js";
 import type { BonusLinesMapping } from "../data/route/bonus-lines-mapping.js";
 import type { LineRoutesMapping } from "../data/route/line-routes-mapping.js";
 import type { RealtimeDataJson } from "../data/raw/realtime-data-json.js";
-import {
-  GtfsRealtimeDataParser,
-  type GtfsRealtimeDataParsingError,
-} from "./realtime/gtfs-realtime-data-parser.js";
-import {
-  GtfsScheduleDataParser,
-  type GtfsScheduleParsingError,
-} from "./schedule/gtfs-schedule-data-parser.js";
+import { GtfsRealtimeDataParser } from "./realtime/gtfs-realtime-data-parser.js";
+import { GtfsScheduleDataParser } from "./schedule/gtfs-schedule-data-parser.js";
+import type {
+  GtfsRealtimeDataParsingError,
+  GtfsScheduleParsingError,
+} from "./error-types.js";
 import type { GtfsFeedCsv } from "../data/raw/schedule-csvs.js";
 import type { TimezoneConfig } from "../config/timezone-config.js";
 import type { GtfsInterpolationMode } from "../config/gtfs-config.js";

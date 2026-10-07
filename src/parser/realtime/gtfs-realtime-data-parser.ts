@@ -5,10 +5,8 @@ import { MutableGtfsTransferMapping } from "../../data/gtfs-transfer-mapping.js"
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
 import type { RealtimeDataJson } from "../../data/raw/realtime-data-json.js";
-import {
-  GtfsTripUpdateParser,
-  type GtfsTripUpdateParsingError,
-} from "./gtfs-trip-update-parser.js";
+import { GtfsTripUpdateParser } from "./gtfs-trip-update-parser.js";
+import type { GtfsRealtimeDataParsingError } from "../error-types.js";
 import type { GtfsRealtimeTrip } from "../../data/trip/types.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
@@ -96,5 +94,3 @@ export class GtfsRealtimeDataParser {
     return brokenTransfers.toArray();
   }
 }
-
-export type GtfsRealtimeDataParsingError = GtfsTripUpdateParsingError;

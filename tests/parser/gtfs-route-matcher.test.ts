@@ -8,11 +8,11 @@ import { GtfsScheduledTripPassingMovement } from "../../src/data/trip/scheduled/
 import { GtfsScheduledTripRegularMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
 import { GtfsScheduledTripTerminatingMovement } from "../../src/data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
 import type { GtfsScheduledTripMovement } from "../../src/data/trip/scheduled/types.js";
+import { GtfsRouteMatcher } from "../../src/parser/gtfs-route-matcher.js";
 import {
   type GtfsRouteMatchingError,
-  GtfsRouteMatcher,
   NoMatchingRouteError,
-} from "../../src/parser/gtfs-route-matcher.js";
+} from "../../src/parser/error-types.js";
 
 describe("GtfsRouteMatcher", () => {
   const LINE_ID = 1;

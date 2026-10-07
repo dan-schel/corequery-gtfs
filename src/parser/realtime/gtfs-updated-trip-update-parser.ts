@@ -18,20 +18,23 @@ import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
 import type { GtfsUpdatedTripMovement } from "../../data/trip/updated/types.js";
 import { GtfsTripMovementsInterpolator } from "./gtfs-trip-movements-interpolator.js";
 import type { GtfsInterpolationMode } from "../../config/gtfs-config.js";
+import { GtfsRouteMatcher } from "../gtfs-route-matcher.js";
+import { GtfsScheduledTripIdentifier } from "./gtfs-scheduled-trip-identifier.js";
 import {
-  GtfsRouteMatcher,
-  type GtfsRouteMatchingError,
-} from "../gtfs-route-matcher.js";
-import {
-  GtfsScheduledTripIdentifier,
-  type GtfsScheduledTripIdentificationError,
-} from "./gtfs-scheduled-trip-identifier.js";
-import {
+  KnownDepartureTimesEntailTimeTravelError,
+  MultipleStopTimeUpdateEntriesForSameMovementIndexError,
+  NeitherArrivalNorDepartureGivenError,
+  NeitherTimeNorDelayGivenError,
   NecessaryFieldNotInStopTimeUpdateEntryError,
   NoStopTimeUpdateFieldGivenError,
+  StopTimeUpdateEntryChangesStopError,
+  StopTimeUpdateEntryReferencesNonExistentStopSequenceError,
   StopTimeUpdateEntryReferencesUnmappedStopIdError,
+  TimeAndDelayDisagreeWithEachOtherError,
+  TooFewSurvivingServicingMovementsError,
   UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
-} from "./gtfs-trip-update-parser-common-error-types.js";
+  type GtfsUpdatedTripUpdateParsingError,
+} from "../error-types.js";
 
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SCHEDULED = "SCHEDULED";
 const STOP_TIME_UPDATE_ENTRY_SCHEDULE_RELATIONSHIP_SKIPPED = "SKIPPED";
@@ -380,96 +383,4 @@ export class GtfsUpdatedTripUpdateParser {
       return null;
     }
   }
-}
-
-export type GtfsUpdatedTripUpdateParsingError =
-  | GtfsScheduledTripIdentificationError
-  | GtfsRouteMatchingError
-  | NoStopTimeUpdateFieldGivenError
-  | UnsupportedStopTimeUpdateEntryScheduleRelationshipError
-  | NecessaryFieldNotInStopTimeUpdateEntryError
-  | StopTimeUpdateEntryReferencesNonExistentStopSequenceError
-  | MultipleStopTimeUpdateEntriesForSameMovementIndexError
-  | StopTimeUpdateEntryReferencesUnmappedStopIdError
-  | StopTimeUpdateEntryChangesStopError
-  | NeitherTimeNorDelayGivenError
-  | TimeAndDelayDisagreeWithEachOtherError
-  | NeitherArrivalNorDepartureGivenError
-  | KnownDepartureTimesEntailTimeTravelError
-  | TooFewSurvivingServicingMovementsError;
-
-export class StopTimeUpdateEntryReferencesNonExistentStopSequenceError {
-  readonly type =
-    "stop-time-update-entry-references-non-existent-stop-sequence";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly matchedTrip: GtfsScheduledTrip,
-  ) {}
-}
-
-export class MultipleStopTimeUpdateEntriesForSameMovementIndexError {
-  readonly type = "multiple-stop-time-update-entries-for-same-movement-index";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly matchedTrip: GtfsScheduledTrip,
-    readonly matchedMovementIndex: number,
-  ) {}
-}
-
-// i.e. It doesn't just change the position/platform (which we're fine with),
-// but the entire stop.
-export class StopTimeUpdateEntryChangesStopError {
-  readonly type = "stop-time-update-entry-changes-stop";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly matchedTrip: GtfsScheduledTrip,
-    readonly matchedMovementIndex: number,
-  ) {}
-}
-
-export class NeitherTimeNorDelayGivenError {
-  readonly type = "neither-time-nor-delay-given";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly updatedTime: UpdatedTimeJson,
-  ) {}
-}
-
-export class TimeAndDelayDisagreeWithEachOtherError {
-  readonly type = "time-and-delay-disagree-with-each-other";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-    readonly updatedTime: UpdatedTimeJson,
-    readonly parsedFromTime: Temporal.Instant,
-    readonly parsedFromDelay: Temporal.Instant,
-  ) {}
-}
-
-export class NeitherArrivalNorDepartureGivenError {
-  readonly type = "neither-arrival-nor-departure-given";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly stopTimeUpdateEntry: StopTimeUpdateJson,
-  ) {}
-}
-
-class KnownDepartureTimesEntailTimeTravelError {
-  readonly type = "known-departure-times-entail-time-travel";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly movements: readonly GtfsUpdatedTripMovement[],
-  ) {}
-}
-
-class TooFewSurvivingServicingMovementsError {
-  readonly type = "too-few-surviving-servicing-movements";
-  constructor(
-    readonly tripUpdate: TripUpdateJson,
-    readonly survivingMovements: GtfsUpdatedTripMovement[],
-  ) {}
 }

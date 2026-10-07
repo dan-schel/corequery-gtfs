@@ -3,6 +3,10 @@ import type { BonusLinesMapping } from "../data/route/bonus-lines-mapping.js";
 import type { LineRoutesMapping } from "../data/route/line-routes-mapping.js";
 import type { Route } from "../data/route/route.js";
 import type { GtfsTripMovement } from "../data/trip/types.js";
+import {
+  NoMatchingRouteError,
+  type GtfsRouteMatchingError,
+} from "./error-types.js";
 
 export type MatchedRoute<T> = {
   movements: readonly T[];
@@ -164,11 +168,4 @@ export class GtfsRouteMatcher {
 
     return result;
   }
-}
-
-export type GtfsRouteMatchingError = NoMatchingRouteError;
-
-export class NoMatchingRouteError {
-  readonly type = "no-matching-route";
-  constructor(readonly stopIds: readonly number[]) {}
 }

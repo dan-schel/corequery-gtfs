@@ -4,14 +4,14 @@ import { GtfsScheduleData } from "../../../src/data/gtfs-schedule-data.js";
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsStopTime } from "../../../src/data/gtfs-stop-time.js";
 import { PlainDateRange } from "../../../src/data/plain-date-range.js";
+import { GtfsScheduledTripIdentifier } from "../../../src/parser/realtime/gtfs-scheduled-trip-identifier.js";
 import {
   type GtfsScheduledTripIdentificationError,
-  GtfsScheduledTripIdentifier,
   NecessaryFieldNotInTripDescriptorError,
   TripDescriptorReferencesNonExistentTripIdError,
   TripDoesNotOccurOnStartDateError,
   TripDescriptorStartTimeDoesNotMatchTripOriginStopTimeError,
-} from "../../../src/parser/realtime/gtfs-scheduled-trip-identifier.js";
+} from "../../../src/parser/error-types.js";
 
 const TRIP = GtfsScheduledTrip.simple({
   gtfsTripId: "trip-1",

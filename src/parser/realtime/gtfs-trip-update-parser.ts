@@ -1,18 +1,13 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import type { TripUpdateJson } from "../../data/raw/realtime-data-json.js";
 import type { StopGtfsIdMapping } from "../../data/ids/stop-gtfs-id-mapping.js";
+import { GtfsAddedTripUpdateParser } from "./gtfs-added-trip-update-parser.js";
+import { GtfsCancelledTripUpdateParser } from "./gtfs-cancelled-trip-update-parser.js";
+import { GtfsUpdatedTripUpdateParser } from "./gtfs-updated-trip-update-parser.js";
 import {
-  GtfsAddedTripUpdateParser,
-  type GtfsAddedTripUpdateParsingError,
-} from "./gtfs-added-trip-update-parser.js";
-import {
-  GtfsCancelledTripUpdateParser,
-  type GtfsCancelledTripUpdateParsingError,
-} from "./gtfs-cancelled-trip-update-parser.js";
-import {
-  GtfsUpdatedTripUpdateParser,
-  type GtfsUpdatedTripUpdateParsingError,
-} from "./gtfs-updated-trip-update-parser.js";
+  UnsupportedTripUpdateScheduleRelationshipError,
+  type GtfsTripUpdateParsingError,
+} from "../error-types.js";
 import type { LineRoutesMapping } from "../../data/route/line-routes-mapping.js";
 import type { BonusLinesMapping } from "../../data/route/bonus-lines-mapping.js";
 import type { LineGtfsIdMapping } from "../../data/ids/line-gtfs-id-mapping.js";
@@ -85,16 +80,4 @@ export class GtfsTripUpdateParser {
       return null;
     }
   }
-}
-
-export type GtfsTripUpdateParsingError =
-  | UnsupportedTripUpdateScheduleRelationshipError
-  | GtfsUpdatedTripUpdateParsingError
-  | GtfsCancelledTripUpdateParsingError
-  | GtfsAddedTripUpdateParsingError;
-
-export class UnsupportedTripUpdateScheduleRelationshipError {
-  readonly type = "unsupported-trip-update-schedule-relationship";
-
-  constructor(readonly tripUpdate: TripUpdateJson) {}
 }

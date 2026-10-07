@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import type { CalendarCsvRow } from "../../../src/data/raw/schedule-csvs.js";
+import { GtfsCalendarParser } from "../../../src/parser/schedule/gtfs-calendar-parser.js";
 import {
   type GtfsCalendarParsingError,
-  GtfsCalendarParser,
   DuplicateCalendarIdError,
   InvalidCalendarDateRangeError,
   UnexpectedCalendarDateExceptionTypeError,
   MultipleExceptionsForSameDateError,
-} from "../../../src/parser/schedule/gtfs-calendar-parser.js";
+} from "../../../src/parser/error-types.js";
 
 describe("GtfsCalendarParser", () => {
   const PLAIN_DATE_2026_06_17 = Temporal.PlainDate.from("2026-06-17");

@@ -2,10 +2,16 @@ import type {
   CalendarCsv,
   CalendarCsvRow,
   CalendarDatesCsv,
-  CalendarDatesCsvRow,
 } from "../../data/raw/schedule-csvs.js";
 import { GtfsCalendar } from "../../data/gtfs-calendar.js";
 import { PlainDateRange } from "../../data/plain-date-range.js";
+import {
+  DuplicateCalendarIdError,
+  InvalidCalendarDateRangeError,
+  MultipleExceptionsForSameDateError,
+  UnexpectedCalendarDateExceptionTypeError,
+  type GtfsCalendarParsingError,
+} from "../error-types.js";
 
 const CALENDAR_DATE_EXCEPTION_TYPE_ADDED = 1;
 const CALENDAR_DATE_EXCEPTION_TYPE_REMOVED = 2;
@@ -122,30 +128,4 @@ export class GtfsCalendarParser {
       );
     });
   }
-}
-
-export type GtfsCalendarParsingError =
-  | DuplicateCalendarIdError
-  | UnexpectedCalendarDateExceptionTypeError
-  | InvalidCalendarDateRangeError
-  | MultipleExceptionsForSameDateError;
-
-export class DuplicateCalendarIdError {
-  readonly type = "duplicate-calendar";
-  constructor(readonly subsequentRowWithDuplicateId: CalendarCsvRow) {}
-}
-
-export class InvalidCalendarDateRangeError {
-  readonly type = "invalid-calendar-date-range";
-  constructor(readonly row: CalendarCsvRow) {}
-}
-
-export class UnexpectedCalendarDateExceptionTypeError {
-  readonly type = "unexpected-calendar-date-exception-type";
-  constructor(readonly row: CalendarDatesCsvRow) {}
-}
-
-export class MultipleExceptionsForSameDateError {
-  readonly type = "multiple-exceptions-for-same-date";
-  constructor(readonly subsequentRowForSameDate: CalendarDatesCsvRow) {}
 }

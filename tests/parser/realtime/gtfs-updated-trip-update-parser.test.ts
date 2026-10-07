@@ -11,6 +11,7 @@ import { GtfsReplacedTrip } from "../../../src/data/trip/replaced/gtfs-replaced-
 import { GtfsScheduledTrip } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip.js";
 import { GtfsScheduledTripRegularMovement } from "../../../src/data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
 import { GtfsUpdatedTrip } from "../../../src/data/trip/updated/gtfs-updated-trip.js";
+import { GtfsUpdatedTripUpdateParser } from "../../../src/parser/realtime/gtfs-updated-trip-update-parser.js";
 import {
   type GtfsUpdatedTripUpdateParsingError,
   MultipleStopTimeUpdateEntriesForSameMovementIndexError,
@@ -19,14 +20,11 @@ import {
   StopTimeUpdateEntryChangesStopError,
   StopTimeUpdateEntryReferencesNonExistentStopSequenceError,
   TimeAndDelayDisagreeWithEachOtherError,
-} from "../../../src/parser/realtime/gtfs-updated-trip-update-parser.js";
-import { GtfsUpdatedTripUpdateParser } from "../../../src/parser/realtime/gtfs-updated-trip-update-parser.js";
-import {
   NecessaryFieldNotInStopTimeUpdateEntryError,
   NoStopTimeUpdateFieldGivenError,
   StopTimeUpdateEntryReferencesUnmappedStopIdError,
   UnsupportedStopTimeUpdateEntryScheduleRelationshipError,
-} from "../../../src/parser/realtime/gtfs-trip-update-parser-common-error-types.js";
+} from "../../../src/parser/error-types.js";
 
 const TIMEZONE = "Australia/Melbourne";
 

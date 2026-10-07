@@ -51,11 +51,11 @@ Schedule parsing errors:
 <none>
 
 Realtime parsing errors:
-- known-departure-times-entail-time-travel
-- known-departure-times-entail-time-travel
-- known-departure-times-entail-time-travel
-- known-departure-times-entail-time-travel
-- known-departure-times-entail-time-travel
-- known-departure-times-entail-time-travel
+- The real-time time values given on trip update "02-CBE--62-T5-C449" would entail time travel.
+- The real-time time values given on trip update "02-WER--62-T5-6458" would entail time travel.
+- The real-time time values given on trip update "02-HBE--62-T5-1284" would entail time travel.
+- The real-time time values given on trip update "02-GWY--62-T5-2601" would entail time travel.
+- The real-time time values given on trip update "02-BEG--62-T5-3004" would entail time travel.
+- The real-time time values given on trip update "02-HBE--62-T5-1292" would entail time travel.
 "
 `;

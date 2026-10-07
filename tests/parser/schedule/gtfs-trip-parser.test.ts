@@ -7,10 +7,10 @@ import { StopGtfsIdCollection } from "../../../src/data/ids/stop-gtfs-id-collect
 import { StopGtfsIdMapping } from "../../../src/data/ids/stop-gtfs-id-mapping.js";
 import { BonusLinesMapping } from "../../../src/data/route/bonus-lines-mapping.js";
 import { LineRoutesMapping } from "../../../src/data/route/line-routes-mapping.js";
-import { MultipleStopSequencesError } from "../../../src/parser/schedule/gtfs-stop-time-normaliser.js";
+import { GtfsTripParser } from "../../../src/parser/schedule/gtfs-trip-parser.js";
 import {
   type GtfsTripParsingError,
-  GtfsTripParser,
+  MultipleStopSequencesError,
   DuplicateTripIdError,
   StopTimeReferencesNonExistentTripError,
   TripReferencesNonExistentCalendarError,
@@ -18,7 +18,7 @@ import {
   StopTimeReferencesUnmappedStopIdError,
   UnexpectedPickupTypeError,
   UnexpectedDropOffTypeError,
-} from "../../../src/parser/schedule/gtfs-trip-parser.js";
+} from "../../../src/parser/error-types.js";
 
 describe("GtfsTripParser", () => {
   const LINE_ID = 1;

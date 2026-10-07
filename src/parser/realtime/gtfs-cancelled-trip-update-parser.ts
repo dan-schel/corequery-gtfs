@@ -1,10 +1,8 @@
 import type { GtfsScheduleData } from "../../data/gtfs-schedule-data.js";
 import type { TripUpdateJson } from "../../data/raw/realtime-data-json.js";
 import { GtfsUpdatedTrip } from "../../data/trip/updated/gtfs-updated-trip.js";
-import {
-  GtfsScheduledTripIdentifier,
-  type GtfsScheduledTripIdentificationError,
-} from "./gtfs-scheduled-trip-identifier.js";
+import { GtfsScheduledTripIdentifier } from "./gtfs-scheduled-trip-identifier.js";
+import { type GtfsCancelledTripUpdateParsingError } from "../error-types.js";
 
 export type GtfsCancelledTripUpdateParserFields = {
   readonly timezone: string;
@@ -41,6 +39,3 @@ export class GtfsCancelledTripUpdateParser {
     });
   }
 }
-
-export type GtfsCancelledTripUpdateParsingError =
-  GtfsScheduledTripIdentificationError;
