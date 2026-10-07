@@ -3,8 +3,11 @@ import { setupIntegrationTest } from "../support/setup/index.js";
 import { createStopNameMapping } from "../support/create-stop-name-mapping.js";
 import { expectDeparturesToMatchSnapshot } from "../support/expect-departures.js";
 
-// I don't wanna strain CI too much. Only run these when comparing performance.
-describe.skip("performance-tests-regional", async () => {
+const iterationCount = 20;
+
+// Only run these if `npm run test-performance` is called.
+const skipPerformance = process.env.RUN_PERFORMANCE_TESTS !== "true";
+describe.skipIf(skipPerformance)("performance-tests-regional", async () => {
   const { source } = await setupIntegrationTest(import.meta.dirname);
   const stopNameMapping = await createStopNameMapping(import.meta.dirname);
 
@@ -20,6 +23,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -35,6 +39,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -50,6 +55,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -65,6 +71,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -80,6 +87,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -95,6 +103,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -112,6 +121,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -127,6 +137,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -142,6 +153,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -157,6 +169,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -172,6 +185,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "forwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
@@ -187,6 +201,7 @@ describe.skip("performance-tests-regional", async () => {
         direction: "backwards",
         maxResults: 50,
         formatTimezone: "Australia/Melbourne",
+        iterationCount,
         maxConnectionsToFollow: 1,
       });
     });
