@@ -4,13 +4,8 @@ const suburbanBusyStations = [
   "Flinders Street",
   "Southern Cross",
   "Richmond",
-  "Town Hall",
   "North Melbourne",
-  "Footscray",
-  "Parliament",
   "Melbourne Central",
-  "Flagstaff",
-  "Caulfield",
 ];
 
 const suburbanNormalStations = [
@@ -26,18 +21,7 @@ const suburbanNormalStations = [
   "Mernda",
 ];
 
-const regionalBusyStations = [
-  "Southern Cross",
-  "Tarneit",
-  "Footscray",
-  "Sunshine",
-  "Deer Park",
-  "Geelong",
-  "Melton",
-  "Bendigo",
-  "Seymour",
-  "Traralgon",
-];
+const regionalBusyStations = ["Southern Cross", "Footscray"];
 
 const regionalQuietStations = [
   "Bairnsdale",
@@ -52,18 +36,18 @@ const regionalQuietStations = [
   "Talbot",
 ];
 
-const dates = [
+const standardDates = [
   {
     name: "Today",
-    times: ["2026-10-07T20:39:00+11:00", "2026-10-06T20:39:00+11:00"],
+    times: ["2026-10-06T20:39:00+11:00", "2026-10-07T20:39:00+11:00"],
   },
   {
     name: "One year later",
-    times: ["2027-10-07T20:39:00+11:00", "2027-10-06T20:39:00+11:00"],
+    times: ["2027-10-06T20:39:00+11:00"],
   },
   {
     name: "One year earlier",
-    times: ["2025-10-07T20:39:00+11:00", "2025-10-06T20:39:00+11:00"],
+    times: ["2025-10-06T20:39:00+11:00"],
   },
 ];
 
@@ -72,25 +56,53 @@ const categories = [
     subfeed: "suburban",
     category: "Busy",
     stations: suburbanBusyStations,
-    dates: dates,
-  },
-  {
-    subfeed: "suburban",
-    category: "Normal",
-    stations: suburbanNormalStations,
-    dates: dates,
+    dates: [
+      {
+        name: "Today",
+        times: [
+          "2026-10-06T20:39:00+11:00",
+          "2026-10-07T11:39:00+11:00",
+          "2026-10-08T15:39:00+11:00",
+          "2026-10-09T07:39:00+11:00",
+        ],
+      },
+      ...standardDates.slice(1),
+    ],
   },
   {
     subfeed: "regional",
     category: "Busy",
     stations: regionalBusyStations,
-    dates: dates,
+    dates: [
+      {
+        name: "Today",
+        times: [
+          "2026-10-06T11:39:00+11:00",
+          "2026-10-06T20:39:00+11:00",
+          "2026-10-07T06:39:00+11:00",
+          "2026-10-07T16:39:00+11:00",
+          "2026-10-08T13:39:00+11:00",
+          "2026-10-08T22:39:00+11:00",
+          "2026-10-09T02:39:00+11:00",
+          "2026-10-09T12:39:00+11:00",
+          "2026-10-10T16:39:00+11:00",
+          "2026-10-10T18:39:00+11:00",
+        ],
+      },
+      ...standardDates.slice(1),
+    ],
+  },
+  {
+    subfeed: "suburban",
+    category: "Normal",
+    stations: suburbanNormalStations,
+    dates: standardDates,
   },
   {
     subfeed: "regional",
     category: "Quiet",
     stations: regionalQuietStations,
-    dates: dates,
+    dates: standardDates,
   },
 ] as const;
 
@@ -100,8 +112,8 @@ const directions: readonly DeparturesIterationDirection[] = [
 ];
 
 export const departureTestCases = categories.flatMap((category) =>
-  directions.flatMap((direction) =>
-    category.dates.map((date) => ({
+  category.dates.flatMap((date) =>
+    directions.map((direction) => ({
       name: `${category.subfeed} (${category.category})`,
       group: `${date.name} (${direction})`,
       subfeed: category.subfeed,
