@@ -120,7 +120,7 @@ await app.start();
 
 ## Config
 
-A `GtfsSystem` is configured with 5 fields:
+A `GtfsSystem` is configured with 6 fields, 2 of which are optional:
 
 ```ts
 const config: GtfsConfig = {
@@ -140,7 +140,8 @@ const config: GtfsConfig = {
   lineRoutesMapping: {/* ... */},
 
   // When a trip is matched to a route on a particular line, this mapping
-  // specifies which other "bonus" lines the trip could also be on.
+  // specifies which other "bonus" lines the trip could also be on. (This field
+  // is optional.)
   //
   // For example, a trip with a route ID of "aus:vic:vic-02-PKM:" will be parsed
   // against routes on the Pakenham line, but it might be the case that the trip
@@ -155,6 +156,10 @@ const config: GtfsConfig = {
 
   // Details about the timezone of the GTFS schedule data.
   timezoneConfig: {/* ... */},
+
+  // Controls how realtime delays are interpolated between given updated times.
+  // (This field is optional. If omitted, `follow-spec` is used by default.)
+  interpolationMode: "follow-spec",
 };
 ```
 
@@ -193,11 +198,11 @@ const config: GtfsConfig = {
       general: ["vic:rail:ACF"],
 
       positional: {
-        // Trips using GTFS stop ID "13738" with be associated with position #51
+        // Trips using GTFS stop ID "13738" will be associated with position #51
         // ("Platform 1").
         51: ["13738"],
 
-        // Trips using GTFS stop ID "13739" with be associated with position #52
+        // Trips using GTFS stop ID "13739" will be associated with position #52
         // ("Platform 2").
         52: ["13739"],
       },
@@ -277,7 +282,7 @@ const config: GtfsConfig = {
         ],
         color: "pink",
 
-        // Here'll use service tag #2 to mean "Outbound".
+        // We'll use service tag #2 to mean "Outbound".
         serviceTags: [2],
       },
     ],
@@ -289,7 +294,7 @@ const config: GtfsConfig = {
 
 ### `bonusLinesMapping`
 
-When a trip is matched to a route on a particular line, this mapping specifies which other "bonus" lines the trip could also be on.
+When a trip is matched to a route on a particular line, this mapping specifies which other "bonus" lines the trip could also be on. (This field is optional.)
 
 For example, a trip with a route ID of "aus:vic:vic-02-PKM:" will be parsed against routes on the Pakenham line, but it might be the case that the trip could also be considered a Cranbourne line service if it exclusively runs on the section both lines share.
 
@@ -350,3 +355,12 @@ const config: GtfsConfig = {
   // ...
 };
 ```
+
+### `interpolationMode`
+
+Controls how realtime delays are interpolated between given updated times. (This field is optional. If omitted, `follow-spec` is used by default.)
+
+- `follow-spec` carries known delays forward between updated stops.
+- `lerp` linearly interpolates delays between known updates.
+
+Both modes extrapolate the nearest known delay to stops before the first and after the last given updates.
