@@ -68,7 +68,7 @@ export async function setupIntegrationTest(dirname: string) {
     buildServiceGenericConnection: (fields) => fields,
   });
 
-  return { source, system };
+  return { source, system, scheduleData, realtimeData };
 }
 
 async function readCsv<T extends z.ZodType>(

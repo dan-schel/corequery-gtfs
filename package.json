@@ -1,6 +1,6 @@
 {
   "name": "corequery-gtfs",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "type": "module",
   "files": [
     "dist"
@@ -10,9 +10,9 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "vitest --run",
-    "test-performance": "RUN_PERFORMANCE_TESTS=true vitest --run tests/integration/performance-tests- --reporter=verbose --slowTestThreshold=0 --no-file-parallelism --testTimeout=30000",
+    "test-performance": "tsx scripts/performance-test/main.ts",
     "test-coverage": "vitest --run --coverage",
-    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tests/tsconfig.json --noEmit && eslint . --max-warnings 0 && knip",
+    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tests/tsconfig.json --noEmit && tsc -p scripts/performance-test/tsconfig.json --noEmit && eslint . --max-warnings 0 && knip",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "bump-check": "bump-check --ignore \"^renovate\\/\""
@@ -31,6 +31,7 @@
     "eslint-plugin-prettier": "5.5.6",
     "knip": "6.35.1",
     "prettier": "3.9.6",
+    "tsx": "4.23.13",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.0",
     "vitest": "5.0.1",

@@ -1,4 +1,5 @@
 /node_modules/
 /dist/
 /coverage/
+/scripts/performance-test/data/**/*.json
 /tests/integration/**/*.json
