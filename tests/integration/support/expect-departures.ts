@@ -1,4 +1,5 @@
 import { expect } from "vitest";
+import { formatTable } from "./format-table.js";
 import type { StopNameMapping } from "./create-stop-name-mapping.js";
 import type { DeparturesIterationDirection } from "../../../src/corequery-types.js";
 import type {
@@ -168,18 +169,4 @@ async function getDestination(
 
   const isAdded = departure.service.liveDataType === "added";
   return isAdded ? `${output} (added)` : output;
-}
-
-function formatTable(rows: string[][]) {
-  if (rows.length === 0) return "<empty>";
-
-  const columnWidths = itsOk(rows[0]).map((_, colIndex) =>
-    Math.max(...rows.map((row) => itsOk(row[colIndex]).length)),
-  );
-
-  const formattedRows = rows.map((row) =>
-    row.map((text, i) => text.padEnd(itsOk(columnWidths[i]), " ")).join("   "),
-  );
-
-  return formattedRows.join("\n");
 }

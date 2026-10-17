@@ -2,6 +2,7 @@ import "temporal-polyfill/global";
 import path from "node:path";
 import { setupIntegrationTest } from "../../tests/integration/support/setup/index.js";
 import { createStopNameMapping } from "../../tests/integration/support/create-stop-name-mapping.js";
+import { formatTable } from "../../tests/integration/support/format-table.js";
 import type { DeparturesIterationDirection } from "../../src/corequery-types.js";
 
 const iterationCount = 20;
@@ -26,42 +27,59 @@ const directions: readonly DeparturesIterationDirection[] = [
   "backwards",
 ];
 
-console.log(
-  `Departure queries: ${iterationCount} runs per case, up to ${maxResults} departures per run.\n` +
-    "Timings exclude fixture loading, data parsing, and result formatting.\n",
+const testCases = categories.flatMap((category) =>
+  dates.flatMap((date) =>
+    directions.map((direction) => ({
+      name: `${category.subfeed} (${category.category}) - ${date.name} (${direction})`,
+      subfeed: category.subfeed,
+      station: category.station,
+      instant: Temporal.Instant.from(date.instant),
+      direction,
+    })),
+  ),
 );
 
-for (const subfeed of ["suburban", "regional"] as const) {
-  const dirname = path.join(fixturesDirectory, subfeed);
-  const { source } = await setupIntegrationTest(dirname);
-  const stopNameMapping = await createStopNameMapping(dirname);
+async function main() {
+  console.log("Running tests...\n");
 
-  for (const category of categories.filter((c) => c.subfeed === subfeed)) {
-    const stopId = stopNameMapping.requireId(category.station);
+  const results: string[][] = [["Test", "Total", "Per run"]];
 
-    for (const date of dates) {
-      const instant = Temporal.Instant.from(date.instant);
+  for (const subfeed of ["suburban", "regional"] as const) {
+    const dirname = path.join(fixturesDirectory, subfeed);
+    const { source } = await setupIntegrationTest(dirname);
+    const stopNameMapping = await createStopNameMapping(dirname);
 
-      for (const direction of directions) {
-        const start = performance.now();
+    for (const testCase of testCases.filter((c) => c.subfeed === subfeed)) {
+      const stopId = stopNameMapping.requireId(testCase.station);
+      const start = performance.now();
 
-        for (let iteration = 0; iteration < iterationCount; iteration++) {
-          const iterator = source.getDeparturesIterator(
-            stopId,
-            instant,
-            direction,
-          );
+      for (let iteration = 0; iteration < iterationCount; iteration++) {
+        const iterator = source.getDeparturesIterator(
+          stopId,
+          testCase.instant,
+          testCase.direction,
+        );
 
-          for (let i = 0; i < maxResults; i++) {
-            if ((await iterator.peek()) == null) break;
-            await iterator.take();
-          }
+        for (let i = 0; i < maxResults; i++) {
+          if ((await iterator.peek()) == null) break;
+          await iterator.take();
         }
-
-        const elapsedMs = performance.now() - start;
-        const name = `${subfeed} (${category.category}) - ${date.name} (${direction})`;
-        console.log(`${name}: ${elapsedMs.toFixed(2)} ms`);
       }
+
+      const elapsedMs = performance.now() - start;
+      results.push([
+        testCase.name,
+        `${elapsedMs.toFixed(2)} ms`,
+        `${(elapsedMs / iterationCount).toFixed(2)} ms`,
+      ]);
     }
   }
+
+  console.log(`Querying for departures\n${"-".repeat(80)}`);
+  console.log(formatTable(results));
 }
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
