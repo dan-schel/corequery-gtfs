@@ -24,24 +24,24 @@ import {
 const config: GtfsConfig = {/* ... */};
 const gtfsSystem = GtfsSystem.build(config);
 
-async function fetchGtfsScheduleData(): GtfsFeedCsv {
+async function fetchGtfsScheduleData(): Promise<GtfsFeedCsv> {
   // TODO: Download the schedule data zip, and read the CSV inside
   // (see GtfsFeedCsv for the required format).
 }
 
-async function fetchGtfsRealtimeData(): RealtimeDataJson {
+async function fetchGtfsRealtimeData(): Promise<RealtimeDataJson> {
   // TODO: Fetch from the realtime feed and convert it into JSON form
   // (see RealtimeDataJson for the required format).
 }
 
 // Then, when an update to the GTFS schedule data is available, run:
-const scheduleData = fetchGtfsScheduleData();
-const realtimeData = fetchGtfsRealtimeData();
+const scheduleData = await fetchGtfsScheduleData();
+const realtimeData = await fetchGtfsRealtimeData();
 gtfsSystem.onNewScheduleData(scheduleData, realtimeData);
 
 // And when an update to the GTFS realtime data is available, but the schedule
 // data is still the same, run:
-const realtimeData = fetchGtfsRealtimeData();
+const realtimeData = await fetchGtfsRealtimeData();
 gtfsSystem.onNewRealtimeData(realtimeData);
 ```
 
