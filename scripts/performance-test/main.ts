@@ -7,7 +7,7 @@ import { departureTestCases } from "./departure-test-cases.js";
 
 const parsingIterationCount = 5;
 const maxResults = 50;
-const fixturesDirectory = path.join(import.meta.dirname, "fixtures");
+const dataDirectory = path.join(import.meta.dirname, "data");
 
 async function main() {
   console.log("Running tests...\n");
@@ -25,7 +25,7 @@ async function testParsingPerformance(): Promise<string> {
   const results: string[][] = [];
 
   for (const subfeed of ["suburban", "regional"] as const) {
-    const dirname = path.join(fixturesDirectory, subfeed);
+    const dirname = path.join(dataDirectory, subfeed);
     const { system, scheduleData, realtimeData } =
       await setupIntegrationTest(dirname);
 
@@ -47,7 +47,7 @@ async function testParsingPerformance(): Promise<string> {
 
 async function testDeparturesPerformance(): Promise<string> {
   async function prepareSubfeed(subfeed: string) {
-    const dirname = path.join(fixturesDirectory, subfeed);
+    const dirname = path.join(dataDirectory, subfeed);
     const { source } = await setupIntegrationTest(dirname);
     const stopNameMapping = await createStopNameMapping(dirname);
     return { source, stopNameMapping };
