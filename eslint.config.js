@@ -44,6 +44,12 @@ export default tseslint.config(
   prettier,
   customRules,
   {
+    files: ["scripts/**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
+    rules: {
+      "no-console": "off",
+    },
+  },
+  {
     languageOptions: {
       parserOptions: {
         project: "./tsconfig.eslint.json",
