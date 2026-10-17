@@ -52,13 +52,6 @@ const regionalQuietStations = [
   "Talbot",
 ];
 
-const categories = [
-  { subfeed: "suburban", category: "Busy", stations: suburbanBusyStations },
-  { subfeed: "suburban", category: "Normal", stations: suburbanNormalStations },
-  { subfeed: "regional", category: "Busy", stations: regionalBusyStations },
-  { subfeed: "regional", category: "Quiet", stations: regionalQuietStations },
-] as const;
-
 const dates = [
   {
     name: "Today",
@@ -74,14 +67,41 @@ const dates = [
   },
 ];
 
+const categories = [
+  {
+    subfeed: "suburban",
+    category: "Busy",
+    stations: suburbanBusyStations,
+    dates: dates,
+  },
+  {
+    subfeed: "suburban",
+    category: "Normal",
+    stations: suburbanNormalStations,
+    dates: dates,
+  },
+  {
+    subfeed: "regional",
+    category: "Busy",
+    stations: regionalBusyStations,
+    dates: dates,
+  },
+  {
+    subfeed: "regional",
+    category: "Quiet",
+    stations: regionalQuietStations,
+    dates: dates,
+  },
+] as const;
+
 const directions: readonly DeparturesIterationDirection[] = [
   "forwards",
   "backwards",
 ];
 
-export const departureTestCases = dates.flatMap((date) =>
+export const departureTestCases = categories.flatMap((category) =>
   directions.flatMap((direction) =>
-    categories.map((category) => ({
+    category.dates.map((date) => ({
       name: `${category.subfeed} (${category.category})`,
       group: `${date.name} (${direction})`,
       subfeed: category.subfeed,

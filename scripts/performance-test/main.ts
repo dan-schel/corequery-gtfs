@@ -37,7 +37,7 @@ async function testParsingPerformance(): Promise<string> {
 
     results.push([
       subfeed,
-      `${parsingElapsedMs.toFixed(2)} ms`,
+      `${parsingElapsedMs.toFixed(2)} ms (over ${parsingIterationCount} runs)`,
       `${(parsingElapsedMs / parsingIterationCount).toFixed(2)} ms per run`,
     ]);
   }
@@ -90,7 +90,7 @@ async function testDeparturesPerformance(): Promise<string> {
     const rows = tables.get(testCase.group) ?? [];
     rows.push([
       `  ${testCase.name}`,
-      `${elapsedMs.toFixed(2)} ms`,
+      `${elapsedMs.toFixed(2)} ms (over ${runs.length} runs)`,
       `${(elapsedMs / runs.length).toFixed(2)} ms per run`,
     ]);
     tables.set(testCase.group, rows);
