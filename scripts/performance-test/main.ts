@@ -46,47 +46,52 @@ async function testParsingPerformance(): Promise<string> {
 }
 
 async function testDeparturesPerformance(): Promise<string> {
-  const results: string[][] = [["Test", "Total", "Per run"]];
-
-  for (const subfeed of ["suburban", "regional"] as const) {
+  async function prepareSubfeed(subfeed: string) {
     const dirname = path.join(fixturesDirectory, subfeed);
     const { source } = await setupIntegrationTest(dirname);
     const stopNameMapping = await createStopNameMapping(dirname);
-    const testsForSubfeed = departureTestCases.filter(
-      (c) => c.subfeed === subfeed,
-    );
+    return { source, stopNameMapping };
+  }
 
-    for (const testCase of testsForSubfeed) {
-      const runs = testCase.times.flatMap((time) => {
-        const instant = Temporal.Instant.from(time);
-        return testCase.stations.map((station) => ({
-          stopId: stopNameMapping.requireId(station),
-          instant,
-        }));
-      });
+  const subfeeds = {
+    suburban: await prepareSubfeed("suburban"),
+    regional: await prepareSubfeed("regional"),
+  };
 
-      const start = performance.now();
+  const results: string[][] = [["Test", "Total", "Per run"]];
 
-      for (const run of runs) {
-        const iterator = source.getDeparturesIterator(
-          run.stopId,
-          run.instant,
-          testCase.direction,
-        );
+  for (const testCase of departureTestCases) {
+    const { source, stopNameMapping } = subfeeds[testCase.subfeed];
 
-        for (let i = 0; i < maxResults; i++) {
-          if ((await iterator.peek()) == null) break;
-          await iterator.take();
-        }
+    const runs = testCase.times.flatMap((time) => {
+      const instant = Temporal.Instant.from(time);
+      return testCase.stations.map((station) => ({
+        stopId: stopNameMapping.requireId(station),
+        instant,
+      }));
+    });
+
+    const start = performance.now();
+
+    for (const run of runs) {
+      const iterator = source.getDeparturesIterator(
+        run.stopId,
+        run.instant,
+        testCase.direction,
+      );
+
+      for (let i = 0; i < maxResults; i++) {
+        if ((await iterator.peek()) == null) break;
+        await iterator.take();
       }
-
-      const elapsedMs = performance.now() - start;
-      results.push([
-        testCase.name,
-        `${elapsedMs.toFixed(2)} ms`,
-        `${(elapsedMs / runs.length).toFixed(2)} ms`,
-      ]);
     }
+
+    const elapsedMs = performance.now() - start;
+    results.push([
+      testCase.name,
+      `${elapsedMs.toFixed(2)} ms`,
+      `${(elapsedMs / runs.length).toFixed(2)} ms`,
+    ]);
   }
 
   return formatTable(results);

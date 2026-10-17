@@ -79,8 +79,8 @@ const directions: readonly DeparturesIterationDirection[] = [
   "backwards",
 ];
 
-export const departureTestCases = categories.flatMap((category) =>
-  dates.flatMap((date) =>
+export const departureTestCases = dates.flatMap((date) =>
+  categories.flatMap((category) =>
     directions.map((direction) => ({
       name: `${category.subfeed} (${category.category}) - ${date.name} (${direction})`,
       subfeed: category.subfeed,
