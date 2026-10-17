@@ -19,6 +19,8 @@ import {
   type RealtimeDataJson,
 } from "corequery-gtfs";
 
+// Configure and construct a `GtfsSystem`, which is the primary interface for
+// CoreQuery GTFS.
 const config: GtfsConfig = {/* ... */};
 const gtfsSystem = GtfsSystem.build(config);
 
@@ -33,20 +35,31 @@ async function fetchGtfsRealtimeData(): RealtimeDataJson {
 }
 
 // Then, when an update to the GTFS schedule data is available, run:
-const scheduleData = parseGtfsScheduleCsvs();
-const realtimeData = parseGtfsRealtimeFeed();
+const scheduleData = fetchGtfsScheduleData();
+const realtimeData = fetchGtfsRealtimeData();
 gtfsSystem.onNewScheduleData(scheduleData, realtimeData);
 
 // And when an update to the GTFS realtime data is available, but the schedule
 // data is still the same, run:
-const realtimeData = parseGtfsRealtimeFeed();
+const realtimeData = fetchGtfsRealtimeData();
 gtfsSystem.onNewRealtimeData(realtimeData);
 ```
 
 Once setup, you can pass a `GtfsServiceSource` instance to CoreQuery as a service source:
 
 ```ts
-import { Corequery } from "corequery";
+import {
+  Corequery,
+  Departure,
+  Service,
+  Tags,
+  ServiceOriginatingMovement,
+  ServiceRegularMovement,
+  ServiceTerminatingMovement,
+  ServicePassingMovement,
+  EntireVehicleFormsServiceConnection,
+  GenericConnection,
+} from "corequery";
 import { GtfsServiceSource } from "corequery-gtfs";
 
 const serviceSource = new GtfsServiceSource<
@@ -85,11 +98,12 @@ const serviceSource = new GtfsServiceSource<
   buildServiceRegularMovement: (x) => new ServiceRegularMovement(x),
   buildServiceTerminatingMovement: (x) => new ServiceTerminatingMovement(x),
   buildServicePassingMovement: (x) => new ServicePassingMovement(x),
-  buildServiceEntireVehicleFormsConnection: (x) => new EntireVehicleFormsServiceConnection(x),
+  buildServiceEntireVehicleFormsConnection: (x) =>
+    new EntireVehicleFormsServiceConnection(x),
   buildServiceGenericConnection: (x) => new GenericConnection(x),
 });
 
-const app = new Corequery(app => {
+const app = new Corequery((app) => ({
   // See https://github.com/dan-schel/corequery for more information on
   // configuring CoreQuery.
   stops: [/* ... */],
@@ -98,7 +112,7 @@ const app = new Corequery(app => {
   // ...
 
   serviceSources: [serviceSource],
-});
+}));
 
 // Start the CoreQuery server.
 await app.start();
