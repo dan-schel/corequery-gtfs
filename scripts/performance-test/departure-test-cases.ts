@@ -80,9 +80,10 @@ const directions: readonly DeparturesIterationDirection[] = [
 ];
 
 export const departureTestCases = dates.flatMap((date) =>
-  categories.flatMap((category) =>
-    directions.map((direction) => ({
-      name: `${category.subfeed} (${category.category}) - ${date.name} (${direction})`,
+  directions.flatMap((direction) =>
+    categories.map((category) => ({
+      name: `${category.subfeed} (${category.category})`,
+      group: `${date.name} (${direction})`,
       subfeed: category.subfeed,
       stations: category.stations,
       times: date.times,

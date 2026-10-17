@@ -22,7 +22,7 @@ async function main() {
 }
 
 async function testParsingPerformance(): Promise<string> {
-  const results: string[][] = [["Subfeed", "Total", "Per run"]];
+  const results: string[][] = [];
 
   for (const subfeed of ["suburban", "regional"] as const) {
     const dirname = path.join(fixturesDirectory, subfeed);
@@ -38,7 +38,7 @@ async function testParsingPerformance(): Promise<string> {
     results.push([
       subfeed,
       `${parsingElapsedMs.toFixed(2)} ms`,
-      `${(parsingElapsedMs / parsingIterationCount).toFixed(2)} ms`,
+      `${(parsingElapsedMs / parsingIterationCount).toFixed(2)} ms per run`,
     ]);
   }
 
@@ -58,7 +58,7 @@ async function testDeparturesPerformance(): Promise<string> {
     regional: await prepareSubfeed("regional"),
   };
 
-  const results: string[][] = [["Test", "Total", "Per run"]];
+  const tables = new Map<string, string[][]>();
 
   for (const testCase of departureTestCases) {
     const { source, stopNameMapping } = subfeeds[testCase.subfeed];
@@ -87,14 +87,18 @@ async function testDeparturesPerformance(): Promise<string> {
     }
 
     const elapsedMs = performance.now() - start;
-    results.push([
-      testCase.name,
+    const rows = tables.get(testCase.group) ?? [];
+    rows.push([
+      `  ${testCase.name}`,
       `${elapsedMs.toFixed(2)} ms`,
-      `${(elapsedMs / runs.length).toFixed(2)} ms`,
+      `${(elapsedMs / runs.length).toFixed(2)} ms per run`,
     ]);
+    tables.set(testCase.group, rows);
   }
 
-  return formatTable(results);
+  return [...tables]
+    .map(([group, rows]) => `${group}\n${formatTable(rows)}`)
+    .join("\n\n");
 }
 
 main().catch((error) => {
