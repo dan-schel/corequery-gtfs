@@ -75,6 +75,7 @@ export class GtfsSystem {
     return this._scheduleParsingErrors;
   }
 
+  // TODO: Export these types.
   onNewScheduleData(scheduleCsvs: GtfsFeedCsv, realtimeJson: RealtimeDataJson) {
     this._scheduleParsingErrors = [];
     this._realtimeParsingErrors = [];

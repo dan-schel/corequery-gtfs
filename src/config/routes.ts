@@ -10,6 +10,8 @@ export type RouteConfig = {
 
 export type RouteStopConfig = {
   readonly stopId: number;
+
+  // TODO: Rename hideUnlessServed.
   readonly collapseInStoppingPatterns: boolean;
 };
 
