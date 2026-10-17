@@ -6,6 +6,7 @@ import { formatTable } from "../../tests/integration/support/format-table.js";
 import type { DeparturesIterationDirection } from "../../src/corequery-types.js";
 
 const iterationCount = 20;
+const parsingIterationCount = 5;
 const maxResults = 50;
 const fixturesDirectory = path.join(import.meta.dirname, "fixtures");
 
@@ -42,6 +43,40 @@ const testCases = categories.flatMap((category) =>
 async function main() {
   console.log("Running tests...\n");
 
+  const parsingTable = await testParsingPerformance();
+  const departuresTable = await testDeparturesPerformance();
+
+  console.log(`Parsing GTFS data\n${"-".repeat(80)}`);
+  console.log(parsingTable);
+  console.log(`\nQuerying for departures\n${"-".repeat(80)}`);
+  console.log(departuresTable);
+}
+
+async function testParsingPerformance(): Promise<string> {
+  const results: string[][] = [["Subfeed", "Total", "Per run"]];
+
+  for (const subfeed of ["suburban", "regional"] as const) {
+    const dirname = path.join(fixturesDirectory, subfeed);
+    const { system, scheduleData, realtimeData } =
+      await setupIntegrationTest(dirname);
+
+    const parsingStart = performance.now();
+    for (let iteration = 0; iteration < parsingIterationCount; iteration++) {
+      system.onNewScheduleData(scheduleData, realtimeData);
+    }
+    const parsingElapsedMs = performance.now() - parsingStart;
+
+    results.push([
+      subfeed,
+      `${parsingElapsedMs.toFixed(2)} ms`,
+      `${(parsingElapsedMs / parsingIterationCount).toFixed(2)} ms`,
+    ]);
+  }
+
+  return formatTable(results);
+}
+
+async function testDeparturesPerformance(): Promise<string> {
   const results: string[][] = [["Test", "Total", "Per run"]];
 
   for (const subfeed of ["suburban", "regional"] as const) {
@@ -75,8 +110,7 @@ async function main() {
     }
   }
 
-  console.log(`Querying for departures\n${"-".repeat(80)}`);
-  console.log(formatTable(results));
+  return formatTable(results);
 }
 
 main().catch((error) => {
