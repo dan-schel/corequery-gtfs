@@ -9,7 +9,7 @@ Library for parsing services from GTFS feeds for [CoreQuery](https://github.com/
 Setting up CoreQuery GTFS looks something like this:
 
 > [!NOTE]
-> While CoreQuery GTFS will handle the trip parsing, you are required to write your own logic for fetching the schedule and reading the CSV files into JS objects, as well as fetching the realtime feed and converting it from Protobuf binary data into JSON form.
+> While CoreQuery GTFS will handle the trip parsing, you are required to write your own logic for fetching the schedule and reading the CSV files into JS objects, as well as fetching the realtime feed and converting it from Protobuf binary data into JSON form. See `GtfsFeedCsv` and `RealtimeDataJson` for the required formats.
 
 ```ts
 import {
