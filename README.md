@@ -32,7 +32,7 @@ import {
 } from "corequery-gtfs";
 
 // Configure and construct a `GtfsSystem`, which is the primary interface for
-// CoreQuery GTFS.
+// CoreQuery GTFS. See section below for details on configuration.
 const config: GtfsConfig = {/* ... */};
 const gtfsSystem = GtfsSystem.build(config);
 
