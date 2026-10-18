@@ -1,8 +1,20 @@
-# CoreQuery GTFS
+# CoreQuery GTFS <!-- omit in toc -->
 
 [![codecov](https://codecov.io/gh/dan-schel/corequery-gtfs/graph/badge.svg?token=y1KwQPfPen)](https://codecov.io/gh/dan-schel/corequery-gtfs)
 
 Library for parsing services from GTFS feeds for [CoreQuery](https://github.com/dan-schel/corequery).
+
+## Table of contents <!-- omit in toc -->
+
+- [Basic usage](#basic-usage)
+- [Config](#config)
+  - [`lineGtfsIds`](#linegtfsids)
+  - [`stopGtfsIds`](#stopgtfsids)
+  - [`lineRoutesMapping`](#lineroutesmapping)
+  - [`bonusLinesMapping`](#bonuslinesmapping)
+  - [`timezoneConfig`](#timezoneconfig)
+  - [`interpolationMode`](#interpolationmode)
+- [Compatibility](#compatibility)
 
 ## Basic usage
 
