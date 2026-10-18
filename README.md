@@ -364,3 +364,11 @@ Controls how realtime delays are interpolated between given updated times. (This
 - `lerp` linearly interpolates delays between known updates.
 
 Both modes extrapolate the nearest known delay to stops before the first and after the last given updates.
+
+## Compatibility
+
+The version you should use depends on the version of CoreQuery you are using.
+
+| `corequery-gtfs` version | `corequery` version | Notes |
+| ------------------------ | ------------------- | ----- |
+| `1.0.0` - ?              | `0.24.0` - ?        | N/A   |
