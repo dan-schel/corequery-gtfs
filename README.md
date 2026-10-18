@@ -7,7 +7,7 @@ Library for parsing services from GTFS feeds for [CoreQuery](https://github.com/
 ## Table of contents <!-- omit in toc -->
 
 - [Basic usage](#basic-usage)
-- [Config](#config)
+- [Configuration](#configuration)
   - [`lineGtfsIds`](#linegtfsids)
   - [`stopGtfsIds`](#stopgtfsids)
   - [`lineRoutesMapping`](#lineroutesmapping)
@@ -130,7 +130,7 @@ const app = new Corequery((app) => ({
 await app.start();
 ```
 
-## Config
+## Configuration
 
 A `GtfsSystem` is configured with 6 fields, 2 of which are optional:
 
