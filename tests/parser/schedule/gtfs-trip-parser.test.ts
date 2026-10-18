@@ -41,8 +41,8 @@ describe("GtfsTripParser", () => {
         color: "blue",
         serviceTags: [7],
         stops: [
-          { stopId: 1, collapseInStoppingPatterns: false },
-          { stopId: 2, collapseInStoppingPatterns: false },
+          { stopId: 1, hideUnlessServed: false },
+          { stopId: 2, hideUnlessServed: false },
         ],
       },
     ],

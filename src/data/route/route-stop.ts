@@ -2,22 +2,22 @@ import type { RouteStopConfig } from "../../config/routes.js";
 
 export type RouteStopFields = {
   readonly stopId: number;
-  readonly collapseInStoppingPatterns: boolean;
+  readonly hideUnlessServed: boolean;
 };
 
 export class RouteStop {
   readonly stopId: number;
-  readonly collapseInStoppingPatterns: boolean;
+  readonly hideUnlessServed: boolean;
 
   constructor(fields: RouteStopFields) {
     this.stopId = fields.stopId;
-    this.collapseInStoppingPatterns = fields.collapseInStoppingPatterns;
+    this.hideUnlessServed = fields.hideUnlessServed;
   }
 
   static build(config: RouteStopConfig) {
     return new RouteStop({
       stopId: config.stopId,
-      collapseInStoppingPatterns: config.collapseInStoppingPatterns,
+      hideUnlessServed: config.hideUnlessServed,
     });
   }
 

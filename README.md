@@ -226,9 +226,9 @@ const config: GtfsConfig = {
       {
         // Note that `stopId` here is the CoreQuery ID, not the GTFS stop ID.
         //
-        // Anything marked `collapseInStoppingPatterns: true` means services
-        // on this route CAN include this stop, but if they don't, we won't
-        // show it as an express movement, it'll be "collapsed" (hidden).
+        // Anything marked `hideUnlessServed: true` means services on this route
+        // can include this stop, but if they don't, it won't be shown as an
+        // express movement in stopping patterns.
         //
         // For example, the Gippsland line doesn't really include East
         // Pakenham as a regular stop, so we don't want all normal services to
@@ -237,20 +237,20 @@ const config: GtfsConfig = {
         // East Pakenham, so we only show East Pakenham as a stop when it's
         // actually served.
         stops: [
-          { stopId: 240, collapseInStoppingPatterns: false },
-          { stopId: 123, collapseInStoppingPatterns: false },
-          { stopId: 38, collapseInStoppingPatterns: false },
-          { stopId: 178, collapseInStoppingPatterns: false },
-          { stopId: 202, collapseInStoppingPatterns: false },
-          { stopId: 107, collapseInStoppingPatterns: false },
-          { stopId: 92, collapseInStoppingPatterns: false },
-          { stopId: 228, collapseInStoppingPatterns: false },
-          { stopId: 18, collapseInStoppingPatterns: false },
-          { stopId: 307, collapseInStoppingPatterns: false },
-          { stopId: 219, collapseInStoppingPatterns: false },
-          { stopId: 252, collapseInStoppingPatterns: false },
-          { stopId: 224, collapseInStoppingPatterns: false },
-          { stopId: 104, collapseInStoppingPatterns: false },
+          { stopId: 240, hideUnlessServed: false },
+          { stopId: 123, hideUnlessServed: false },
+          { stopId: 38, hideUnlessServed: false },
+          { stopId: 178, hideUnlessServed: false },
+          { stopId: 202, hideUnlessServed: false },
+          { stopId: 107, hideUnlessServed: false },
+          { stopId: 92, hideUnlessServed: false },
+          { stopId: 228, hideUnlessServed: false },
+          { stopId: 18, hideUnlessServed: false },
+          { stopId: 307, hideUnlessServed: false },
+          { stopId: 219, hideUnlessServed: false },
+          { stopId: 252, hideUnlessServed: false },
+          { stopId: 224, hideUnlessServed: false },
+          { stopId: 104, hideUnlessServed: false },
         ],
 
         // Give metadata for any GTFS trips which match this route. Remember
@@ -265,20 +265,20 @@ const config: GtfsConfig = {
       // too, define a second route.
       {
         stops: [
-          { stopId: 104, collapseInStoppingPatterns: false },
-          { stopId: 224, collapseInStoppingPatterns: false },
-          { stopId: 252, collapseInStoppingPatterns: false },
-          { stopId: 219, collapseInStoppingPatterns: false },
-          { stopId: 307, collapseInStoppingPatterns: false },
-          { stopId: 18, collapseInStoppingPatterns: false },
-          { stopId: 228, collapseInStoppingPatterns: false },
-          { stopId: 92, collapseInStoppingPatterns: false },
-          { stopId: 107, collapseInStoppingPatterns: false },
-          { stopId: 202, collapseInStoppingPatterns: false },
-          { stopId: 178, collapseInStoppingPatterns: false },
-          { stopId: 38, collapseInStoppingPatterns: false },
-          { stopId: 123, collapseInStoppingPatterns: false },
-          { stopId: 240, collapseInStoppingPatterns: false },
+          { stopId: 104, hideUnlessServed: false },
+          { stopId: 224, hideUnlessServed: false },
+          { stopId: 252, hideUnlessServed: false },
+          { stopId: 219, hideUnlessServed: false },
+          { stopId: 307, hideUnlessServed: false },
+          { stopId: 18, hideUnlessServed: false },
+          { stopId: 228, hideUnlessServed: false },
+          { stopId: 92, hideUnlessServed: false },
+          { stopId: 107, hideUnlessServed: false },
+          { stopId: 202, hideUnlessServed: false },
+          { stopId: 178, hideUnlessServed: false },
+          { stopId: 38, hideUnlessServed: false },
+          { stopId: 123, hideUnlessServed: false },
+          { stopId: 240, hideUnlessServed: false },
         ],
         color: "pink",
 

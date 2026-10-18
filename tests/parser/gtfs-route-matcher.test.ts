@@ -24,9 +24,9 @@ describe("GtfsRouteMatcher", () => {
         color: "red",
         serviceTags: [],
         stops: [
-          { stopId: 1, collapseInStoppingPatterns: false },
-          { stopId: 2, collapseInStoppingPatterns: false },
-          { stopId: 3, collapseInStoppingPatterns: false },
+          { stopId: 1, hideUnlessServed: false },
+          { stopId: 2, hideUnlessServed: false },
+          { stopId: 3, hideUnlessServed: false },
         ],
       },
     ],
@@ -264,7 +264,7 @@ describe("GtfsRouteMatcher", () => {
   function routeStops(stopIds: readonly number[]) {
     return stopIds.map((stopId) => ({
       stopId,
-      collapseInStoppingPatterns: false,
+      hideUnlessServed: false,
     }));
   }
 });
