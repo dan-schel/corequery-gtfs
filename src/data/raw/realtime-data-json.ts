@@ -13,7 +13,7 @@ export type UpdatedTimeJson = {
   readonly time?: number;
 };
 
-type StopTimePropertiesJson = {
+export type StopTimePropertiesJson = {
   readonly pickupType?: string;
   readonly dropOffType?: string;
 };

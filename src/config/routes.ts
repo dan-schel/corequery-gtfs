@@ -10,7 +10,7 @@ export type RouteConfig = {
 
 export type RouteStopConfig = {
   readonly stopId: number;
-  readonly collapseInStoppingPatterns: boolean;
+  readonly hideUnlessServed: boolean;
 };
 
 export type BonusLinesMappingConfig = Record<number, BonusLinesConfig>;

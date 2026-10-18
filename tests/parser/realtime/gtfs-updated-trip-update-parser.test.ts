@@ -62,8 +62,8 @@ const LINE_ROUTES_MAPPING = LineRoutesMapping.build({
       color: "blue",
       serviceTags: [],
       stops: [
-        { stopId: 1, collapseInStoppingPatterns: false },
-        { stopId: 2, collapseInStoppingPatterns: false },
+        { stopId: 1, hideUnlessServed: false },
+        { stopId: 2, hideUnlessServed: false },
       ],
     },
   ],

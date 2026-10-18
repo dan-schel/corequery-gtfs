@@ -37,7 +37,7 @@ const lineRoutesMappingSchema = z.record(
       stops: z
         .object({
           stopId: z.number(),
-          collapseInStoppingPatterns: z.boolean(),
+          hideUnlessServed: z.boolean(),
         })
         .array(),
       serviceTags: z.number().array(),

@@ -145,17 +145,17 @@ export class GtfsRouteMatcher {
         nextServicingMovementIndex++;
       } else if (
         nextServicingMovementIndex > 0 &&
-        !routeStop.collapseInStoppingPatterns
+        !routeStop.hideUnlessServed
       ) {
         // Otherwise the stop from the route is an `type: "passing"` movement.
         // `nextServicingMovementIndex > 0` stops us adding passing movements
         // from the route before the service originates.
         //
-        // For now, I'm skipping adding `collapseInStoppingPatterns` stops as
-        // passing movements. This flag means we don't want this stop to show up
-        // in stopping patterns normally, unless it's servicing (e.g. East
-        // Pakenham on the Gippsland line is one of these). I'm assuming there's
-        // nothing downstream that'll need to consider these collapsed stops.
+        // For now, I'm skipping adding `hideUnlessServed` stops as passing
+        // movements. This flag means we don't want this stop to show up in
+        // stopping patterns normally, unless it's servicing (e.g. East Pakenham
+        // on the Gippsland line is one of these). I'm assuming there's nothing
+        // downstream that'll need to consider these hidden stops.
         //
         // (If I need to reconsider this decision for some reason, maybe instead
         // of adding those stops back in to this array with some sort of flag, I
