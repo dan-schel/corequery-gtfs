@@ -38,12 +38,12 @@ const gtfsSystem = GtfsSystem.build(config);
 
 async function fetchGtfsScheduleData(): Promise<GtfsFeedCsv> {
   // TODO: Download the schedule data zip, and read the CSV inside (see
-  // GtfsFeedCsv for the required format).
+  // `GtfsFeedCsv` for the required format).
 }
 
 async function fetchGtfsRealtimeData(): Promise<RealtimeDataJson> {
   // TODO: Fetch from the realtime feed and convert it into JSON form (see
-  // RealtimeDataJson for the required format).
+  // `RealtimeDataJson` for the required format).
 }
 
 // Then, when an update to the GTFS schedule data is available, run:
@@ -100,7 +100,7 @@ const serviceSource = new GtfsServiceSource<
   // theoretical next future departure!
   departureIterationLimitHours: 14 * 24,
 
-  // The corequery-gtfs package has no dependency on corequery itself, and
+  // The `corequery-gtfs` package has no dependency on `corequery` itself, and
   // therefore cannot instantiate CoreQuery classes directly. This enables it
   // to, via dependency injection.
   buildDeparture: (x) => new Departure(x),
