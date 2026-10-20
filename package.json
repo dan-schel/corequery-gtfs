@@ -18,10 +18,10 @@
     "bump-check": "bump-check --ignore \"^renovate\\/\""
   },
   "dependencies": {
+    "@dan-schel/js-utils": "4.14.1",
     "temporal-polyfill": "1.0.6"
   },
   "devDependencies": {
-    "@dan-schel/js-utils": "4.14.1",
     "@eslint/js": "10.0.1",
     "@types/node": "25.9.9",
     "@vitest/coverage-v8": "5.0.5",
