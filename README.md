@@ -100,6 +100,11 @@ const serviceSource = new GtfsServiceSource<
   // theoretical next future departure!
   departureIterationLimitHours: 14 * 24,
 
+  // Whether, and how much, to round arrival/departure times. Both scheduled and
+  // realtime times will be rounded. (This field is optional. If omitted,
+  // `no-rounding` is used by default.)
+  timeRounding: "no-rounding",
+
   // The `corequery-gtfs` package has no dependency on `corequery` itself, and
   // therefore cannot instantiate CoreQuery classes directly. This enables it
   // to, via dependency injection.

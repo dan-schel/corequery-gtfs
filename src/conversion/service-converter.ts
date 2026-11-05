@@ -19,6 +19,8 @@ import type { GtfsSystem } from "../gtfs-system.js";
 import type { GtfsRealtimeTripMovement, GtfsTrip } from "../data/trip/types.js";
 import { GtfsAddedTrip } from "../data/trip/added/gtfs-added-trip.js";
 import { GtfsReplacedTrip } from "../data/trip/replaced/gtfs-replaced-trip.js";
+import type { GtfsTimeRounding } from "../gtfs-service-source.js";
+import { ServiceTimeRounder } from "./service-time-rounder.js";
 
 export type ServiceConverterFields<
   CorequeryDepartureClass,
@@ -33,6 +35,7 @@ export type ServiceConverterFields<
 > = {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
+  readonly timeRounding: GtfsTimeRounding;
 
   readonly buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
@@ -137,6 +140,8 @@ export class ServiceConverter<
     fields: GenericServiceConnectionFields,
   ) => CorequeryGenericServiceConnectionClass;
 
+  private readonly _rounder: ServiceTimeRounder;
+
   constructor(
     fields: ServiceConverterFields<
       CorequeryDepartureClass,
@@ -165,6 +170,8 @@ export class ServiceConverter<
     this._buildServiceEntireVehicleFormsConnection =
       fields.buildServiceEntireVehicleFormsConnection;
     this._buildServiceGenericConnection = fields.buildServiceGenericConnection;
+
+    this._rounder = new ServiceTimeRounder(fields.timeRounding);
   }
 
   convertDeparture(
@@ -302,17 +309,17 @@ export class ServiceConverter<
     | CorequeryServiceTerminatingMovementClass
     | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
-      return this._buildServiceOriginatingMovement(
-        movement.asCorequeryFields(serviceDay, timezone),
-      );
+      const fields = movement.asCorequeryFields(serviceDay, timezone);
+      const rounded = this._rounder.roundOriginatingMovement(fields);
+      return this._buildServiceOriginatingMovement(rounded);
     } else if (movement.type === "regular") {
-      return this._buildServiceRegularMovement(
-        movement.asCorequeryFields(serviceDay, timezone),
-      );
+      const fields = movement.asCorequeryFields(serviceDay, timezone);
+      const rounded = this._rounder.roundRegularMovement(fields);
+      return this._buildServiceRegularMovement(rounded);
     } else if (movement.type === "terminating") {
-      return this._buildServiceTerminatingMovement(
-        movement.asCorequeryFields(serviceDay, timezone),
-      );
+      const fields = movement.asCorequeryFields(serviceDay, timezone);
+      const rounded = this._rounder.roundTerminatingMovement(fields);
+      return this._buildServiceTerminatingMovement(rounded);
     } else if (movement.type === "passing") {
       return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
@@ -328,15 +335,17 @@ export class ServiceConverter<
     | CorequeryServiceTerminatingMovementClass
     | CorequeryServicePassingMovementClass {
     if (movement.type === "originating") {
-      return this._buildServiceOriginatingMovement(
-        movement.asCorequeryFields(),
-      );
+      const fields = movement.asCorequeryFields();
+      const rounded = this._rounder.roundOriginatingMovement(fields);
+      return this._buildServiceOriginatingMovement(rounded);
     } else if (movement.type === "regular") {
-      return this._buildServiceRegularMovement(movement.asCorequeryFields());
+      const fields = movement.asCorequeryFields();
+      const rounded = this._rounder.roundRegularMovement(fields);
+      return this._buildServiceRegularMovement(rounded);
     } else if (movement.type === "terminating") {
-      return this._buildServiceTerminatingMovement(
-        movement.asCorequeryFields(),
-      );
+      const fields = movement.asCorequeryFields();
+      const rounded = this._rounder.roundTerminatingMovement(fields);
+      return this._buildServiceTerminatingMovement(rounded);
     } else if (movement.type === "passing") {
       return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
