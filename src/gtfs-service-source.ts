@@ -21,6 +21,8 @@ import { ServiceConversionIterator } from "./conversion/service-conversion-itera
 import { GtfsAddedTrip } from "./data/trip/added/gtfs-added-trip.js";
 import { GtfsReplacedTrip } from "./data/trip/replaced/gtfs-replaced-trip.js";
 
+export type GtfsTimeRounding = "no-rounding" | "nearest-minute";
+
 type GtfsServiceSourceFields<
   CorequeryDepartureClass,
   CorequeryServiceClass,
@@ -36,6 +38,7 @@ type GtfsServiceSourceFields<
   readonly gtfsSystem: GtfsSystem;
 
   readonly departureIterationLimitHours: number | null;
+  readonly timeRounding?: GtfsTimeRounding;
 
   readonly buildDeparture: (
     fields: DepartureFields<CorequeryServiceClass>,
@@ -139,6 +142,7 @@ export class GtfsServiceSource<
     >({
       sourceId: fields.sourceId,
       gtfsSystem: fields.gtfsSystem,
+      timeRounding: fields.timeRounding ?? "no-rounding",
       buildDeparture: fields.buildDeparture,
       buildService: fields.buildService,
       buildTags: fields.buildTags,
