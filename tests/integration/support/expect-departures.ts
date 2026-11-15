@@ -38,11 +38,8 @@ export async function expectDeparturesToMatchSnapshot({
   const departures: IntegrationTestDeparture[] = [];
 
   for (let i = 0; i < maxResults; i++) {
-    const departure = await iterator.peek();
-    if (departure == null) break;
-
-    await iterator.take();
-    departures.push(departure);
+    if ((await iterator.peek()) == null) break;
+    departures.push(await iterator.take());
   }
 
   const results: string[][] = [];

@@ -7,18 +7,23 @@ import { departureTestCases } from "./departure-test-cases.js";
 
 const parsingIterationCount = 5;
 const maxResults = 50;
+const filteringRatio = 50;
 const dataDirectory = path.join(import.meta.dirname, "data");
 
 async function main() {
-  console.log("Running tests...\n");
-
+  console.log("Running tests (1/3)...");
   const parsingTable = await testParsingPerformance();
+  console.log("Running tests (2/3)...");
   const departuresTable = await testDeparturesPerformance();
+  console.log("Running tests (3/3)...\n");
+  const filteringTable = await testFilteringPerformance();
 
   console.log(`Parsing GTFS data\n${"-".repeat(80)}`);
   console.log(parsingTable);
   console.log(`\nQuerying for departures\n${"-".repeat(80)}`);
   console.log(departuresTable);
+  console.log(`\nQuerying for departures (heavy filtering)\n${"-".repeat(80)}`);
+  console.log(filteringTable);
 }
 
 async function testParsingPerformance(): Promise<string> {
@@ -83,6 +88,67 @@ async function testDeparturesPerformance(): Promise<string> {
       for (let i = 0; i < maxResults; i++) {
         if ((await iterator.peek()) == null) break;
         await iterator.take();
+      }
+    }
+
+    const elapsedMs = performance.now() - start;
+    const rows = tables.get(testCase.group) ?? [];
+    rows.push([
+      `  ${testCase.name}`,
+      `${elapsedMs.toFixed(2)} ms (over ${runs.length} runs)`,
+      `${(elapsedMs / runs.length).toFixed(2)} ms per run`,
+    ]);
+    tables.set(testCase.group, rows);
+  }
+
+  return [...tables]
+    .map(([group, rows]) => `${group}\n${formatTable(rows)}`)
+    .join("\n\n");
+}
+
+async function testFilteringPerformance(): Promise<string> {
+  async function prepareSubfeed(subfeed: string) {
+    const dirname = path.join(dataDirectory, subfeed);
+    const { source } = await setupIntegrationTest(dirname);
+    const stopNameMapping = await createStopNameMapping(dirname);
+    return { source, stopNameMapping };
+  }
+
+  const subfeeds = {
+    suburban: await prepareSubfeed("suburban"),
+    regional: await prepareSubfeed("regional"),
+  };
+
+  const tables = new Map<string, string[][]>();
+
+  for (const testCase of departureTestCases) {
+    const { source, stopNameMapping } = subfeeds[testCase.subfeed];
+
+    const runs = testCase.times.flatMap((time) => {
+      const instant = Temporal.Instant.from(time);
+      return testCase.stations.map((station) => ({
+        stopId: stopNameMapping.requireId(station),
+        instant,
+      }));
+    });
+
+    const start = performance.now();
+
+    for (const run of runs) {
+      const iterator = source.getDeparturesIterator(
+        run.stopId,
+        run.instant,
+        testCase.direction,
+      );
+
+      for (let i = 0; i < maxResults * filteringRatio; i++) {
+        if ((await iterator.peek()) == null) break;
+
+        if (i % filteringRatio === 0) {
+          await iterator.take();
+        } else {
+          await iterator.skip();
+        }
       }
     }
 

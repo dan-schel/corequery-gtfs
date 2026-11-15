@@ -1,4 +1,4 @@
-import { assertNever } from "@dan-schel/js-utils";
+import { assertNever, itsOk } from "@dan-schel/js-utils";
 import type {
   DepartureFields,
   ServiceFields,
@@ -8,19 +8,31 @@ import type {
   ServiceTerminatingMovementFields,
   EntireVehicleFormsServiceConnectionFields,
   GenericServiceConnectionFields,
+  LightweightDeparture,
 } from "../corequery-types.js";
 import { GtfsScheduledTrip } from "../data/trip/scheduled/gtfs-scheduled-trip.js";
 import type { GtfsDeparturesIteratorResult } from "../departures/iterator/gtfs-departures-iterator.js";
 import { GtfsUpdatedTrip } from "../data/trip/updated/gtfs-updated-trip.js";
 import { CorequeryIntrasourceId } from "./corequery-intrasource-id.js";
-import type { GtfsScheduledTripMovement } from "../data/trip/scheduled/types.js";
+import type {
+  GtfsScheduledTripMovement,
+  GtfsScheduledTripServicingMovement,
+} from "../data/trip/scheduled/types.js";
 import { GtfsEntireVehicleFormsServiceTransfer } from "../data/gtfs-transfer.js";
 import type { GtfsSystem } from "../gtfs-system.js";
-import type { GtfsRealtimeTripMovement, GtfsTrip } from "../data/trip/types.js";
+import type {
+  GtfsRealtimeTripMovement,
+  GtfsRealtimeTripServicingMovement,
+  GtfsTrip,
+  GtfsTripServicingMovement,
+} from "../data/trip/types.js";
 import { GtfsAddedTrip } from "../data/trip/added/gtfs-added-trip.js";
 import { GtfsReplacedTrip } from "../data/trip/replaced/gtfs-replaced-trip.js";
 import type { GtfsTimeRounding } from "../gtfs-service-source.js";
 import { ServiceTimeRounder } from "./service-time-rounder.js";
+import { GtfsScheduledTripOriginatingMovement } from "../data/trip/scheduled/gtfs-scheduled-trip-originating-movement.js";
+import { GtfsScheduledTripRegularMovement } from "../data/trip/scheduled/gtfs-scheduled-trip-regular-movement.js";
+import { GtfsScheduledTripTerminatingMovement } from "../data/trip/scheduled/gtfs-scheduled-trip-terminating-movement.js";
 
 export type ServiceConverterFields<
   CorequeryDepartureClass,
@@ -174,6 +186,36 @@ export class ServiceConverter<
     this._rounder = new ServiceTimeRounder(fields.timeRounding);
   }
 
+  convertLightweightDeparture(
+    result: GtfsDeparturesIteratorResult,
+    timezone: string,
+  ): LightweightDeparture<
+    CorequeryTagsClass,
+    CorequeryServiceOriginatingMovementClass,
+    CorequeryServiceRegularMovementClass,
+    CorequeryServiceTerminatingMovementClass
+  > {
+    const rawMovement = itsOk(result.trip.movements[result.movementIndex]);
+    if (rawMovement.type === "passing") throw new Error("Bad movement.");
+
+    const serviceDay = result.serviceDay;
+    const tripId = result.trip.gtfsTripId;
+
+    const movement = this._convertServicingMovement(
+      rawMovement,
+      serviceDay,
+      timezone,
+    );
+
+    return {
+      sourceId: this._sourceId,
+      intrasourceId: new CorequeryIntrasourceId(tripId, serviceDay).toString(),
+      lineIds: result.trip.lineIds,
+      serviceTags: this._buildTags(new Set(result.trip.serviceTags)),
+      movement,
+    };
+  }
+
   convertDeparture(
     result: GtfsDeparturesIteratorResult,
     timezone: string,
@@ -299,15 +341,47 @@ export class ServiceConverter<
     });
   }
 
+  private _convertServicingMovement(
+    movement: GtfsTripServicingMovement,
+    serviceDay: Temporal.PlainDate,
+    timezone: string,
+  ) {
+    if (
+      movement instanceof GtfsScheduledTripOriginatingMovement ||
+      movement instanceof GtfsScheduledTripRegularMovement ||
+      movement instanceof GtfsScheduledTripTerminatingMovement
+    ) {
+      return this._convertScheduledTripServicingMovement(
+        movement,
+        serviceDay,
+        timezone,
+      );
+    } else {
+      return this._convertRealtimeTripServicingMovement(movement);
+    }
+  }
+
   private _convertScheduledTripMovement(
     movement: GtfsScheduledTripMovement,
     serviceDay: Temporal.PlainDate,
     timezone: string,
-  ):
-    | CorequeryServiceOriginatingMovementClass
-    | CorequeryServiceRegularMovementClass
-    | CorequeryServiceTerminatingMovementClass
-    | CorequeryServicePassingMovementClass {
+  ) {
+    if (movement.type === "passing") {
+      return this._buildServicePassingMovement(movement.asCorequeryFields());
+    } else {
+      return this._convertScheduledTripServicingMovement(
+        movement,
+        serviceDay,
+        timezone,
+      );
+    }
+  }
+
+  private _convertScheduledTripServicingMovement(
+    movement: GtfsScheduledTripServicingMovement,
+    serviceDay: Temporal.PlainDate,
+    timezone: string,
+  ) {
     if (movement.type === "originating") {
       const fields = movement.asCorequeryFields(serviceDay, timezone);
       const rounded = this._rounder.roundOriginatingMovement(fields);
@@ -320,20 +394,22 @@ export class ServiceConverter<
       const fields = movement.asCorequeryFields(serviceDay, timezone);
       const rounded = this._rounder.roundTerminatingMovement(fields);
       return this._buildServiceTerminatingMovement(rounded);
-    } else if (movement.type === "passing") {
-      return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
       assertNever(movement);
     }
   }
 
-  private _convertRealtimeTripMovement(
-    movement: GtfsRealtimeTripMovement,
-  ):
-    | CorequeryServiceOriginatingMovementClass
-    | CorequeryServiceRegularMovementClass
-    | CorequeryServiceTerminatingMovementClass
-    | CorequeryServicePassingMovementClass {
+  private _convertRealtimeTripMovement(movement: GtfsRealtimeTripMovement) {
+    if (movement.type === "passing") {
+      return this._buildServicePassingMovement(movement.asCorequeryFields());
+    } else {
+      return this._convertRealtimeTripServicingMovement(movement);
+    }
+  }
+
+  private _convertRealtimeTripServicingMovement(
+    movement: GtfsRealtimeTripServicingMovement,
+  ) {
     if (movement.type === "originating") {
       const fields = movement.asCorequeryFields();
       const rounded = this._rounder.roundOriginatingMovement(fields);
@@ -346,8 +422,6 @@ export class ServiceConverter<
       const fields = movement.asCorequeryFields();
       const rounded = this._rounder.roundTerminatingMovement(fields);
       return this._buildServiceTerminatingMovement(rounded);
-    } else if (movement.type === "passing") {
-      return this._buildServicePassingMovement(movement.asCorequeryFields());
     } else {
       assertNever(movement);
     }
