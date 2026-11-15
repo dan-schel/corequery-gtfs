@@ -11,26 +11,28 @@ type TimezoneConversionData = {
 const MAX_CACHE_SIZE = 100;
 
 export class TimezoneConversionCache {
-  private readonly _cache = new Map<
-    string,
-    Map<Temporal.PlainDate, TimezoneConversionData>
-  >();
+  private readonly _cache: Map<string, Map<string, TimezoneConversionData>>;
+
+  constructor() {
+    this._cache = new Map();
+  }
 
   get(
     serviceDay: Temporal.PlainDate,
     timezone: string,
   ): TimezoneConversionData {
-    const cachedData = this._cache.get(timezone)?.get(serviceDay);
+    const serviceDayKey = serviceDay.toJSON();
+    const cachedData = this._cache.get(timezone)?.get(serviceDayKey);
     if (cachedData != null) return cachedData;
 
     const data = TimezoneConversionCache._calculate(serviceDay, timezone);
-    this._write(serviceDay, timezone, data);
+    this._write(serviceDayKey, timezone, data);
 
     return data;
   }
 
   private _write(
-    serviceDay: Temporal.PlainDate,
+    serviceDayKey: string,
     timezone: string,
     data: TimezoneConversionData,
   ) {
@@ -41,7 +43,7 @@ export class TimezoneConversionCache {
       this._cache.set(timezone, timezoneCache);
     }
 
-    timezoneCache.set(serviceDay, data);
+    timezoneCache.set(serviceDayKey, data);
 
     if (timezoneCache.size > MAX_CACHE_SIZE) {
       // Delete the oldest value.
