@@ -22,6 +22,7 @@ export class TimezoneConversionCache {
     timezone: string,
   ): TimezoneConversionData {
     const serviceDayKey = serviceDay.toJSON();
+
     const cachedData = this._cache.get(timezone)?.get(serviceDayKey);
     if (cachedData != null) return cachedData;
 
