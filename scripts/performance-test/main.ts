@@ -7,14 +7,15 @@ import { departureTestCases } from "./departure-test-cases.js";
 
 const parsingIterationCount = 5;
 const maxResults = 50;
-const filteringRatio = 10;
+const filteringRatio = 50;
 const dataDirectory = path.join(import.meta.dirname, "data");
 
 async function main() {
-  console.log("Running tests...\n");
-
+  console.log("Running tests (1/3)...\n");
   const parsingTable = await testParsingPerformance();
+  console.log("Running tests (2/3)...\n");
   const departuresTable = await testDeparturesPerformance();
+  console.log("Running tests (3/3)...\n");
   const filteringTable = await testFilteringPerformance();
 
   console.log(`Parsing GTFS data\n${"-".repeat(80)}`);
@@ -143,7 +144,7 @@ async function testFilteringPerformance(): Promise<string> {
       for (let i = 0; i < maxResults * filteringRatio; i++) {
         if ((await iterator.peek()) == null) break;
 
-        if (i % filteringRatio !== 0) {
+        if (i % filteringRatio === 0) {
           await iterator.take();
         } else {
           await iterator.skip();
