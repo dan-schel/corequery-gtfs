@@ -1,7 +1,11 @@
 // Because we don't want to depend on CoreQuery. (Just because I'm scared of
 // npm's peer dependency system and don't understand how it works!)
 
-export type ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> = {
+export type ServiceSource<
+  CorequeryDepartureClass,
+  CorequeryServiceClass,
+  CorequeryLightweightDeparture,
+> = {
   readonly sourceId: string;
 
   getService: (intrasourceId: string) => Promise<CorequeryServiceClass | null>;
@@ -10,12 +14,36 @@ export type ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> = {
     stopId: number,
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
-  ) => DeparturesIterator<CorequeryDepartureClass>;
+  ) => DeparturesIterator<
+    CorequeryDepartureClass,
+    CorequeryLightweightDeparture
+  >;
 };
 
-export type DeparturesIterator<CorequeryDepartureClass> = {
-  peek: () => Promise<CorequeryDepartureClass | null>;
+export type DeparturesIterator<
+  CorequeryDepartureClass,
+  CorequeryLightweightDeparture,
+> = {
+  peek: () => Promise<CorequeryLightweightDeparture | null>;
+  skip: () => Promise<void>;
   take: () => Promise<CorequeryDepartureClass>;
+};
+
+export type LightweightDeparture<
+  CorequeryTagsClass,
+  CorequeryServiceOriginatingMovementClass,
+  CorequeryServiceRegularMovementClass,
+  CorequeryServiceTerminatingMovementClass,
+> = {
+  readonly sourceId: string;
+  readonly intrasourceId: string;
+  readonly lineIds: readonly number[];
+  readonly serviceTags: CorequeryTagsClass;
+  readonly movement: CorequeryServiceServicingMovementClasses<
+    CorequeryServiceOriginatingMovementClass,
+    CorequeryServiceRegularMovementClass,
+    CorequeryServiceTerminatingMovementClass
+  >;
 };
 
 export type DepartureFields<CorequeryServiceClass> = {
@@ -66,6 +94,15 @@ type CorequeryServiceMovementClasses<
   | CorequeryServiceRegularMovementClass
   | CorequeryServiceTerminatingMovementClass
   | CorequeryServicePassingMovementClass;
+
+type CorequeryServiceServicingMovementClasses<
+  CorequeryServiceOriginatingMovementClass,
+  CorequeryServiceRegularMovementClass,
+  CorequeryServiceTerminatingMovementClass,
+> =
+  | CorequeryServiceOriginatingMovementClass
+  | CorequeryServiceRegularMovementClass
+  | CorequeryServiceTerminatingMovementClass;
 
 export type ServiceOriginatingMovementFields = {
   readonly stopId: number;

@@ -1,5 +1,6 @@
 import type { GtfsDeparturesIterator } from "../departures/iterator/gtfs-departures-iterator.js";
 import type { ServiceConverter } from "./service-converter.js";
+import type { LightweightDeparture } from "../corequery-types.js";
 
 export class ServiceConversionIterator<
   CorequeryDepartureClass,
@@ -12,7 +13,12 @@ export class ServiceConversionIterator<
   CorequeryEntireVehicleFormsServiceConnectionClass,
   CorequeryGenericServiceConnectionClass,
 > {
-  private _convertedNextDeparture: CorequeryDepartureClass | null;
+  private _nextLightweightDeparture: LightweightDeparture<
+    CorequeryTagsClass,
+    CorequeryServiceOriginatingMovementClass,
+    CorequeryServiceRegularMovementClass,
+    CorequeryServiceTerminatingMovementClass
+  > | null;
 
   constructor(
     private readonly _iterator: GtfsDeparturesIterator,
@@ -30,12 +36,17 @@ export class ServiceConversionIterator<
     >,
     private readonly _timezone: string,
   ) {
-    this._convertedNextDeparture = null;
+    this._nextLightweightDeparture = null;
   }
 
-  peek(): Promise<CorequeryDepartureClass | null> {
-    if (this._convertedNextDeparture != null) {
-      return Promise.resolve(this._convertedNextDeparture);
+  peek(): Promise<LightweightDeparture<
+    CorequeryTagsClass,
+    CorequeryServiceOriginatingMovementClass,
+    CorequeryServiceRegularMovementClass,
+    CorequeryServiceTerminatingMovementClass
+  > | null> {
+    if (this._nextLightweightDeparture != null) {
+      return Promise.resolve(this._nextLightweightDeparture);
     }
 
     const value = this._iterator.peek();
@@ -43,25 +54,26 @@ export class ServiceConversionIterator<
       return Promise.resolve(null);
     }
 
-    const result = this._converter.convertDeparture(value, this._timezone);
-    this._convertedNextDeparture = result;
+    const result = this._converter.convertLightweightDeparture(
+      value,
+      this._timezone,
+    );
+    this._nextLightweightDeparture = result;
     return Promise.resolve(result);
+  }
+
+  skip(): Promise<void> {
+    this._iterator.take();
+    this._nextLightweightDeparture = null;
+    return Promise.resolve();
   }
 
   take(): Promise<CorequeryDepartureClass> {
     const value = this._iterator.take();
+    this._nextLightweightDeparture = null;
 
-    // If we've already converted this departure (in a previous `peek`), then
-    // use the cached one. Otherwise, convert it now.
-    const convertedValue =
-      this._convertedNextDeparture != null
-        ? this._convertedNextDeparture
-        : this._converter.convertDeparture(value, this._timezone);
-
-    // And then clear it, because otherwise the next `peek` or `take` will rely
-    // on this cached value again, despite it now being stale.
-    this._convertedNextDeparture = null;
-
-    return Promise.resolve(convertedValue);
+    return Promise.resolve(
+      this._converter.convertDeparture(value, this._timezone),
+    );
   }
 }

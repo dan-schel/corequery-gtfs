@@ -5,6 +5,7 @@ import type {
   DeparturesIterator,
   EntireVehicleFormsServiceConnectionFields,
   GenericServiceConnectionFields,
+  LightweightDeparture,
   ServiceFields,
   ServiceOriginatingMovementFields,
   ServicePassingMovementFields,
@@ -93,7 +94,16 @@ export class GtfsServiceSource<
   CorequeryServicePassingMovementClass,
   CorequeryEntireVehicleFormsServiceConnectionClass,
   CorequeryGenericServiceConnectionClass,
-> implements ServiceSource<CorequeryDepartureClass, CorequeryServiceClass> {
+> implements ServiceSource<
+  CorequeryDepartureClass,
+  CorequeryServiceClass,
+  LightweightDeparture<
+    CorequeryTagsClass,
+    CorequeryServiceOriginatingMovementClass,
+    CorequeryServiceRegularMovementClass,
+    CorequeryServiceTerminatingMovementClass
+  >
+> {
   readonly sourceId: string;
   readonly gtfsSystem: GtfsSystem;
 
@@ -189,7 +199,15 @@ export class GtfsServiceSource<
     stopId: number,
     instant: Temporal.Instant,
     direction: DeparturesIterationDirection,
-  ): DeparturesIterator<CorequeryDepartureClass> {
+  ): DeparturesIterator<
+    CorequeryDepartureClass,
+    LightweightDeparture<
+      CorequeryTagsClass,
+      CorequeryServiceOriginatingMovementClass,
+      CorequeryServiceRegularMovementClass,
+      CorequeryServiceTerminatingMovementClass
+    >
+  > {
     const feed = this.gtfsSystem.requireFeed();
     const iterator = feed.createDepartureIterator(
       stopId,
