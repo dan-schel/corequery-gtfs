@@ -1,6 +1,9 @@
 import { itsOk, posMod } from "@dan-schel/js-utils";
+import { TimezoneConversionCache } from "./timezone-conversion-cache.js";
 
 export class GtfsStopTime {
+  private static readonly _cache = new TimezoneConversionCache();
+
   private constructor(
     /**
      * The number of seconds since midnight. Allows values greater than
@@ -75,12 +78,16 @@ export class GtfsStopTime {
     serviceDay: Temporal.PlainDate,
     timezone: string,
   ): Temporal.Instant {
-    const midnightUtc = serviceDay.toZonedDateTime("UTC").toInstant();
-    const offset = GtfsStopTime._getOffsetSecondsAtMidday(serviceDay, timezone);
+    const { midnightUtc, offsetSeconds } = GtfsStopTime._cache.get(
+      serviceDay,
+      timezone,
+    );
 
     // Subtract the offset because we're converting a local time to UTC, i.e.
     // 11am AEST becomes 1am UTC.
-    return midnightUtc.add({ seconds: this.secondsSinceMidnight - offset });
+    return midnightUtc.add({
+      seconds: this.secondsSinceMidnight - offsetSeconds,
+    });
   }
 
   toString(): string {
@@ -106,30 +113,5 @@ export class GtfsStopTime {
   }): GtfsStopTime {
     const s = hours * 3600 + minutes * 60 + seconds;
     return GtfsStopTime.fromSecondsSinceMidnight(this.secondsSinceMidnight + s);
-  }
-
-  private static _getOffsetSecondsAtMidday(
-    date: Temporal.PlainDate,
-    timezone: string,
-  ): number {
-    const nanoseconds = Temporal.ZonedDateTime.from(
-      {
-        timeZone: timezone,
-        year: date.year,
-        month: date.month,
-        day: date.day,
-        hour: 12,
-        minute: 0,
-      },
-      {
-        // Throws an error if this is ambiguous (just like 2:30am can be
-        // ambiguous during DST changes in Melbourne). The GTFS spec operates on
-        // the timezone as at 12pm that day, as do we, and so that should mean
-        // it's never a problem (both for Melbourne, and elsewhere).
-        disambiguation: "reject",
-      },
-    ).offsetNanoseconds;
-
-    return nanoseconds / 1_000_000_000;
   }
 }
