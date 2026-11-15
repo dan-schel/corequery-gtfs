@@ -386,6 +386,7 @@ Both modes extrapolate the nearest known delay to stops before the first and aft
 
 The version you should use depends on the version of CoreQuery you are using.
 
-| `corequery-gtfs` version | `corequery` version | Notes |
-| ------------------------ | ------------------- | ----- |
-| `1.0.0` - ?              | `0.24.0` - ?        | N/A   |
+| `corequery-gtfs` version | `corequery` version  | Notes |
+| ------------------------ | -------------------- | ----- |
+| `2.0.0` - ?              | `0.34.0` - ?         | N/A   |
+| `1.0.0` - `<2.0.0`       | `0.24.0` - `<0.34.0` | N/A   |
