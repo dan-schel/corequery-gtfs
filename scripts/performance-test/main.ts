@@ -11,9 +11,9 @@ const filteringRatio = 50;
 const dataDirectory = path.join(import.meta.dirname, "data");
 
 async function main() {
-  console.log("Running tests (1/3)...\n");
+  console.log("Running tests (1/3)...");
   const parsingTable = await testParsingPerformance();
-  console.log("Running tests (2/3)...\n");
+  console.log("Running tests (2/3)...");
   const departuresTable = await testDeparturesPerformance();
   console.log("Running tests (3/3)...\n");
   const filteringTable = await testFilteringPerformance();
