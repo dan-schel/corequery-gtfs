@@ -5,9 +5,9 @@ type TimezoneConversionData = {
   readonly offsetSeconds: number;
 };
 
-// The number of timezones in use by a corequery-gtfs consumer will be finite,
-// but the number of service days can be infinite, at least, if the server is
-// running long enough!
+// The number of timezones in use by a corequery-gtfs consumer will be finite
+// (each GtfsSystem can only have one), but the number of service days can be
+// infinite, at least, if the server is running long enough!
 const MAX_CACHE_SIZE = 100;
 
 export class TimezoneConversionCache {
